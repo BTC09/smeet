@@ -35,10 +35,8 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// Звезды
 const stars = [];
-const comets = [];
-
-// Создание звезд
 for (let i = 0; i < 200; i++) {
     stars.push({
         x: Math.random() * canvas.width,
@@ -49,19 +47,20 @@ for (let i = 0; i < 200; i++) {
     });
 }
 
-// Создание комет
+// Кометы с хвостами
+const comets = [];
 for (let i = 0; i < 5; i++) {
     comets.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height / 2,
-        length: Math.random() * 80 + 50,
         speedX: Math.random() * 2 + 1,
         speedY: Math.random() * 2 + 1,
-        radius: Math.random() * 3 + 2
+        radius: Math.random() * 3 + 2,
+        trail: [] // массив для хранения точек хвоста
     });
 }
 
-// Функция рисования звезд
+// Рисуем звезды
 function drawStars() {
     for (let s of stars) {
         ctx.beginPath();
@@ -74,17 +73,28 @@ function drawStars() {
     }
 }
 
-// Функция рисования комет
+// Рисуем кометы с хвостом
 function drawComets() {
     for (let c of comets) {
-        // Создаем хвост кометы
-        const gradient = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.length);
-        gradient.addColorStop(0, 'rgba(255,255,255,1)');
-        gradient.addColorStop(1, 'rgba(255,255,255,0)');
-        
-        ctx.fillStyle = gradient;
+        // Добавляем текущую позицию в хвост
+        c.trail.push({x: c.x, y: c.y});
+        if (c.trail.length > 20) c.trail.shift(); // ограничиваем длину хвоста
+
+        // Рисуем хвост
+        for (let i = 0; i < c.trail.length; i++) {
+            const point = c.trail[i];
+            const alpha = i / c.trail.length * 0.5; // прозрачность хвоста
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, c.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Рисуем комету
         ctx.beginPath();
         ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,1)';
         ctx.fill();
         ctx.closePath();
 
@@ -96,6 +106,7 @@ function drawComets() {
         if (c.x > canvas.width + 50 || c.y > canvas.height + 50) {
             c.x = Math.random() * canvas.width;
             c.y = -50;
+            c.trail = [];
         }
     }
 }
