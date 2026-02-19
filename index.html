@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SMEET ✦ MEGA CASINO</title>
+  <title>SMEET ✦ DELUXE CASINO</title>
   <style>
     * {
       margin: 0;
@@ -54,26 +54,27 @@
     }
 
     .welcome-title {
-      font-size: clamp(100px, 24vw, 200px);
+      font-size: clamp(80px, 20vw, 180px);
       font-weight: 900;
       background: linear-gradient(145deg, #fff5cf, #ffaa44, #ff44aa, #aa44ff, #44aaff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 100px #ff44aa, 0 0 200px #aa44ff, 0 0 300px #44aaff;
-      letter-spacing: 20px;
+      text-shadow: 0 0 80px #ff44aa, 0 0 160px #aa44ff;
+      letter-spacing: 15px;
       animation: megaGlitch 2s;
-      position: relative;
     }
 
-    .welcome-title::after {
-      content: 'SMEET';
-      position: absolute;
-      left: 2px;
-      top: 2px;
-      color: #ff44aa;
-      opacity: 0.5;
-      filter: blur(10px);
-      z-index: -1;
+    .welcome-subtitle {
+      font-size: clamp(28px, 6vw, 48px);
+      color: #fff;
+      text-shadow: 0 0 40px #aa44ff, 0 0 80px #ff44aa;
+      animation: floatText 2s infinite;
+    }
+
+    @keyframes floatText {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
     }
 
     @keyframes megaGlitch {
@@ -85,51 +86,20 @@
       100% { transform: scale(1) skewX(0); opacity: 1; filter: blur(0); }
     }
 
-    .welcome-subtitle {
-      font-size: clamp(32px, 8vw, 56px);
-      color: #fff;
-      text-shadow: 0 0 40px #aa44ff, 0 0 80px #ff44aa, 0 0 120px #44aaff;
-      animation: floatText 2s infinite;
-    }
-
-    @keyframes floatText {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
-
     /* ✦✦✦ ОСНОВНОЙ КОНТЕЙНЕР ✦✦✦ */
     .app {
       width: 100%;
       max-width: 1100px;
       background: rgba(8, 12, 22, 0.85);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border-radius: 70px;
-      padding: 28px;
-      box-shadow: 0 50px 90px #000000ee, 0 0 0 4px #ffd96699 inset, 0 0 100px #ff44aa99;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 60px;
+      padding: 24px;
+      box-shadow: 0 40px 70px #000000ee, 0 0 0 4px #ffd96699 inset, 0 0 80px #ff44aa99;
       border: 1px solid #ffd966;
       opacity: 0;
       transform: scale(0.95);
       transition: opacity 0.8s, transform 0.8s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .app::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(255,68,170,0.1), transparent 70%);
-      animation: bgRotate 20s linear infinite;
-    }
-
-    @keyframes bgRotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
     }
 
     .app.visible {
@@ -137,251 +107,165 @@
       transform: scale(1);
     }
 
-    /* Шапка с мега-балансом */
+    /* Шапка */
     .header {
       background: rgba(0, 0, 0, 0.5);
-      border-radius: 120px;
-      padding: 16px 28px;
-      margin-bottom: 32px;
+      border-radius: 100px;
+      padding: 14px 24px;
+      margin-bottom: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border: 2px solid #ffd966;
-      box-shadow: 0 15px 30px #000000cc, 0 0 50px #ff44aa66;
-      position: relative;
-      z-index: 2;
+      box-shadow: 0 10px 20px #000000cc, 0 0 40px #ff44aa66;
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
     .balance-block {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
       background: #0e1630;
-      padding: 10px 35px 10px 25px;
-      border-radius: 80px;
+      padding: 8px 28px 8px 20px;
+      border-radius: 70px;
       border: 2px solid #ffd966;
-      box-shadow: 0 0 40px #ffd96699;
+      box-shadow: 0 0 30px #ffd96699;
     }
 
     .stars-icon {
-      font-size: 48px;
-      filter: drop-shadow(0 0 20px gold) drop-shadow(0 0 40px magenta);
+      font-size: 40px;
+      filter: drop-shadow(0 0 15px gold) drop-shadow(0 0 30px magenta);
       animation: starMega 2s infinite;
     }
 
     @keyframes starMega {
-      0% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 20px gold); }
-      33% { transform: scale(1.2) rotate(10deg); filter: drop-shadow(0 0 40px magenta); }
-      66% { transform: scale(1.1) rotate(-10deg); filter: drop-shadow(0 0 40px cyan); }
-      100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 20px gold); }
+      0% { transform: scale(1) rotate(0deg); }
+      33% { transform: scale(1.15) rotate(5deg); }
+      66% { transform: scale(1.05) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0deg); }
     }
 
     .balance-value {
-      font-size: 48px;
+      font-size: 42px;
       font-weight: 800;
-      background: linear-gradient(145deg, #ffd966, #ffaa44, #ff44aa, #aa44ff);
+      background: linear-gradient(145deg, #ffd966, #ffaa44, #ff44aa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: textGlow 2s infinite;
-    }
-
-    @keyframes textGlow {
-      0% { text-shadow: 0 0 20px #ff44aa; }
-      50% { text-shadow: 0 0 40px #44aaff; }
-      100% { text-shadow: 0 0 20px #ff44aa; }
     }
 
     .add-stars-btn {
       background: #1f2b44;
       border: 3px solid #ffd966;
       color: #ffd966;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      padding: 14px 40px;
-      border-radius: 80px;
+      padding: 12px 35px;
+      border-radius: 70px;
       cursor: pointer;
-      box-shadow: 0 8px 0 #0a1220, 0 0 50px #ff44aa99;
+      box-shadow: 0 6px 0 #0a1220, 0 0 40px #ff44aa99;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       transition: 0.1s;
-      position: relative;
-      overflow: hidden;
     }
 
-    .add-stars-btn::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent 70%);
-      animation: btnShine 3s infinite;
+    .add-stars-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #0a1220, 0 0 50px #ff44aa;
     }
 
-    @keyframes btnShine {
-      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-      20% { opacity: 1; }
-      40% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
-    }
-
-    /* Меню игр с 3D эффектом */
+    /* Меню игр */
     .games-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-      padding: 15px 0;
-      position: relative;
-      z-index: 2;
+      gap: 20px;
+      padding: 10px 0;
     }
 
     .game-card {
       background: rgba(20, 30, 50, 0.7);
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(10px);
       border: 3px solid #ffd966;
-      border-radius: 50px;
-      padding: 35px 20px;
+      border-radius: 45px;
+      padding: 30px 15px;
       text-align: center;
       cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 15px 0 #0f1a2a, 0 0 60px #ff44aa99;
+      transition: 0.2s;
+      box-shadow: 0 12px 0 #0f1a2a, 0 0 50px #ff44aa99;
       position: relative;
       overflow: hidden;
-      transform-style: preserve-3d;
-      perspective: 1000px;
     }
 
     .game-card:hover {
-      transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
-      box-shadow: 0 25px 0 #0f1a2a, 0 0 80px #ffaa44;
+      transform: translateY(-8px);
+      box-shadow: 0 20px 0 #0f1a2a, 0 0 70px #ffaa44;
     }
 
     .game-card:active {
-      transform: translateY(8px) rotateX(0) rotateY(0);
-      box-shadow: 0 7px 0 #0f1a2a, 0 0 100px #ff44aa;
-    }
-
-    .game-card::before {
-      content: '';
-      position: absolute;
-      top: -100%;
-      left: -100%;
-      width: 300%;
-      height: 300%;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 70%);
-      animation: cardMegaShine 8s infinite;
-    }
-
-    @keyframes cardMegaShine {
-      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-      20% { opacity: 0.5; }
-      40% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+      transform: translateY(5px);
+      box-shadow: 0 7px 0 #0f1a2a, 0 0 80px #ff44aa;
     }
 
     .game-emoji {
-      font-size: 90px;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 0 30px gold);
-      animation: emojiBounce 2s infinite;
-    }
-
-    @keyframes emojiBounce {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      font-size: 80px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 20px gold);
     }
 
     .game-name {
-      font-size: 40px;
+      font-size: 36px;
       font-weight: 800;
       background: linear-gradient(145deg, #ffd966, #ffaa44, #ff44aa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
-    }
-
-    .game-desc {
-      color: #aabbff;
-      font-size: 20px;
-      text-shadow: 0 0 10px #ff44aa;
-    }
-
-    .game-badge {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: linear-gradient(145deg, #ff44aa, #aa44ff);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-size: 16px;
-      font-weight: 600;
-      box-shadow: 0 0 20px #ff44aa;
     }
 
     /* Контейнеры игр */
     .game-container {
       display: none;
-      position: relative;
-      z-index: 2;
     }
 
     .game-container.active {
       display: block;
-      animation: megaAppear 0.5s;
+      animation: megaAppear 0.4s;
     }
 
     @keyframes megaAppear {
-      0% { opacity: 0; transform: scale(0.9) rotate(-2deg); }
-      50% { transform: scale(1.02) rotate(1deg); }
-      100% { opacity: 1; transform: scale(1) rotate(0); }
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .back-to-menu {
       display: inline-flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
       background: #1a2640;
       border: 3px solid #ffd966;
       color: #ffd966;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
-      padding: 14px 35px;
-      border-radius: 70px;
+      padding: 12px 30px;
+      border-radius: 60px;
       cursor: pointer;
-      margin-bottom: 28px;
-      box-shadow: 0 8px 0 #0f1a2a, 0 0 40px #ff44aa66;
-      transition: 0.1s;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 0 #0f1a2a, 0 0 30px #ff44aa66;
     }
 
     .back-to-menu:active {
-      transform: translateY(7px);
-      box-shadow: 0 1px 0 #0f1a2a, 0 0 60px #ff44aa;
+      transform: translateY(5px);
+      box-shadow: 0 1px 0 #0f1a2a, 0 0 40px #ff44aa;
     }
 
-    /* PLINKO с мега-графикой */
+    /* PLINKO */
     .canvas-wrapper {
       width: 100%;
       aspect-ratio: 860/600;
-      border-radius: 50px;
+      border-radius: 45px;
       overflow: hidden;
       background: #020812;
-      box-shadow: 0 25px 50px #000, 0 0 0 4px #ffd966cc inset, 0 0 80px #ff44aa99;
-      margin-bottom: 25px;
-      position: relative;
-    }
-
-    .canvas-wrapper::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 30% 40%, rgba(255,68,170,0.15), transparent 70%);
-      pointer-events: none;
-      z-index: 2;
+      box-shadow: 0 20px 40px #000, 0 0 0 3px #ffd966cc inset, 0 0 60px #ff44aa99;
+      margin-bottom: 20px;
     }
 
     canvas {
@@ -392,251 +276,287 @@
 
     .plinko-controls {
       background: #101a30ee;
-      backdrop-filter: blur(15px);
-      padding: 20px 30px;
-      border-radius: 100px;
-      border: 3px solid #ffd966;
+      backdrop-filter: blur(10px);
+      padding: 18px 24px;
+      border-radius: 80px;
+      border: 2px solid #ffd966;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 20px;
-      box-shadow: 0 15px 30px #000000cc, 0 0 60px #ff44aa66;
+      gap: 15px;
+      box-shadow: 0 10px 20px #000000cc;
     }
 
     .bet-section {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
       background: #0b1230;
-      padding: 10px 30px;
-      border-radius: 80px;
+      padding: 8px 24px;
+      border-radius: 60px;
       border: 2px solid #ffd966aa;
     }
 
     .bet-label {
       color: #ffd966;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
-      text-shadow: 0 0 15px #ff44aa;
     }
 
     .bet-input {
       background: #1a2a50;
-      border: 3px solid #ffd966;
+      border: 2px solid #ffd966;
       color: #ffd966;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 700;
-      width: 140px;
-      padding: 12px 20px;
-      border-radius: 80px;
+      width: 120px;
+      padding: 10px 15px;
+      border-radius: 60px;
       text-align: center;
-      box-shadow: 0 0 30px #ff44aa66;
     }
 
     .action-btn {
-      background: linear-gradient(145deg, #ffcc00, #ff9900, #ff44aa, #aa44ff);
+      background: linear-gradient(145deg, #ffcc00, #ff9900, #ff44aa);
       border: none;
-      font-size: 36px;
+      font-size: 32px;
       font-weight: 800;
-      padding: 16px 70px;
-      border-radius: 100px;
+      padding: 14px 60px;
+      border-radius: 80px;
       color: #121212;
-      box-shadow: 0 10px 0 #aa4400, 0 0 70px #ffaa44, 0 0 100px #ff44aa;
+      box-shadow: 0 8px 0 #aa4400, 0 0 50px #ffaa44;
       cursor: pointer;
       transition: 0.08s;
-      text-transform: uppercase;
-      letter-spacing: 3px;
     }
 
     .action-btn:active {
-      transform: translateY(9px);
-      box-shadow: 0 1px 0 #aa4400, 0 0 100px #ff44aa;
+      transform: translateY(7px);
+      box-shadow: 0 1px 0 #aa4400, 0 0 60px #ff44aa;
     }
 
-    /* DICE с 3D кубами */
+    .level-panel {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .level-btn {
+      background: #1b2740;
+      border: 2px solid #ffd966aa;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 12px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+      box-shadow: 0 5px 0 #0f1a2a;
+    }
+
+    .level-btn.active {
+      background: linear-gradient(145deg, #ffd966, #ffaa44);
+      color: #121212;
+      border-color: #fff0b0;
+      box-shadow: 0 5px 0 #b15d00, 0 0 30px #ffd966;
+    }
+
+    .level-btn.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* DICE С ДИЛЛЕРОМ */
     .dice-container {
       background: #0f1830ee;
-      backdrop-filter: blur(15px);
-      border-radius: 70px;
-      padding: 50px;
+      backdrop-filter: blur(10px);
+      border-radius: 60px;
+      padding: 40px;
       border: 3px solid #ffd966;
-      box-shadow: 0 0 80px #ff44aa99;
+      box-shadow: 0 0 70px #ff44aa99;
+    }
+
+    .dealer-area {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .player-area, .dealer-area-side {
       text-align: center;
     }
 
-    .dice-3d {
-      display: flex;
-      justify-content: center;
-      gap: 50px;
-      margin: 50px 0;
-      perspective: 1000px;
+    .dealer-avatar {
+      font-size: 100px;
+      filter: drop-shadow(0 0 30px #ff44aa);
+      animation: dealerFloat 3s infinite;
     }
 
-    .dice-3d > div {
-      width: 140px;
-      height: 140px;
+    @keyframes dealerFloat {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    .dealer-name {
+      color: #ffd966;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 15px 0;
+      text-shadow: 0 0 15px #ff44aa;
+    }
+
+    .dice-3d {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
       position: relative;
       transform-style: preserve-3d;
-      animation: roll3D 1s;
-    }
-
-    @keyframes roll3D {
-      0% { transform: rotateX(0) rotateY(0); }
-      100% { transform: rotateX(720deg) rotateY(720deg); }
+      transition: transform 1s;
     }
 
     .dice-face {
       position: absolute;
-      width: 140px;
-      height: 140px;
+      width: 120px;
+      height: 120px;
       background: linear-gradient(145deg, #fff5d0, #ffd966);
       border: 4px solid #aa5500;
-      border-radius: 30px;
+      border-radius: 25px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 60px;
+      font-size: 50px;
       font-weight: 800;
       color: #1a1a2a;
       box-shadow: 0 0 30px #ffaa44;
       backface-visibility: hidden;
     }
 
-      .dice-face.front { transform: translateZ(70px); }
-      .dice-face.back { transform: rotateY(180deg) translateZ(70px); }
-      .dice-face.right { transform: rotateY(90deg) translateZ(70px); }
-      .dice-face.left { transform: rotateY(-90deg) translateZ(70px); }
-      .dice-face.top { transform: rotateX(90deg) translateZ(70px); }
-      .dice-face.bottom { transform: rotateX(-90deg) translateZ(70px); }
+    .dice-face.front { transform: translateZ(60px); }
+    .dice-face.back { transform: rotateY(180deg) translateZ(60px); }
+    .dice-face.right { transform: rotateY(90deg) translateZ(60px); }
+    .dice-face.left { transform: rotateY(-90deg) translateZ(60px); }
+    .dice-face.top { transform: rotateX(90deg) translateZ(60px); }
+    .dice-face.bottom { transform: rotateX(-90deg) translateZ(60px); }
 
     .dice-value {
-      font-size: 80px;
-      font-weight: 800;
-      background: linear-gradient(145deg, #ffd966, #ff44aa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin: 30px 0;
-      animation: pulse 1s infinite;
-    }
-
-    /* SLOTS с неоном */
-    .slots-container {
-      background: #0f1830ee;
-      backdrop-filter: blur(15px);
-      border-radius: 70px;
-      padding: 50px;
-      border: 3px solid #ffd966;
-      box-shadow: 0 0 80px #ff44aa99;
-    }
-
-    .neon-reels {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin: 50px 0;
-    }
-
-    .neon-reel {
-      width: 160px;
-      height: 160px;
-      background: #1a2a50;
-      border: 6px solid #ffd966;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 90px;
-      box-shadow: 0 0 50px #ff44aa, 0 0 100px #aa44ff;
-      animation: neonPulse 2s infinite;
-    }
-
-    @keyframes neonPulse {
-      0% { box-shadow: 0 0 30px #ff44aa, 0 0 60px #aa44ff; }
-      50% { box-shadow: 0 0 60px #ff44aa, 0 0 120px #aa44ff; }
-      100% { box-shadow: 0 0 30px #ff44aa, 0 0 60px #aa44ff; }
-    }
-
-    .slot-win {
       font-size: 40px;
+      font-weight: 800;
       color: #ffd966;
-      text-shadow: 0 0 30px #ff44aa;
-      margin: 30px 0;
+      text-shadow: 0 0 20px #ff44aa;
+      margin-top: 20px;
     }
 
-    /* ROULETTE с мега-колесом */
+    /* ROULETTE СУПЕР-КОЛЕСО */
     .roulette-container {
       background: #0f1830ee;
-      backdrop-filter: blur(15px);
-      border-radius: 70px;
-      padding: 50px;
+      backdrop-filter: blur(10px);
+      border-radius: 60px;
+      padding: 40px;
       border: 3px solid #ffd966;
-      box-shadow: 0 0 80px #ff44aa99;
+      box-shadow: 0 0 70px #ff44aa99;
     }
 
-    .mega-wheel {
+    .wheel-wrapper {
+      position: relative;
       width: 400px;
       height: 400px;
-      margin: 0 auto 50px;
-      background: conic-gradient(#ff4444 0deg 45deg, #222 45deg 90deg, #44ff44 90deg 135deg, #222 135deg 180deg, #4444ff 180deg 225deg, #222 225deg 270deg, #ffff44 270deg 315deg, #222 315deg 360deg);
-      border-radius: 50%;
-      border: 10px solid #ffd966;
-      box-shadow: 0 0 80px #ff44aa, 0 0 150px #aa44ff;
-      position: relative;
-      transition: transform 2s cubic-bezier(0.1, 0.8, 0.2, 1);
+      margin: 0 auto 40px;
     }
 
-    .mega-wheel::after {
-      content: '⚡';
+    .wheel-super {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        #ff4444 0deg 45deg,
+        #222 45deg 90deg,
+        #44ff44 90deg 135deg,
+        #222 135deg 180deg,
+        #4444ff 180deg 225deg,
+        #222 225deg 270deg,
+        #ffff44 270deg 315deg,
+        #222 315deg 360deg
+      );
+      border: 8px solid #ffd966;
+      box-shadow: 0 0 60px #ff44aa, 0 0 120px #aa44ff;
+      transition: transform 3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      position: relative;
+    }
+
+    .wheel-numbers {
       position: absolute;
-      top: 50%;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .wheel-number {
+      position: absolute;
       left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 60px;
-      color: #ffd966;
-      text-shadow: 0 0 30px magenta;
+      top: 10px;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      text-shadow: 0 0 10px black;
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-top: 60px solid #ffd966;
+      filter: drop-shadow(0 0 20px #ff44aa);
+      z-index: 10;
     }
 
     .roulette-number-mega {
-      font-size: 80px;
+      font-size: 70px;
       font-weight: 800;
       color: #ffd966;
       text-shadow: 0 0 40px #ff44aa, 0 0 80px #aa44ff;
       text-align: center;
-      animation: numberPop 0.5s;
     }
 
-    @keyframes numberPop {
-      0% { transform: scale(0); }
-      80% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-
-    .bet-buttons {
+    .bet-options {
       display: flex;
-      gap: 20px;
+      gap: 15px;
       justify-content: center;
-      margin-top: 40px;
+      flex-wrap: wrap;
+      margin: 30px 0;
     }
 
     .bet-option {
       background: #1a2a44;
       border: 3px solid #ffd966;
       color: #ffd966;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
-      padding: 18px 35px;
-      border-radius: 80px;
+      padding: 15px 30px;
+      border-radius: 60px;
       cursor: pointer;
-      box-shadow: 0 6px 0 #0f1a2a, 0 0 40px #ff44aa66;
+      box-shadow: 0 5px 0 #0f1a2a, 0 0 30px #ff44aa66;
       transition: 0.1s;
     }
 
     .bet-option:active {
-      transform: translateY(5px);
-      box-shadow: 0 1px 0 #0f1a2a, 0 0 60px #ff44aa;
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #0f1a2a, 0 0 50px #ff44aa;
     }
 
+    /* Общие элементы */
     .confetti {
       position: fixed;
       width: 10px;
@@ -655,7 +575,7 @@
       position: fixed;
       border-radius: 50%;
       background: white;
-      box-shadow: 0 0 40px gold, 0 0 80px magenta;
+      box-shadow: 0 0 30px gold, 0 0 60px magenta;
       pointer-events: none;
       z-index: 9999;
       animation: starFall 3s linear forwards;
@@ -668,14 +588,14 @@
 
     .toast {
       position: fixed;
-      bottom: 50px;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
       background: linear-gradient(145deg, #ff44aa, #aa44ff);
       color: white;
-      padding: 20px 50px;
-      border-radius: 100px;
-      font-size: 28px;
+      padding: 18px 45px;
+      border-radius: 80px;
+      font-size: 26px;
       font-weight: 700;
       box-shadow: 0 0 50px #ff44aa;
       z-index: 10000;
@@ -686,6 +606,15 @@
       from { transform: translateX(-50%) scale(0); }
       to { transform: translateX(-50%) scale(1); }
     }
+
+    /* Адаптация */
+    @media (max-width: 600px) {
+      .games-grid { grid-template-columns: 1fr; }
+      .dealer-area { flex-direction: column; }
+      .wheel-wrapper { width: 280px; height: 280px; }
+      .action-btn { padding: 12px 30px; font-size: 26px; }
+      .bet-option { padding: 12px 20px; font-size: 20px; }
+    }
   </style>
 </head>
 <body>
@@ -694,7 +623,7 @@
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
       <div class="welcome-title">SMEET</div>
-      <div class="welcome-subtitle">MEGA CASINO</div>
+      <div class="welcome-subtitle">DELUXE CASINO</div>
     </div>
   </div>
 
@@ -707,31 +636,23 @@
       <button class="add-stars-btn" id="addStarsBtn">✨ +1000</button>
     </div>
 
-    <!-- МЕГА-МЕНЮ -->
+    <!-- МЕНЮ -->
     <div id="gamesMenu" class="games-grid">
       <div class="game-card" data-game="plinko">
-        <div class="game-badge">🔥 ТОП</div>
         <div class="game-emoji">🎲</div>
         <div class="game-name">PLINKO</div>
-        <div class="game-desc">x50 • Физика • Сияние</div>
       </div>
       <div class="game-card" data-game="dice">
-        <div class="game-badge">🎲 3D</div>
         <div class="game-emoji">🎲</div>
         <div class="game-name">DICE</div>
-        <div class="game-desc">Кубики • x2 • 3D</div>
       </div>
       <div class="game-card" data-game="slots">
-        <div class="game-badge">💎 НЕОН</div>
         <div class="game-emoji">🎰</div>
         <div class="game-name">SLOTS</div>
-        <div class="game-desc">Джекпот • x10</div>
       </div>
       <div class="game-card" data-game="roulette">
-        <div class="game-badge">🎡 МЕГА</div>
         <div class="game-emoji">🎡</div>
         <div class="game-name">ROULETTE</div>
-        <div class="game-desc">Колесо • x36</div>
       </div>
     </div>
 
@@ -748,37 +669,46 @@
         </div>
         <button class="action-btn" id="dropBallBtn">🎲</button>
       </div>
-      <div style="display:flex; gap:12px; margin-top:20px;">
+      <div class="level-panel">
         <button class="level-btn" data-level="easy">🌱 ЛЁГКИЙ</button>
         <button class="level-btn" data-level="medium">⚡ СРЕДНИЙ</button>
         <button class="level-btn active" data-level="hard">🔥 ХАРД</button>
       </div>
     </div>
 
-    <!-- DICE 3D -->
+    <!-- DICE С ДИЛЛЕРОМ -->
     <div id="diceContainer" class="game-container">
       <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
       <div class="dice-container">
-        <h2 style="color:#ffd966; font-size:48px; margin-bottom:20px;">🎲 MEGA DICE</h2>
-        <div class="dice-3d">
-          <div id="dice3d1">
-            <div class="dice-face front">1</div>
-            <div class="dice-face back">6</div>
-            <div class="dice-face right">4</div>
-            <div class="dice-face left">3</div>
-            <div class="dice-face top">2</div>
-            <div class="dice-face bottom">5</div>
+        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎲 DICE VS DEALER</h2>
+        <div class="dealer-area">
+          <div class="player-area">
+            <div class="dealer-avatar">👤</div>
+            <div class="dealer-name">ИГРОК</div>
+            <div class="dice-3d" id="playerDice">
+              <div class="dice-face front">1</div>
+              <div class="dice-face back">6</div>
+              <div class="dice-face right">4</div>
+              <div class="dice-face left">3</div>
+              <div class="dice-face top">2</div>
+              <div class="dice-face bottom">5</div>
+            </div>
+            <div class="dice-value" id="playerDiceValue">?</div>
           </div>
-          <div id="dice3d2">
-            <div class="dice-face front">1</div>
-            <div class="dice-face back">6</div>
-            <div class="dice-face right">4</div>
-            <div class="dice-face left">3</div>
-            <div class="dice-face top">2</div>
-            <div class="dice-face bottom">5</div>
+          <div class="dealer-area-side">
+            <div class="dealer-avatar">🕴️</div>
+            <div class="dealer-name">ДИЛЛЕР</div>
+            <div class="dice-3d" id="dealerDice">
+              <div class="dice-face front">1</div>
+              <div class="dice-face back">6</div>
+              <div class="dice-face right">4</div>
+              <div class="dice-face left">3</div>
+              <div class="dice-face top">2</div>
+              <div class="dice-face bottom">5</div>
+            </div>
+            <div class="dice-value" id="dealerDiceValue">?</div>
           </div>
         </div>
-        <div class="dice-value" id="diceMegaResult">СУММА: 12</div>
         <div class="bet-section" style="justify-content:center; margin:30px 0;">
           <span class="bet-label">СТАВКА ✦</span>
           <input type="number" id="diceBet" class="bet-input" value="50" min="10">
@@ -787,17 +717,17 @@
       </div>
     </div>
 
-    <!-- SLOTS НЕОН -->
+    <!-- SLOTS -->
     <div id="slotsContainer" class="game-container">
       <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
-      <div class="slots-container">
-        <h2 style="color:#ffd966; font-size:48px;">🎰 NEON SLOTS</h2>
-        <div class="neon-reels">
-          <div class="neon-reel" id="neonReel1">🍒</div>
-          <div class="neon-reel" id="neonReel2">🍒</div>
-          <div class="neon-reel" id="neonReel3">🍒</div>
+      <div class="slots-container" style="background:#0f1830ee; border-radius:60px; padding:40px; border:3px solid #ffd966;">
+        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎰 SLOTS</h2>
+        <div style="display:flex; gap:20px; justify-content:center; margin:40px 0;">
+          <div style="width:140px; height:140px; background:#1a2a50; border:4px solid #ffd966; border-radius:40px; display:flex; align-items:center; justify-content:center; font-size:70px; box-shadow:0 0 40px #ff44aa;" id="slot1">🍒</div>
+          <div style="width:140px; height:140px; background:#1a2a50; border:4px solid #ffd966; border-radius:40px; display:flex; align-items:center; justify-content:center; font-size:70px; box-shadow:0 0 40px #ff44aa;" id="slot2">🍒</div>
+          <div style="width:140px; height:140px; background:#1a2a50; border:4px solid #ffd966; border-radius:40px; display:flex; align-items:center; justify-content:center; font-size:70px; box-shadow:0 0 40px #ff44aa;" id="slot3">🍒</div>
         </div>
-        <div class="slot-win" id="slotsMegaResult">КРУТИ!</div>
+        <div style="text-align:center; font-size:36px; color:#ffd966; margin:20px 0;" id="slotResult">КРУТИ!</div>
         <div class="bet-section" style="justify-content:center; margin:30px 0;">
           <span class="bet-label">СТАВКА ✦</span>
           <input type="number" id="slotsBet" class="bet-input" value="50" min="10">
@@ -806,21 +736,24 @@
       </div>
     </div>
 
-    <!-- ROULETTE МЕГА -->
+    <!-- ROULETTE СУПЕР -->
     <div id="rouletteContainer" class="game-container">
       <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
       <div class="roulette-container">
-        <h2 style="color:#ffd966; font-size:48px;">🎡 MEGA ROULETTE</h2>
-        <div class="mega-wheel" id="megaWheel"></div>
-        <div class="roulette-number-mega" id="rouletteMegaNumber">0</div>
+        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎡 SUPER ROULETTE</h2>
+        <div class="wheel-wrapper">
+          <div class="wheel-super" id="superWheel"></div>
+          <div class="wheel-pointer"></div>
+        </div>
+        <div class="roulette-number-mega" id="rouletteSuperNumber">0</div>
         <div class="bet-section" style="justify-content:center; margin:30px 0;">
           <span class="bet-label">СТАВКА ✦</span>
           <input type="number" id="rouletteBet" class="bet-input" value="50" min="10">
         </div>
-        <div class="bet-buttons">
-          <button class="bet-option" onclick="betMegaRoulette('red')">🔴 x2</button>
-          <button class="bet-option" onclick="betMegaRoulette('black')">⚫ x2</button>
-          <button class="bet-option" onclick="betMegaRoulette('number')">🎯 x36</button>
+        <div class="bet-options">
+          <button class="bet-option" onclick="betSuperRoulette('red')">🔴 x2</button>
+          <button class="bet-option" onclick="betSuperRoulette('black')">⚫ x2</button>
+          <button class="bet-option" onclick="betSuperRoulette('number')">🎯 x36</button>
         </div>
       </div>
     </div>
@@ -828,7 +761,7 @@
 
   <script>
     (function() {
-      // ========== МЕГА-ЧАСТИЦЫ ==========
+      // ========== ЧАСТИЦЫ ==========
       const particleCanvas = document.getElementById('particleCanvas');
       const pCtx = particleCanvas.getContext('2d');
       let particles = [];
@@ -840,13 +773,13 @@
       resizeParticles();
       window.addEventListener('resize', resizeParticles);
 
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 60; i++) {
         particles.push({
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          size: Math.random() * 3 + 1,
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: (Math.random() - 0.5) * 0.6,
+          size: Math.random() * 4 + 1,
           color: `hsl(${Math.random() * 360}, 100%, 70%)`
         });
       }
@@ -872,7 +805,7 @@
       }
       drawParticles();
 
-      // ========== КОНФЕТТИ ==========
+      // ========== ЭФФЕКТЫ ==========
       function createConfetti() {
         for (let i = 0; i < 50; i++) {
           const c = document.createElement('div');
@@ -887,7 +820,6 @@
         }
       }
 
-      // ========== ТОСТ ==========
       function showToast(text) {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -896,7 +828,6 @@
         setTimeout(() => toast.remove(), 2000);
       }
 
-      // ========== ЗВЁЗДЫ ==========
       function createStar() {
         const s = document.createElement('div');
         s.className = 'star';
@@ -1036,7 +967,6 @@
               let win = Math.floor(this.bet * multipliers[idx].val);
               balance += win;
               updateBalance();
-              flashIdx = idx; flashAlpha = 1;
               if (win > this.bet * 10) {
                 createConfetti();
                 showToast(`🎉 ДЖЕКПОТ x${multipliers[idx].val}`);
@@ -1049,8 +979,6 @@
           return true;
         }
       }
-
-      let flashIdx = -1, flashAlpha = 0;
 
       function draw() {
         ctx.clearRect(0, 0, width, height);
@@ -1072,10 +1000,6 @@
           let gr = ctx.createLinearGradient(m.x, height-50, m.x + m.w, height-10);
           gr.addColorStop(0, m.col + 'aa'); gr.addColorStop(1, m.col + 'ff');
           ctx.fillStyle = gr; ctx.fillRect(m.x, height-50, m.w-1, 40);
-          if (flashIdx === i && flashAlpha > 0) {
-            ctx.fillStyle = `rgba(255,255,255,${flashAlpha})`; ctx.fillRect(m.x, height-50, m.w-1, 40);
-            flashAlpha *= 0.5; if (flashAlpha < 0.05) flashIdx = -1;
-          }
           ctx.strokeStyle = '#fff9e6'; ctx.lineWidth = 1.5; ctx.strokeRect(m.x, height-50, m.w-1, 40);
           ctx.font = 'bold 20px Inter'; ctx.fillStyle = '#fff'; ctx.shadowColor = '#000'; ctx.shadowBlur = 8;
           ctx.fillText('x' + (m.val < 10 ? m.val.toFixed(1) : Math.round(m.val)), m.x + m.w/2, height-27);
@@ -1128,59 +1052,63 @@
         };
       });
 
-      // ========== MEGA DICE ==========
-      const dice1 = document.getElementById('dice3d1');
-      const dice2 = document.getElementById('dice3d2');
+      // ========== DICE С ДИЛЛЕРОМ ==========
+      const playerDice = document.getElementById('playerDice');
+      const dealerDice = document.getElementById('dealerDice');
       
       document.getElementById('rollDiceBtn').onclick = () => {
         let bet = parseInt(document.getElementById('diceBet').value) || 50;
         if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
         
-        let val1 = Math.floor(Math.random() * 6) + 1;
-        let val2 = Math.floor(Math.random() * 6) + 1;
-        let sum = val1 + val2;
+        let playerVal = Math.floor(Math.random() * 6) + 1;
+        let dealerVal = Math.floor(Math.random() * 6) + 1;
         
-        dice1.style.animation = 'roll3D 1s';
-        dice2.style.animation = 'roll3D 1s';
+        // Анимация кубиков
+        playerDice.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
+        dealerDice.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
         
         setTimeout(() => {
-          dice1.style.animation = '';
-          dice2.style.animation = '';
+          playerDice.style.transform = '';
+          dealerDice.style.transform = '';
           
-          document.getElementById('diceMegaResult').innerHTML = `СУММА: ${sum}`;
+          document.getElementById('playerDiceValue').innerText = playerVal;
+          document.getElementById('dealerDiceValue').innerText = dealerVal;
           
-          if (sum === 7 || sum === 11) {
+          if (playerVal > dealerVal) {
             balance += bet * 2;
             createConfetti();
-            showToast('🎉 ПОБЕДА x2');
-          } else {
+            showToast('🎉 ПОБЕДА!');
+          } else if (playerVal < dealerVal) {
             balance -= bet;
+            showToast('😢 ДИЛЛЕР ВЫИГРАЛ');
+          } else {
+            balance += bet;
+            showToast('🤝 НИЧЬЯ');
           }
           updateBalance();
         }, 1000);
       };
 
-      // ========== NEON SLOTS ==========
-      const symbols = ['🍒', '🍋', '🍊', '🍇', '💎', '7️⃣', '⭐', '🔔'];
+      // ========== SLOTS ==========
+      const slotSymbols = ['🍒', '🍋', '🍊', '🍇', '💎', '7️⃣', '⭐', '🔔'];
       
       document.getElementById('spinSlotsBtn').onclick = () => {
         let bet = parseInt(document.getElementById('slotsBet').value) || 50;
         if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
         
-        let reels = [];
-        for (let i = 0; i < 3; i++) {
-          reels.push(symbols[Math.floor(Math.random() * symbols.length)]);
-        }
+        let s1 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+        let s2 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+        let s3 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
         
-        document.getElementById('neonReel1').innerText = reels[0];
-        document.getElementById('neonReel2').innerText = reels[1];
-        document.getElementById('neonReel3').innerText = reels[2];
+        document.getElementById('slot1').innerText = s1;
+        document.getElementById('slot2').innerText = s2;
+        document.getElementById('slot3').innerText = s3;
         
-        if (reels[0] === reels[1] && reels[1] === reels[2]) {
+        if (s1 === s2 && s2 === s3) {
           balance += bet * 10;
           createConfetti();
           showToast('🎰 ДЖЕКПОТ x10');
-        } else if (reels[0] === reels[1] || reels[1] === reels[2] || reels[0] === reels[2]) {
+        } else if (s1 === s2 || s2 === s3 || s1 === s3) {
           balance += bet * 2;
           showToast('🎰 ПАРА x2');
         } else {
@@ -1189,22 +1117,22 @@
         updateBalance();
       };
 
-      // ========== MEGA ROULETTE ==========
-      const wheel = document.getElementById('megaWheel');
+      // ========== SUPER ROULETTE ==========
+      const superWheel = document.getElementById('superWheel');
       
-      window.betMegaRoulette = (type) => {
+      window.betSuperRoulette = (type) => {
         let bet = parseInt(document.getElementById('rouletteBet').value) || 50;
         if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
         
-        let spins = Math.floor(Math.random() * 5) + 5;
+        let spins = Math.floor(Math.random() * 8) + 5;
         let degrees = spins * 360 + Math.random() * 360;
-        wheel.style.transform = `rotate(${degrees}deg)`;
+        superWheel.style.transform = `rotate(${degrees}deg)`;
         
         setTimeout(() => {
           let number = Math.floor(Math.random() * 37);
           let color = number === 0 ? 'green' : (number % 2 === 0 ? 'black' : 'red');
           
-          document.getElementById('rouletteMegaNumber').innerText = number;
+          document.getElementById('rouletteSuperNumber').innerText = number;
           
           if (type === 'number') {
             let guess = prompt('ЧИСЛО (0-36):');
@@ -1225,7 +1153,7 @@
             balance -= bet;
           }
           updateBalance();
-        }, 2000);
+        }, 3000);
       };
 
       updateBalance();
