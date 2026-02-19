@@ -1,391 +1,692 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SMEET Casino - Plinko</title>
-  <style>
-    body { margin: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
-    canvas { display: block; }
-    
-    #welcome {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      font-size: 80px; color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FF4500;
-      white-space: nowrap; overflow: hidden; clip-path: inset(0 100% 0 0);
-      animation: revealText 2s forwards ease-out; z-index: 10;
-    }
-    
-    @keyframes revealText { 
-      from { clip-path: inset(0 100% 0 0); } 
-      to { clip-path: inset(0 0 0 0); } 
-    }
-    
-    .fade-out { animation: fadeOut 1s forwards; }
-    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-    
-    #menu {
-      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      color: #fff; text-align: center; display: none; z-index: 10;
-    }
-    
-    #menu button {
-      font-size: 25px; margin: 15px; padding: 10px 30px; background: #222; color: #FFD700;
-      border: 2px solid #FFD700; cursor: pointer; border-radius: 10px; transition: 0.3s;
-    }
-    
-    #menu button:hover { background: #FFD700; color: #000; }
-    
-    #ui {
-      position: absolute; top: 10px; left: 10px; color: #fff; z-index: 10; font-size: 20px;
-      background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; display: none;
-    }
-    
-    #ui label { margin-right: 10px; }
-    #ui input { width: 80px; padding: 5px; font-size: 16px; }
-    #ui button {
-      font-size: 18px; padding: 8px 20px; margin-left: 10px; background: #FFD700; 
-      color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
-    }
-    #ui button:hover { background: #FFA500; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMEET CASINO | Plinko Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #0a0c0f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+        }
+
+        /* НАЧАЛЬНЫЙ ЭКРАН */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1a1f2e 0%, #0a0c15 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+
+        .welcome-content {
+            text-align: center;
+            animation: glowPulse 2s infinite;
+        }
+
+        .welcome-title {
+            font-size: 120px;
+            font-weight: 900;
+            color: #ffd966;
+            text-shadow: 0 0 30px #f0b429, 0 0 60px #ff8800, 0 0 90px #ff5500;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            animation: slideInDown 1.2s ease;
+        }
+
+        .welcome-subtitle {
+            font-size: 32px;
+            color: #b9c7da;
+            text-shadow: 0 0 15px #4f9fff;
+            animation: slideInUp 1.2s ease 0.2s both;
+        }
+
+        .loading-dots {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .loading-dots span {
+            width: 20px;
+            height: 20px;
+            background: #ffd966;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+            box-shadow: 0 0 20px #f0b429;
+        }
+
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes glowPulse {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+            100% { filter: brightness(1); }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .game-container {
+            background: #1a1e24;
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2f3742;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .game-container.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        canvas {
+            display: block;
+            width: 900px;
+            height: 700px;
+            border-radius: 24px;
+            background: #0f1217;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .ui-panel {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #13171d;
+            padding: 20px 25px;
+            border-radius: 28px;
+            border: 1px solid #2a333f;
+        }
+
+        .balance-box {
+            background: #0b0e12;
+            padding: 12px 30px;
+            border-radius: 40px;
+            border: 1px solid #3e4a5a;
+            box-shadow: inset 0 2px 5px #00000055;
+        }
+
+        .balance-label {
+            color: #9aa9bb;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        .balance-value {
+            color: #ffd966;
+            font-size: 32px;
+            font-weight: 800;
+            text-shadow: 0 0 10px #ffb34755;
+        }
+
+        .bet-control {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #0f141b;
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 1px solid #354153;
+        }
+
+        .bet-control label {
+            color: #b9c7da;
+            font-weight: 500;
+        }
+
+        .bet-input {
+            background: #1e293b;
+            border: 1px solid #4b6180;
+            color: #ffd966;
+            font-size: 24px;
+            font-weight: 700;
+            width: 110px;
+            padding: 10px 15px;
+            border-radius: 40px;
+            text-align: center;
+            outline: none;
+        }
+
+        .bet-input:focus {
+            border-color: #f0b429;
+            box-shadow: 0 0 12px #f0b42955;
+        }
+
+        .drop-btn {
+            background: linear-gradient(145deg, #f0b429, #d4941f);
+            border: none;
+            color: #1a1f2b;
+            font-size: 26px;
+            font-weight: 800;
+            padding: 14px 45px;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #8f6016, 0 8px 20px #f0b42999;
+            transition: 0.08s linear;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .drop-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #8f6016, 0 8px 20px #f0b42999;
+        }
+
+        .level-selector {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            justify-content: center;
+        }
+
+        .level-btn {
+            background: #222a35;
+            border: 1px solid #44566b;
+            color: #9fb0cc;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .level-btn.active {
+            background: #f0b429;
+            border-color: #fae56c;
+            color: #141a24;
+            box-shadow: 0 0 15px #f0b429;
+            font-weight: 700;
+        }
+
+        /* Падающие звезды для начального экрана */
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
 </head>
 <body>
+    <!-- НАЧАЛЬНЫЙ ЭКРАН -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-content">
+            <div class="welcome-title">SMEET</div>
+            <div class="welcome-subtitle">CASINO • PLINKO</div>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
 
-<div id="welcome">🎰 SMEET 🎰</div>
-<div id="menu">
-  <h2>Выберите уровень</h2>
-  <button onclick="startPlinko('easy')">Легкий</button>
-  <button onclick="startPlinko('medium')">Средний</button>
-  <button onclick="startPlinko('hard')">Тяжелый</button>
-</div>
+    <!-- ИГРОВОЙ КОНТЕЙНЕР -->
+    <div class="game-container" id="gameContainer">
+        <canvas id="plinkoCanvas" width="900" height="700"></canvas>
 
-<div id="ui">
-  <label>💰 Баланс: <span id="balance">1000</span></label>
-  <label>💵 Ставка: <input type="number" id="bet" value="50" min="10" max="1000"></label>
-  <button onclick="dropBall()">🎯 Запустить шарик</button>
-</div>
+        <div class="ui-panel">
+            <div class="balance-box">
+                <div class="balance-label">БАЛАНС</div>
+                <div class="balance-value" id="balanceDisplay">1000</div>
+            </div>
 
-<canvas id="gameCanvas"></canvas>
+            <div class="bet-control">
+                <label>СТАВКА</label>
+                <input type="number" id="betInput" class="bet-input" value="50" min="10" step="10">
+            </div>
 
-<script>
-(function() {
-  // Инициализация канваса
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+            <button class="drop-btn" id="dropBallBtn">🎲 БРОСИТЬ</button>
+        </div>
 
-  // Основные переменные
-  let balance = 1000;
-  let level = 'easy';
-  let sections = [];
-  let pins = [];
-  let balls = [];
-  const ballRadius = 10;
-  let gameActive = false;
+        <div class="level-selector">
+            <button class="level-btn active" data-level="easy">🌱 ЛЁГКИЙ</button>
+            <button class="level-btn" data-level="medium">⚡ СРЕДНИЙ</button>
+            <button class="level-btn" data-level="hard">🔥 ХАРД</button>
+        </div>
+    </div>
 
-  // Коэффициенты для уровней
-  const levels = {
-    easy: [0.8, 1, 1.2, 1.5, 2, 2.5, 3, 4, 5],
-    medium: [0.5, 0.8, 1, 1.3, 1.8, 2.2, 3, 5, 8, 10],
-    hard: [0.2, 0.5, 0.8, 1.2, 1.8, 2.5, 4, 6, 10, 15, 25, 50, 100]
-  };
-
-  // Звезды и кометы
-  const stars = [];
-  const comets = [];
-
-  // Инициализация звезд
-  for (let i = 0; i < 150; i++) {
-    stars.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 2 + 0.5,
-      alpha: Math.random(),
-      alphaChange: (Math.random() * 0.01 + 0.002) * (Math.random() > 0.5 ? 1 : -1)
-    });
-  }
-
-  // Инициализация комет
-  for (let i = 0; i < 3; i++) {
-    comets.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height * 0.3,
-      speedX: Math.random() * 3 + 2,
-      speedY: Math.random() * 2 + 1,
-      radius: Math.random() * 3 + 2,
-      trail: []
-    });
-  }
-
-  // Приветствие
-  const welcomeDiv = document.getElementById('welcome');
-  const menuDiv = document.getElementById('menu');
-  const uiDiv = document.getElementById('ui');
-
-  setTimeout(() => {
-    welcomeDiv.classList.add('fade-out');
-    setTimeout(() => {
-      welcomeDiv.style.display = 'none';
-      menuDiv.style.display = 'block';
-    }, 1000);
-  }, 3000);
-
-  // Функция старта игры
-  window.startPlinko = function(selectedLevel) {
-    level = selectedLevel;
-    gameActive = true;
-    menuDiv.style.display = 'none';
-    initPlinko();
-    uiDiv.style.display = 'block';
-  };
-
-  // Инициализация поля Плинко
-  function initPlinko() {
-    sections = [];
-    pins = [];
-    balls = [];
-    
-    const prizeList = levels[level];
-    const sectionWidth = canvas.width / prizeList.length;
-    
-    // Создаем секции
-    for (let i = 0; i < prizeList.length; i++) {
-      sections.push({
-        x: i * sectionWidth,
-        width: sectionWidth,
-        coef: prizeList[i],
-        color: `hsl(${(i * 30) % 360}, 80%, 60%)`
-      });
-    }
-
-    // Создаем штыри (пирамида)
-    const rows = 8;
-    const startY = 150;
-    const spacing = 65;
-    
-    for (let row = 0; row < rows; row++) {
-      const cols = prizeList.length + (row % 2 === 0 ? 0 : 1);
-      const offset = (canvas.width - (cols - 1) * spacing) / 2;
-      
-      for (let col = 0; col < cols; col++) {
-        const x = offset + col * spacing;
-        const y = startY + row * spacing * 0.9;
-        pins.push({ x, y, radius: 5 });
-      }
-    }
-  }
-
-  // Функция запуска шарика
-  window.dropBall = function() {
-    if (!gameActive) return;
-    
-    const betInput = document.getElementById('bet');
-    const bet = parseInt(betInput.value);
-    
-    if (isNaN(bet) || bet < 10) {
-      alert('Минимальная ставка 10');
-      return;
-    }
-    
-    if (bet > balance) {
-      alert('Недостаточно средств!');
-      return;
-    }
-    
-    balance -= bet;
-    document.getElementById('balance').innerText = balance;
-    
-    // Добавляем шарик со случайным смещением
-    balls.push({
-      x: canvas.width / 2 + (Math.random() - 0.5) * 30,
-      y: 80,
-      vx: (Math.random() - 0.5) * 4,
-      vy: 0.5,
-      bet: bet,
-      radius: ballRadius
-    });
-  };
-
-  // Анимация и физика
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Рисуем звезды
-    stars.forEach(star => {
-      ctx.beginPath();
-      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-      ctx.fill();
-      
-      star.alpha += star.alphaChange * 0.01;
-      if (star.alpha > 1 || star.alpha < 0.1) {
-        star.alphaChange *= -1;
-      }
-    });
-    
-    // Рисуем кометы
-    comets.forEach(comet => {
-      // Добавляем точку в след
-      comet.trail.push({ x: comet.x, y: comet.y });
-      if (comet.trail.length > 15) {
-        comet.trail.shift();
-      }
-      
-      // Рисуем след
-      comet.trail.forEach((point, index) => {
-        const alpha = index / comet.trail.length * 0.5;
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, comet.radius * 0.8, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.fill();
-      });
-      
-      // Рисуем комету
-      ctx.beginPath();
-      ctx.arc(comet.x, comet.y, comet.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'white';
-      ctx.fill();
-      
-      // Движение
-      comet.x += comet.speedX;
-      comet.y += comet.speedY;
-      
-      // Респаун
-      if (comet.x > canvas.width + 50 || comet.y > canvas.height + 50) {
-        comet.x = Math.random() * canvas.width * 0.3;
-        comet.y = Math.random() * canvas.height * 0.2;
-        comet.trail = [];
-      }
-    });
-    
-    // Рисуем секции (внизу)
-    if (sections.length > 0) {
-      sections.forEach(section => {
-        ctx.fillStyle = section.color;
-        ctx.fillRect(section.x, canvas.height - 50, section.width, 50);
-        
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 16px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText('x' + section.coef, section.x + section.width / 2, canvas.height - 15);
-      });
-    }
-    
-    // Рисуем штыри
-    pins.forEach(pin => {
-      ctx.beginPath();
-      ctx.arc(pin.x, pin.y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#FFD700';
-      ctx.fill();
-      ctx.strokeStyle = '#B8860B';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
-    
-    // Обновляем и рисуем шарики
-    if (balls.length > 0) {
-      for (let i = balls.length - 1; i >= 0; i--) {
-        const ball = balls[i];
-        
-        // Гравитация
-        ball.vy += 0.2;
-        
-        // Трение
-        ball.vx *= 0.99;
-        
-        // Движение
-        ball.x += ball.vx;
-        ball.y += ball.vy;
-        
-        // Столкновения со штырями
-        pins.forEach(pin => {
-          const dx = ball.x - pin.x;
-          const dy = ball.y - pin.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < ball.radius + 5) {
-            // Отталкивание
-            const angle = Math.atan2(dy, dx);
-            const force = (ball.radius + 5 - distance) * 0.5;
-            
-            ball.x += Math.cos(angle) * force;
-            ball.y += Math.sin(angle) * force;
-            
-            // Отскок
-            const speed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
-            if (speed > 0.1) {
-              const nx = dx / distance;
-              const ny = dy / distance;
-              const dot = ball.vx * nx + ball.vy * ny;
-              
-              ball.vx = (ball.vx - 2 * dot * nx) * 0.7;
-              ball.vy = (ball.vy - 2 * dot * ny) * 0.7;
+    <script>
+        (function() {
+            // ------ СОЗДАЕМ ПАДАЮЩИЕ ЗВЕЗДЫ ДЛЯ НАЧАЛЬНОГО ЭКРАНА ------
+            function createStars() {
+                for (let i = 0; i < 30; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = '-10px';
+                    star.style.width = star.style.height = (Math.random() * 4 + 2) + 'px';
+                    star.style.animation = `fallStar ${Math.random() * 3 + 2}s linear`;
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(star);
+                    
+                    // Удаляем после анимации
+                    setTimeout(() => {
+                        star.remove();
+                    }, 5000);
+                }
             }
-          }
-        });
-        
-        // Границы по бокам
-        if (ball.x < ball.radius) {
-          ball.x = ball.radius;
-          ball.vx *= -0.7;
-        }
-        if (ball.x > canvas.width - ball.radius) {
-          ball.x = canvas.width - ball.radius;
-          ball.vx *= -0.7;
-        }
-        
-        // Проверка достижения дна
-        if (ball.y + ball.radius > canvas.height - 50) {
-          // Определяем секцию
-          const sectionIndex = Math.floor(ball.x / (canvas.width / sections.length));
-          if (sectionIndex >= 0 && sectionIndex < sections.length) {
-            const winAmount = Math.floor(ball.bet * sections[sectionIndex].coef);
-            balance += winAmount;
-            document.getElementById('balance').innerText = balance;
+
+            // Запускаем звезды каждые 2 секунды
+            setInterval(createStars, 2000);
+            createStars(); // сразу создаем первую партию
+
+            // ------ АНИМАЦИЯ ПАДЕНИЯ ЗВЕЗД ------
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fallStar {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // ------ ПЕРЕХОД ОТ НАЧАЛЬНОГО ЭКРАНА К ИГРЕ ------
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const gameContainer = document.getElementById('gameContainer');
+
+            // Показываем начальный экран 3 секунды, затем плавно убираем и показываем игру
+            setTimeout(() => {
+                welcomeScreen.style.opacity = '0';
+                setTimeout(() => {
+                    welcomeScreen.style.display = 'none';
+                    gameContainer.classList.add('visible');
+                }, 1000);
+            }, 3000);
+
+            // ------ НАСТРОЙКИ ПОЛЯ ------
+            const canvas = document.getElementById('plinkoCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = 900, height = 700;
+            canvas.width = width; canvas.height = height;
+
+            // ------ ПЕРЕМЕННЫЕ ИГРЫ ------
+            let balance = 1000;
+            let currentLevel = 'easy';
+            let balls = [];
+            let pins = [];
+            let multipliers = [];
+            let gameActive = true;
             
-            // Визуальный эффект (можно добавить позже)
-          }
-          
-          // Удаляем шарик
-          balls.splice(i, 1);
-        } else {
-          // Рисуем шарик
-          ctx.beginPath();
-          ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-          
-          // Градиент для красоты
-          const gradient = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 2, ball.x, ball.y, ball.radius);
-          gradient.addColorStop(0, '#FF5555');
-          gradient.addColorStop(1, '#AA0000');
-          
-          ctx.fillStyle = gradient;
-          ctx.fill();
-          
-          // Блик
-          ctx.beginPath();
-          ctx.arc(ball.x - 3, ball.y - 3, 3, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-          ctx.fill();
-        }
-      }
-    }
-    
-    requestAnimationFrame(animate);
-  }
+            // Множители для уровней
+            const levelMultipliers = {
+                easy:   [1.2, 1.5, 2.0, 3.0, 5.0, 3.0, 2.0, 1.5, 1.2],
+                medium: [0.7, 1.0, 1.5, 3.0, 10.0, 3.0, 1.5, 1.0, 0.7],
+                hard:   [0.3, 0.7, 1.2, 2.5, 20.0, 50.0, 20.0, 2.5, 1.2, 0.7, 0.3]
+            };
 
-  // Запуск анимации
-  animate();
+            // ------ ГЕНЕРАЦИЯ ПИРАМИДЫ ------
+            function generatePlinkoField(level) {
+                pins = [];
+                const mults = levelMultipliers[level] || levelMultipliers.easy;
+                const rows = 12;
+                const startY = 100;
+                const pinRadius = 5;
+                const spacingX = 52;
+                const spacingY = 38;
 
-  // Обработка ресайза окна
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    if (gameActive) {
-      initPlinko();
-    }
-  });
-})();
-</script>
+                const maxCols = mults.length + 2;
+                const totalWidth = (maxCols - 1) * spacingX;
+                const offsetX = (width - totalWidth) / 2;
+
+                for (let row = 0; row < rows; row++) {
+                    let cols;
+                    if (row < 5) cols = 5 + row;
+                    else if (row < 8) cols = 9;
+                    else cols = 17 - row;
+                    
+                    cols = Math.min(cols, mults.length + 3);
+                    
+                    const rowOffsetX = (maxCols - cols) * spacingX / 2;
+                    
+                    for (let col = 0; col < cols; col++) {
+                        const x = offsetX + rowOffsetX + col * spacingX + (row % 2 === 0 ? spacingX/2 : 0);
+                        const y = startY + row * spacingY;
+                        
+                        pins.push({
+                            x: x + (Math.random() * 2 - 1),
+                            y: y + (Math.random() * 1.5 - 0.75),
+                            r: pinRadius
+                        });
+                    }
+                }
+
+                // Генерация ячеек с множителями
+                multipliers = [];
+                const cellWidth = width / mults.length;
+                for (let i = 0; i < mults.length; i++) {
+                    let color;
+                    const val = mults[i];
+                    if (val < 1) color = '#6c7a96';
+                    else if (val < 2) color = '#4f9fff';
+                    else if (val < 4) color = '#42d692';
+                    else if (val < 8) color = '#ffb347';
+                    else color = '#ff6b6b';
+                    
+                    multipliers.push({
+                        x: i * cellWidth,
+                        w: cellWidth,
+                        value: val,
+                        color: color
+                    });
+                }
+            }
+
+            // ------ НАЧАЛЬНАЯ ГЕНЕРАЦИЯ ------
+            generatePlinkoField(currentLevel);
+
+            // ------ КЛАСС ШАРИКА ------
+            class Ball {
+                constructor(x, y, bet) {
+                    this.x = x;
+                    this.y = y;
+                    this.vx = (Math.random() - 0.5) * 1.5;
+                    this.vy = 1.0;
+                    this.radius = 9;
+                    this.bet = bet;
+                    this.active = true;
+                    this.trail = [];
+                }
+
+                update() {
+                    this.vy += 0.25;
+                    this.vx *= 0.995;
+                    
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    
+                    this.trail.push({x: this.x, y: this.y});
+                    if (this.trail.length > 8) this.trail.shift();
+
+                    for (let pin of pins) {
+                        const dx = this.x - pin.x;
+                        const dy = this.y - pin.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const minDist = this.radius + pin.r;
+                        
+                        if (dist < minDist) {
+                            const angle = Math.atan2(dy, dx);
+                            const overlap = minDist - dist;
+                            
+                            this.x += Math.cos(angle) * overlap * 0.8;
+                            this.y += Math.sin(angle) * overlap * 0.8;
+                            
+                            const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                            if (speed > 0.1) {
+                                const nx = dx / dist;
+                                const ny = dy / dist;
+                                const dot = this.vx * nx + this.vy * ny;
+                                
+                                this.vx = (this.vx - 1.6 * dot * nx) * 0.75;
+                                this.vy = (this.vy - 1.6 * dot * ny) * 0.75;
+                            }
+                        }
+                    }
+
+                    if (this.x - this.radius < 15) {
+                        this.x = 15 + this.radius;
+                        this.vx *= -0.7;
+                    }
+                    if (this.x + this.radius > width - 15) {
+                        this.x = width - 15 - this.radius;
+                        this.vx *= -0.7;
+                    }
+
+                    if (this.y - this.radius < 20) {
+                        this.y = 20 + this.radius;
+                        this.vy *= -0.5;
+                    }
+
+                    if (this.y + this.radius > height - 55) {
+                        const cellIndex = Math.floor(this.x / (width / multipliers.length));
+                        if (cellIndex >= 0 && cellIndex < multipliers.length) {
+                            const mult = multipliers[cellIndex].value;
+                            const win = Math.floor(this.bet * mult);
+                            balance += win;
+                            document.getElementById('balanceDisplay').innerText = balance;
+                            flashCell(cellIndex, mult);
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+            }
+
+            // ------ ЭФФЕКТ ПОДСВЕТКИ ------
+            let flashData = { active: false, index: -1, alpha: 0, mult: 1 };
+            function flashCell(index, mult) {
+                flashData.active = true;
+                flashData.index = index;
+                flashData.alpha = 1.0;
+                flashData.mult = mult;
+            }
+
+            // ------ ОТРИСОВКА ------
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+
+                const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+                bgGrad.addColorStop(0, '#0f1922');
+                bgGrad.addColorStop(1, '#1b2938');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Рисуем штыри
+                for (let pin of pins) {
+                    ctx.beginPath();
+                    ctx.arc(pin.x, pin.y, pin.r, 0, Math.PI*2);
+                    
+                    const grad = ctx.createRadialGradient(pin.x-2, pin.y-2, 2, pin.x, pin.y, pin.r+2);
+                    grad.addColorStop(0, '#d4af37');
+                    grad.addColorStop(0.7, '#996633');
+                    grad.addColorStop(1, '#664422');
+                    
+                    ctx.fillStyle = grad;
+                    ctx.shadowColor = '#ffd966';
+                    ctx.shadowBlur = 8;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    
+                    ctx.beginPath();
+                    ctx.arc(pin.x-1.5, pin.y-1.5, 1.5, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255,255,240,0.5)';
+                    ctx.fill();
+                }
+
+                // Рисуем ячейки
+                for (let i = 0; i < multipliers.length; i++) {
+                    const m = multipliers[i];
+                    const x = m.x;
+                    
+                    ctx.fillStyle = m.color + '33';
+                    ctx.fillRect(x, height-60, m.w-1, 45);
+                    
+                    if (flashData.active && flashData.index === i) {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${flashData.alpha})`;
+                        ctx.fillRect(x, height-60, m.w-1, 45);
+                        flashData.alpha *= 0.7;
+                        if (flashData.alpha < 0.05) flashData.active = false;
+                    }
+                    
+                    ctx.strokeStyle = '#5f7a9a';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, height-60, m.w-1, 45);
+                    
+                    ctx.font = 'bold 20px "Segoe UI", "Arial"';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.shadowColor = '#000';
+                    ctx.shadowBlur = 5;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('x' + m.value.toFixed(1), x + m.w/2, height-37);
+                    ctx.shadowBlur = 0;
+                }
+
+                // Рисуем шарики
+                for (let ball of balls) {
+                    for (let i = 0; i < ball.trail.length; i++) {
+                        const t = ball.trail[i];
+                        const alpha = (i / ball.trail.length) * 0.4;
+                        ctx.beginPath();
+                        ctx.arc(t.x, t.y, ball.radius * 0.6, 0, Math.PI*2);
+                        
+                        const gradient = ctx.createRadialGradient(t.x-3, t.y-3, 2, t.x, t.y, ball.radius);
+                        gradient.addColorStop(0, `rgba(255, 100, 100, ${alpha})`);
+                        gradient.addColorStop(1, `rgba(180, 30, 30, ${alpha*0.5})`);
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.fill();
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+                    
+                    const gradBall = ctx.createRadialGradient(ball.x-4, ball.y-4, 3, ball.x, ball.y, ball.radius+2);
+                    gradBall.addColorStop(0, '#ffcccc');
+                    gradBall.addColorStop(0.4, '#e63946');
+                    gradBall.addColorStop(1, '#a11d2b');
+                    
+                    ctx.fillStyle = gradBall;
+                    ctx.shadowColor = '#ff8888';
+                    ctx.shadowBlur = 20;
+                    ctx.fill();
+                    
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.arc(ball.x-3, ball.y-3, 3, 0, Math.PI*2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fill();
+                }
+            }
+
+            // ------ АНИМАЦИЯ ------
+            function gameLoop() {
+                if (!gameActive) return;
+                
+                for (let i = balls.length - 1; i >= 0; i--) {
+                    const ball = balls[i];
+                    const keep = ball.update();
+                    if (!keep) {
+                        balls.splice(i, 1);
+                    }
+                }
+                
+                draw();
+                requestAnimationFrame(gameLoop);
+            }
+
+            // ------ ЗАПУСК ШАРИКА ------
+            function dropBall() {
+                const betInput = document.getElementById('betInput');
+                let bet = parseInt(betInput.value);
+                
+                if (isNaN(bet) || bet < 10) bet = 10;
+                if (bet > balance) {
+                    alert('❌ Недостаточно баланса!');
+                    return;
+                }
+                
+                balance -= bet;
+                document.getElementById('balanceDisplay').innerText = balance;
+                
+                const startX = width / 2 + (Math.random() * 20 - 10);
+                const startY = 45;
+                
+                const ball = new Ball(startX, startY, bet);
+                balls.push(ball);
+            }
+
+            // ------ СМЕНА УРОВНЯ ------
+            function setLevel(level) {
+                currentLevel = level;
+                generatePlinkoField(level);
+                
+                document.querySelectorAll('.level-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.dataset.level === level) btn.classList.add('active');
+                });
+            }
+
+            // ------ СОБЫТИЯ ------
+            window.addEventListener('load', () => {
+                gameLoop();
+                
+                document.getElementById('dropBallBtn').addEventListener('click', dropBall);
+                
+                document.querySelectorAll('.level-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const level = e.target.dataset.level;
+                        setLevel(level);
+                    });
+                });
+                
+                document.getElementById('betInput').addEventListener('change', function() {
+                    let val = parseInt(this.value);
+                    if (val < 10) this.value = 10;
+                    if (val > 10000) this.value = 10000;
+                });
+            });
+
+            document.getElementById('balanceDisplay').innerText = balance;
+        })();
+    </script>
 </body>
 </html>
