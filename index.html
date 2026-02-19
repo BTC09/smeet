@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smeet Casino</title>
 <style>
-    body {
-        margin: 0;
-        overflow: hidden;
-        background: #000;
-        font-family: Arial, sans-serif;
-    }
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #000;
+    font-family: Arial, sans-serif;
+}
 
-    /* Название казино с анимацией справа налево */
-    h1 {
-        position: absolute;
-        top: 50%;
-        left: 100%; /* начинаем за правым краем */
-        transform: translateY(-50%);
-        font-size: 100px;
-        color: #FFD700;
-        text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FF4500;
-        white-space: nowrap; /* чтобы текст не переносился */
-        animation: slideIn 2s forwards; /* анимация движения */
-        z-index: 10;
-    }
+/* Название казино: плавное появление справа налево */
+h1 {
+    position: absolute;
+    top: 50%;
+    left: 100%; /* старт за экраном */
+    transform: translateY(-50%);
+    font-size: 100px;
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FF4500;
+    white-space: nowrap;
+    animation: slideIn 2s forwards ease-out;
+    z-index: 10;
+}
 
-    @keyframes slideIn {
-        from {
-            left: 100%;
-            opacity: 0;
-        }
-        to {
-            left: 50%;
-            opacity: 1;
-            transform: translateX(-50%) translateY(-50%);
-        }
+@keyframes slideIn {
+    from {
+        left: 100%;
+        opacity: 0;
     }
+    to {
+        left: 50%;
+        opacity: 1;
+        transform: translateX(-50%) translateY(-50%);
+    }
+}
 </style>
 </head>
 <body>
@@ -59,7 +59,7 @@ for (let i = 0; i < 200; i++) {
         y: Math.random() * canvas.height,
         radius: Math.random() * 1.5 + 0.5,
         alpha: Math.random(),
-        alphaChange: Math.random() * 0.01 + 0.002 // медленное мерцание
+        alphaChange: Math.random() * 0.01 + 0.002
     });
 }
 
@@ -72,7 +72,7 @@ for (let i = 0; i < 5; i++) {
         speedX: Math.random() * 2 + 1,
         speedY: Math.random() * 2 + 1,
         radius: Math.random() * 3 + 2,
-        trail: [] // массив для хвоста
+        trail: []
     });
 }
 
@@ -92,14 +92,12 @@ function drawStars() {
 // Рисуем кометы с шлейфом
 function drawComets() {
     for (let c of comets) {
-        // Добавляем текущую позицию в хвост
         c.trail.push({x: c.x, y: c.y});
-        if (c.trail.length > 20) c.trail.shift(); // ограничиваем длину хвоста
+        if (c.trail.length > 20) c.trail.shift();
 
-        // Рисуем хвост
         for (let i = 0; i < c.trail.length; i++) {
             const point = c.trail[i];
-            const alpha = i / c.trail.length * 0.5; // прозрачность хвоста
+            const alpha = i / c.trail.length * 0.5;
             ctx.beginPath();
             ctx.arc(point.x, point.y, c.radius, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255,255,255,${alpha})`;
@@ -107,18 +105,15 @@ function drawComets() {
             ctx.closePath();
         }
 
-        // Рисуем комету
         ctx.beginPath();
         ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(255,255,255,1)';
         ctx.fill();
         ctx.closePath();
 
-        // Двигаем комету
         c.x += c.speedX;
         c.y += c.speedY;
 
-        // Сбрасываем комету, если она ушла с экрана
         if (c.x > canvas.width + 50 || c.y > canvas.height + 50) {
             c.x = Math.random() * canvas.width;
             c.y = -50;
@@ -137,7 +132,6 @@ function animate() {
 
 animate();
 
-// Подстраиваем canvas под размер окна
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
