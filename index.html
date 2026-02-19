@@ -506,7 +506,6 @@
       let multipliers = [];
       let ballsInPlay = 0;
       
-      // Массив для хранения позиций верхних точек
       let topPinPositions = [];
 
       const levelMultipliers = {
@@ -527,7 +526,7 @@
 
       function generateField(level) {
         pins = [];
-        topPinPositions = []; // Очищаем массив верхних точек
+        topPinPositions = [];
         
         const mults = levelMultipliers[level];
         
@@ -556,7 +555,6 @@
             const y = startY + row * spacingY;
             pins.push({ x, y, r: pinR });
             
-            // Если это первый ряд (верхний), сохраняем позицию
             if (row === 0) {
               topPinPositions.push(x);
             }
@@ -597,14 +595,38 @@
         }
 
         update() {
+          // Гравитация
           this.vy += 0.22;
+          
+          // Трение
           this.vx *= 0.995;
+          
+          // СТРЕМЛЕНИЕ К ЦЕНТРУ (К СЛИВУ)
+          const centerX = width / 2;
+          const distanceFromCenter = this.x - centerX;
+          
+          // Чем дальше от центра, тем сильнее тянет обратно
+          // Но не слишком сильно, чтобы не было неестественно
+          const pullStrength = 0.0008 * Math.abs(distanceFromCenter);
+          
+          // Тянем к центру
+          if (Math.abs(distanceFromCenter) > 20) {
+            this.vx -= Math.sign(distanceFromCenter) * pullStrength;
+          }
+          
+          // Добавляем небольшую случайность при движении к центру
+          // чтобы не было слишком предсказуемо
+          if (Math.random() < 0.01) {
+            this.vx += (Math.random() - 0.5) * 0.3;
+          }
+          
           this.x += this.vx;
           this.y += this.vy;
           
           this.trail.push({x: this.x, y: this.y});
           if (this.trail.length > 8) this.trail.shift();
 
+          // Отскоки от штырей
           for (let p of pins) {
             const dx = this.x - p.x;
             const dy = this.y - p.y;
@@ -626,12 +648,17 @@
                 this.vx = (this.vx - 1.4 * dot * nx) * 0.7;
                 this.vy = (this.vy - 1.4 * dot * ny) * 0.7;
                 
+                // При отскоке добавляем небольшое смещение к центру
+                const centerPull = (width/2 - this.x) * 0.02;
+                this.vx += centerPull;
+                
                 this.vx += (Math.random() - 0.5) * 0.5;
                 this.vy += (Math.random() - 0.5) * 0.3;
               }
             }
           }
 
+          // Боковые стенки
           if (this.x - this.r < 10) {
             this.x = 10 + this.r;
             this.vx *= -0.6;
@@ -641,6 +668,7 @@
             this.vx *= -0.6;
           }
 
+          // Достиг дна?
           if (this.y + this.r > height - 55) {
             const idx = Math.floor(this.x / (width / multipliers.length));
             if (idx >= 0 && idx < multipliers.length) {
@@ -777,12 +805,11 @@
         balance -= bet;
         updateBalance();
         
-        // Выбираем СЛУЧАЙНУЮ верхнюю точку из массива topPinPositions
         if (topPinPositions.length > 0) {
           const randomIndex = Math.floor(Math.random() * topPinPositions.length);
           const startX = topPinPositions[randomIndex];
           
-          // Добавляем небольшое случайное смещение для естественности (±5px)
+          // Добавляем небольшое случайное смещение
           const finalX = startX + (Math.random() * 10 - 5);
           
           balls.push(new Ball(finalX, 40, bet));
