@@ -82,7 +82,7 @@
 
 <script>
 // Инициализация Matter.js
-const { Engine, Render, World, Bodies, MouseConstraint, Mouse } = Matter;
+const { Engine, Render, World, Bodies } = Matter;
 
 // Создание движка Matter.js
 const engine = Engine.create();
@@ -122,13 +122,6 @@ for (let i = 0; i < numChips; i++) {
 
 // Гравитация и физика
 engine.world.gravity.y = 1;
-
-// Добавляем "мышь", чтобы взаимодействовать с фишками
-const mouse = Mouse.create(render.canvas);
-const mouseConstraint = MouseConstraint.create(engine, {
-    mouse: mouse
-});
-World.add(world, mouseConstraint);
 
 // Запускаем движок
 Engine.run(engine);
