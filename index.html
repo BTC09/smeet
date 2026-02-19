@@ -31,27 +31,28 @@
       position: fixed;
       width: 100%;
       height: 100%;
-      background: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(3px 3px at 90px 40px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(2px 2px at 230px 190px, #ffd966, rgba(0,0,0,0)),
-                  radial-gradient(4px 4px at 320px 250px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(2px 2px at 410px 80px, #ffd966, rgba(0,0,0,0)),
-                  radial-gradient(3px 3px at 500px 340px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(2px 2px at 600px 200px, #ffd966, rgba(0,0,0,0)),
-                  radial-gradient(4px 4px at 720px 450px, #fff, rgba(0,0,0,0)),
-                  radial-gradient(2px 2px at 800px 150px, #ffd966, rgba(0,0,0,0)),
-                  radial-gradient(3px 3px at 880px 520px, #fff, rgba(0,0,0,0));
-      background-size: 200px 200px;
-      opacity: 0.5;
-      animation: starsFloat 120s linear infinite;
+      background-image: 
+        radial-gradient(2px 2px at 10px 10px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 30px 40px, #ffd966, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 50px 80px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 80px 120px, #ffd966, rgba(0,0,0,0)),
+        radial-gradient(4px 4px at 120px 50px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 150px 180px, #ffd966, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 200px 90px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 250px 220px, #ffd966, rgba(0,0,0,0)),
+        radial-gradient(4px 4px at 300px 150px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 350px 280px, #ffd966, rgba(0,0,0,0)),
+        radial-gradient(3px 3px at 400px 200px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 450px 320px, #ffd966, rgba(0,0,0,0));
+      background-size: 500px 500px;
+      opacity: 0.6;
+      animation: starsFloat 180s linear infinite;
       pointer-events: none;
     }
 
     @keyframes starsFloat {
       0% { transform: translateY(0); }
-      100% { transform: translateY(-200px); }
+      100% { transform: translateY(-500px); }
     }
 
     .welcome-screen {
@@ -562,6 +563,7 @@
 
   <script>
     (function() {
+      // Функция создания падающих звезд
       function createStar() {
         const star = document.createElement('div');
         star.className = 'star';
@@ -575,14 +577,17 @@
         setTimeout(() => star.remove(), 7000);
       }
 
+      // Запускаем звезды
       setInterval(createStar, 300);
       for (let i = 0; i < 30; i++) setTimeout(createStar, i * 50);
 
+      // Элементы
       const welcomeScreen = document.getElementById('welcomeScreen');
       const app = document.getElementById('app');
       const gamesMenu = document.getElementById('gamesMenu');
       const plinkoContainer = document.getElementById('plinkoContainer');
 
+      // Приветствие 3 секунды -> меню
       setTimeout(() => {
         welcomeScreen.style.opacity = '0';
         setTimeout(() => {
@@ -593,6 +598,7 @@
         }, 1000);
       }, 3000);
 
+      // Баланс
       let balance = 1000;
       const balanceEl = document.getElementById('balanceDisplay');
 
@@ -605,8 +611,10 @@
         updateBalance();
       });
 
+      // Кнопка назад в меню
       const backToMenuBtn = document.getElementById('backToMenuBtn');
 
+      // Выбор игры из меню
       document.querySelectorAll('.game-menu-item').forEach(item => {
         item.addEventListener('click', () => {
           if (item.classList.contains('disabled')) return;
@@ -621,11 +629,13 @@
         });
       });
 
+      // Возврат в меню
       backToMenuBtn.addEventListener('click', () => {
         plinkoContainer.style.display = 'none';
         gamesMenu.style.display = 'flex';
       });
 
+      // PLINKO
       const canvas = document.getElementById('plinkoCanvas');
       const ctx = canvas.getContext('2d');
       const width = 952, height = 700;
@@ -635,15 +645,16 @@
       let pins = [];
       let multipliers = [];
       let ballsInPlay = 0;
-      
       let topPinPositions = [];
 
+      // Коэффициенты
       const levelMultipliers = {
         easy:   [5.0, 3.0, 1.8, 1.2, 0.7, 0.3, 0.7, 1.2, 1.8, 3.0, 5.0],
         medium: [10.0, 5.0, 2.5, 1.5, 1.0, 0.5, 0.2, 0.5, 1.0, 1.5, 2.5, 5.0, 10.0],
         hard:   [50.0, 20.0, 10.0, 5.0, 2.5, 1.2, 0.5, 0.1, 0.5, 1.2, 2.5, 5.0, 10.0, 20.0, 50.0]
       };
 
+      // Блокировка кнопок уровня
       function setLevelButtonsState(disabled) {
         document.querySelectorAll('.level-btn').forEach(btn => {
           if (disabled) {
@@ -654,12 +665,12 @@
         });
       }
 
+      // Генерация поля
       function generateField(level) {
         pins = [];
         topPinPositions = [];
         
         const mults = levelMultipliers[level];
-        
         const rows = 14;
         const startY = 80;
         const pinR = 6;
@@ -691,6 +702,7 @@
           }
         }
 
+        // Ячейки с множителями
         multipliers = [];
         const cellW = width / mults.length;
         for (let i = 0; i < mults.length; i++) {
@@ -711,8 +723,10 @@
         }
       }
 
+      // Начальная генерация
       generateField(currentLevel);
 
+      // Класс шарика
       class Ball {
         constructor(x, y, bet) {
           this.x = x;
@@ -738,6 +752,7 @@
           this.trail.push({x: this.x, y: this.y, hue: this.hue});
           if (this.trail.length > 10) this.trail.shift();
 
+          // Отскоки от штырей
           for (let p of pins) {
             const dx = this.x - p.x;
             const dy = this.y - p.y;
@@ -765,6 +780,7 @@
             }
           }
 
+          // Стены
           if (this.x - this.r < 10) {
             this.x = 10 + this.r;
             this.vx *= -0.6;
@@ -774,6 +790,7 @@
             this.vx *= -0.6;
           }
 
+          // Дно
           if (this.y + this.r > height - 55) {
             const idx = Math.floor(this.x / (width / multipliers.length));
             if (idx >= 0 && idx < multipliers.length) {
@@ -794,6 +811,7 @@
         }
       }
 
+      // Эффект вспышки
       let flash = { active: false, index: -1, alpha: 0, color: '#ffffff' };
       function flashCell(idx, winAmount) {
         flash.active = true;
@@ -802,6 +820,7 @@
         flash.color = winAmount > 0 ? '#ffd966' : '#ff8888';
       }
 
+      // Отрисовка
       function draw() {
         ctx.clearRect(0, 0, width, height);
         
@@ -817,15 +836,185 @@
         // Туманности
         for (let i = 0; i < 3; i++) {
           ctx.beginPath();
-          ctx.arc(200 + i*250, 150 + i*100, 120, 0, Math.PI*2);
+          ctx.arc(200 + i * 250, 150 + i * 100, 120, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(100, 150, 255, 0.03)`;
           ctx.fill();
         }
         
         ctx.beginPath();
-        ctx.arc(700, 400, 180, 0, Math.PI*2);
+        ctx.arc(700, 400, 180, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 100, 150, 0.03)`;
         ctx.fill();
 
         // Падающие звезды на канвасе
-        for (let i =
+        for (let i = 0; i < 10; i++) {
+          const time = Date.now() * 0.001;
+          const x = (i * 150 + time * 30) % width;
+          const y = (i * 50 + time * 10) % height;
+          
+          ctx.beginPath();
+          ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, 0.6)`;
+          ctx.fill();
+        }
+
+        // Штыри с супер-градиентом
+        pins.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          
+          const gradPin = ctx.createRadialGradient(p.x - 3, p.y - 3, 2, p.x, p.y, p.r + 3);
+          gradPin.addColorStop(0, '#fffacd');
+          gradPin.addColorStop(0.4, '#ffd966');
+          gradPin.addColorStop(0.8, '#b8860b');
+          gradPin.addColorStop(1, '#8b6508');
+          
+          ctx.fillStyle = gradPin;
+          ctx.shadowColor = '#ffd966';
+          ctx.shadowBlur = 15;
+          ctx.fill();
+          
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.arc(p.x - 2, p.y - 2, 2, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+          ctx.fill();
+        });
+
+        // Ячейки с множителями
+        multipliers.forEach((m, i) => {
+          // Градиент для ячейки
+          const cellGrad = ctx.createLinearGradient(m.x, height-60, m.x + m.w, height-15);
+          cellGrad.addColorStop(0, m.color + '99');
+          cellGrad.addColorStop(1, m.color + 'cc');
+          
+          ctx.fillStyle = cellGrad;
+          ctx.fillRect(m.x, height-60, m.w-1, 45);
+          
+          // Вспышка при выигрыше
+          if (flash.active && flash.index === i) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${flash.alpha})`;
+            ctx.fillRect(m.x, height-60, m.w-1, 45);
+            flash.alpha *= 0.6;
+            if (flash.alpha < 0.05) flash.active = false;
+          }
+          
+          ctx.strokeStyle = '#ffffff80';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(m.x, height-60, m.w-1, 45);
+          
+          ctx.font = 'bold 22px "Segoe UI", "Inter"';
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = '#000';
+          ctx.shadowBlur = 10;
+          ctx.textAlign = 'center';
+          
+          let text = m.value.toFixed(1);
+          if (m.value < 1) text = m.value.toFixed(1);
+          else if (m.value < 10) text = 'x' + m.value.toFixed(1);
+          else text = 'x' + Math.round(m.value);
+          
+          ctx.fillText(text, m.x + m.w/2, height-32);
+        });
+        ctx.shadowBlur = 0;
+
+        // Шарики с супер-эффектами
+        balls.forEach(b => {
+          // След с переливом
+          b.trail.forEach((t, i) => {
+            const alpha = (i / b.trail.length) * 0.4;
+            const hue = (t.hue + i * 10) % 360;
+            ctx.beginPath();
+            ctx.arc(t.x, t.y, b.r * 0.6, 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${alpha})`;
+            ctx.fill();
+          });
+          
+          // Сияние вокруг шара
+          ctx.shadowColor = `hsl(${b.hue}, 100%, 70%)`;
+          ctx.shadowBlur = 25;
+          
+          // Градиент шара
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          const gradBall = ctx.createRadialGradient(b.x - 4, b.y - 4, 3, b.x, b.y, b.r + 3);
+          gradBall.addColorStop(0, `hsl(${b.hue}, 100%, 85%)`);
+          gradBall.addColorStop(0.5, `hsl(${b.hue}, 100%, 65%)`);
+          gradBall.addColorStop(1, `hsl(${b.hue}, 100%, 45%)`);
+          
+          ctx.fillStyle = gradBall;
+          ctx.fill();
+          
+          ctx.shadowBlur = 0;
+          
+          // Блик
+          ctx.beginPath();
+          ctx.arc(b.x - 2.5, b.y - 2.5, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+          ctx.fill();
+        });
+        
+        ctx.shadowBlur = 0;
+      }
+
+      // Анимация
+      function gameLoop() {
+        for (let i = balls.length - 1; i >= 0; i--) {
+          if (!balls[i].update()) balls.splice(i, 1);
+        }
+        draw();
+        requestAnimationFrame(gameLoop);
+      }
+      gameLoop();
+
+      // Кнопка броска
+      document.getElementById('dropBallBtn').addEventListener('click', () => {
+        const betInput = document.getElementById('betInput');
+        let bet = parseInt(betInput.value);
+        if (isNaN(bet) || bet < 10) bet = 10;
+        if (bet > balance) {
+          alert('❌ Не хватает звёзд!');
+          return;
+        }
+        
+        balance -= bet;
+        updateBalance();
+        
+        if (topPinPositions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * topPinPositions.length);
+          const startX = topPinPositions[randomIndex];
+          
+          // Небольшое случайное смещение
+          const finalX = startX + (Math.random() * 8 - 4);
+          
+          balls.push(new Ball(finalX, 40, bet));
+          
+          ballsInPlay++;
+          setLevelButtonsState(true);
+        }
+      });
+
+      // Смена уровня
+      document.querySelectorAll('.level-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          if (btn.classList.contains('disabled')) return;
+          
+          document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentLevel = btn.dataset.level;
+          generateField(currentLevel);
+        });
+      });
+
+      // Ограничение ставки
+      document.getElementById('betInput').addEventListener('change', function() {
+        let v = parseInt(this.value);
+        if (v < 10) this.value = 10;
+        if (v > 10000) this.value = 10000;
+      });
+
+      updateBalance();
+    })();
+  </script>
+</body>
+</html>
