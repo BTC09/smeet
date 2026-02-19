@@ -61,11 +61,11 @@
         /* Падающие кометы */
         .comet {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(255,255,255,0));
             border-radius: 50%;
-            opacity: 0.8;
+            opacity: 1;
             animation: fall 5s infinite linear, tail 1s infinite linear;
         }
 
@@ -75,37 +75,33 @@
             100% { transform: translateY(100vh) translateX(200px); opacity: 0; }
         }
 
-        /* Анимация хвоста кометы */
+        /* Эффект хвоста кометы */
         @keyframes tail {
             0% { transform: scale(1) translateX(0); }
             100% { transform: scale(2) translateX(40px); }
         }
 
-        /* Фишки с изображениями */
+        /* Падающие фишки с хвостом */
         .chip {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            background-size: cover;
-            background-position: center;
+            width: 15px;
+            height: 15px;
+            background-color: #FFD700;
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5), 0 0 30px rgba(255, 140, 0, 0.3);
-            transform-style: preserve-3d;
-            animation: fall 4s infinite, bounce 1s infinite alternate;
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+            animation: fall 3s infinite, tailEffect 0.5s ease-out forwards;
         }
 
         /* Анимация падения фишек */
         @keyframes fall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            50% { transform: translateY(50vh) rotate(180deg); opacity: 0.8; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(-100px) translateX(0); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(100px); opacity: 0; }
         }
 
-        /* Эффект отскока */
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-            100% { transform: translateY(0); }
+        /* Эффект хвоста фишки */
+        @keyframes tailEffect {
+            0% { transform: scale(1) translateX(0); opacity: 1; }
+            100% { transform: scale(2) translateX(20px); opacity: 0; }
         }
     </style>
 </head>
@@ -134,57 +130,41 @@ const render = Render.create({
 
 Render.run(render);
 
-// Создание движущихся объектов (фишек)
-const numChips = 20;
-const chips = [];
+// Создание падающих фишек (случайные позиции)
+function createFallingChips(numChips) {
+    for (let i = 0; i < numChips; i++) {
+        const chip = document.createElement('div');
+        chip.classList.add('chip');
+        // Случайная позиция для фишек
+        chip.style.left = Math.random() * window.innerWidth + 'px';
+        chip.style.top = -20 + 'px'; // Начинаем падение с верхней части экрана
+        chip.style.animationDuration = (Math.random() * 3 + 3) + 's'; // Случайная продолжительность падения
+        chip.style.animationDelay = Math.random() * 3 + 's'; // Случайная задержка
 
-for (let i = 0; i < numChips; i++) {
-    const chip = Bodies.circle(Math.random() * window.innerWidth, -50, 30, {
-        render: {
-            sprite: {
-                texture: 'https://via.placeholder.com/60x60.png?text=Chip', // Изображение фишки
-                xScale: 0.1, // Масштаб
-                yScale: 0.1
-            }
-        }
-    });
-
-    World.add(world, chip);
-    chips.push(chip);
-}
-
-// Гравитация и физика
-engine.world.gravity.y = 1;
-
-// Запускаем движок
-Engine.run(engine);
-
-// Функция для создания звезд
-function createStars(numStars) {
-    for (let i = 0; i < numStars; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        star.style.top = Math.random() * window.innerHeight + 'px';
-        star.style.left = Math.random() * window.innerWidth + 'px';
-        document.body.appendChild(star);
+        document.body.appendChild(chip);
     }
 }
 
-// Функция для создания падающих комет
+// Создание падающих комет
 function createComets(numComets) {
     for (let i = 0; i < numComets; i++) {
         const comet = document.createElement('div');
         comet.classList.add('comet');
-        comet.style.top = Math.random() * window.innerHeight + 'px';
+        // Случайная позиция для комет
         comet.style.left = Math.random() * window.innerWidth + 'px';
+        comet.style.top = Math.random() * window.innerHeight / 2 + 'px'; // Кометы появляются в верхней половине экрана
+        comet.style.animationDuration = (Math.random() * 5 + 5) + 's'; // Случайная продолжительность падения
+
         document.body.appendChild(comet);
     }
 }
 
-// Создаем звезды и кометы
-createStars(100); // 100 звезд
-createComets(5);   // 5 комет
+// Создаем фишки и кометы
+createFallingChips(20);  // 20 фишек
+createComets(5);         // 5 комет
 
+// Запускаем движок Matter.js
+Engine.run(engine);
 </script>
 
 </body>
