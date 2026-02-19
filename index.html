@@ -2,15 +2,16 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SMEET CASINO</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -19,7 +20,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      overflow: hidden;
+      padding: 10px;
     }
 
     /* ПРИВЕТСТВЕННЫЙ ЭКРАН */
@@ -39,35 +40,37 @@
 
     .welcome-content {
       text-align: center;
+      padding: 20px;
     }
 
     .welcome-title {
-      font-size: 120px;
+      font-size: clamp(60px, 15vw, 120px);
       font-weight: 900;
       color: #ffd966;
       text-shadow: 0 0 30px #f0b429, 0 0 60px #ff8800;
-      letter-spacing: 8px;
+      letter-spacing: 4px;
       margin-bottom: 20px;
       animation: slideInDown 1.2s ease;
+      line-height: 1;
     }
 
     .welcome-subtitle {
-      font-size: 32px;
+      font-size: clamp(20px, 5vw, 32px);
       color: #b9c7da;
       text-shadow: 0 0 15px #4f9fff;
       animation: slideInUp 1.2s ease 0.2s both;
     }
 
     .loading-dots {
-      margin-top: 50px;
+      margin-top: 30px;
       display: flex;
       justify-content: center;
       gap: 15px;
     }
 
     .loading-dots span {
-      width: 20px;
-      height: 20px;
+      width: clamp(15px, 4vw, 20px);
+      height: clamp(15px, 4vw, 20px);
       background: #ffd966;
       border-radius: 50%;
       animation: bounce 1.4s infinite;
@@ -94,11 +97,12 @@
 
     /* ОСНОВНОЙ КОНТЕЙНЕР */
     .app {
-      width: 1000px;
+      width: 100%;
+      max-width: 1000px;
       background: #141a24;
-      border-radius: 48px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.05);
+      border-radius: clamp(24px, 5vw, 48px);
+      padding: clamp(16px, 3vw, 24px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
       border: 1px solid #2d3848;
       opacity: 0;
       transform: scale(0.95);
@@ -111,25 +115,25 @@
       transform: scale(1);
     }
 
-    /* СТРЕЛКА НАЗАД В МЕНЮ */
+    /* СТРЕЛКА НАЗАД */
     .back-button {
       position: absolute;
-      top: 30px;
-      left: 30px;
-      width: 60px;
-      height: 60px;
+      top: clamp(15px, 3vw, 30px);
+      left: clamp(15px, 3vw, 30px);
+      width: clamp(50px, 8vw, 60px);
+      height: clamp(50px, 8vw, 60px);
       background: #1e2a3a;
       border: 2px solid #ffd966;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
+      font-size: clamp(30px, 6vw, 40px);
       color: #ffd966;
       cursor: pointer;
       z-index: 100;
       transition: 0.2s;
-      box-shadow: 0 5px 0 #0f1a2a;
+      box-shadow: 0 4px 0 #0f1a2a;
     }
 
     .back-button:active {
@@ -141,33 +145,35 @@
     .header {
       background: #0f151f;
       border-radius: 100px;
-      padding: 15px 30px;
-      margin-bottom: 24px;
-      margin-left: 70px;
+      padding: clamp(12px, 2vw, 15px) clamp(20px, 3vw, 30px);
+      margin-bottom: clamp(16px, 3vw, 24px);
+      margin-left: clamp(60px, 10vw, 70px);
       display: flex;
       align-items: center;
       justify-content: space-between;
       border: 1px solid #334153;
       box-shadow: inset 0 2px 5px #00000055;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .balance-block {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: clamp(10px, 2vw, 20px);
       background: #1a2332;
-      padding: 8px 30px 8px 20px;
+      padding: clamp(6px, 1.5vw, 8px) clamp(20px, 4vw, 30px) clamp(6px, 1.5vw, 8px) clamp(15px, 3vw, 20px);
       border-radius: 60px;
       border: 1px solid #4d607c;
     }
 
     .stars-icon {
-      font-size: 32px;
+      font-size: clamp(24px, 5vw, 32px);
       filter: drop-shadow(0 0 8px gold);
     }
 
     .balance-value {
-      font-size: 36px;
+      font-size: clamp(24px, 5vw, 36px);
       font-weight: 800;
       color: #ffd966;
       text-shadow: 0 0 10px #f0b429;
@@ -177,16 +183,17 @@
       background: linear-gradient(145deg, #2a3a55, #1b263b);
       border: 2px solid #ffd966;
       color: #ffd966;
-      font-size: 20px;
+      font-size: clamp(16px, 3vw, 20px);
       font-weight: 700;
-      padding: 12px 30px;
+      padding: clamp(8px, 2vw, 12px) clamp(20px, 4vw, 30px);
       border-radius: 60px;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 5px 0 #0f1a2a;
+      box-shadow: 0 4px 0 #0f1a2a;
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
     }
 
     .add-stars-btn:active {
@@ -194,21 +201,22 @@
       box-shadow: 0 1px 0 #0f1a2a;
     }
 
-    /* МЕНЮ ИГР (ПОЛНОЭКРАННОЕ) */
+    /* МЕНЮ ИГР */
     .games-menu {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: #0f151f;
-      z-index: 1000;
+      background: rgba(15, 21, 31, 0.98);
+      z-index: 2000;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 30px;
+      gap: clamp(15px, 3vw, 30px);
       backdrop-filter: blur(10px);
+      padding: 20px;
     }
 
     .games-menu.active {
@@ -219,23 +227,22 @@
       background: #1e2a3a;
       border: 3px solid #ffd966;
       border-radius: 60px;
-      padding: 25px 80px;
-      font-size: 48px;
+      padding: clamp(15px, 3vw, 25px) clamp(40px, 8vw, 80px);
+      font-size: clamp(28px, 6vw, 48px);
       font-weight: 800;
       color: #ffd966;
       cursor: pointer;
       transition: 0.3s;
       text-transform: uppercase;
-      letter-spacing: 4px;
-      width: 500px;
+      letter-spacing: 2px;
+      width: min(500px, 90%);
       text-align: center;
     }
 
-    .game-menu-item:hover {
+    .game-menu-item:active {
       background: #ffd966;
       color: #1a2538;
-      transform: scale(1.1);
-      box-shadow: 0 0 30px #ffd966;
+      transform: scale(1.05);
     }
 
     .game-menu-item.disabled {
@@ -245,22 +252,21 @@
       color: #6c7a96;
     }
 
-    .game-menu-item.disabled:hover {
+    .game-menu-item.disabled:active {
       background: #1e2a3a;
       color: #6c7a96;
       transform: none;
-      box-shadow: none;
     }
 
     .menu-close-btn {
       position: absolute;
-      top: 40px;
-      right: 40px;
-      font-size: 60px;
+      top: clamp(20px, 5vw, 40px);
+      right: clamp(20px, 5vw, 40px);
+      font-size: clamp(40px, 8vw, 60px);
       color: #ffd966;
       cursor: pointer;
-      width: 80px;
-      height: 80px;
+      width: clamp(60px, 10vw, 80px);
+      height: clamp(60px, 10vw, 80px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -268,49 +274,63 @@
       border-radius: 50%;
     }
 
-    canvas {
-      display: block;
-      width: 952px;
-      height: 700px;
-      border-radius: 36px;
-      background: #0f1a24;
-      box-shadow: inset 0 0 30px #00000099, 0 10px 20px black;
+    /* CANVAS */
+    .canvas-wrapper {
+      width: 100%;
+      aspect-ratio: 952/700;
       margin-bottom: 20px;
+      border-radius: clamp(24px, 4vw, 36px);
+      overflow: hidden;
+      background: #0f1a24;
+      box-shadow: inset 0 0 30px #00000099;
     }
 
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #0f1a24;
+    }
+
+    /* КОНТРОЛЫ PLINKO */
     .plinko-controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: #1b2432;
-      padding: 20px 30px;
+      padding: clamp(15px, 2.5vw, 20px) clamp(20px, 3vw, 30px);
       border-radius: 60px;
       border: 1px solid #3a4a60;
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
     .bet-section {
       display: flex;
       align-items: center;
-      gap: 25px;
+      gap: clamp(10px, 2vw, 25px);
       background: #121b28;
-      padding: 8px 25px;
+      padding: clamp(6px, 1.5vw, 8px) clamp(15px, 3vw, 25px);
       border-radius: 50px;
+      flex: 1;
+      min-width: 250px;
     }
 
     .bet-label {
       color: #a5bbdd;
-      font-size: 20px;
+      font-size: clamp(16px, 2.5vw, 20px);
       font-weight: 500;
+      white-space: nowrap;
     }
 
     .bet-input {
       background: #1f3147;
       border: 2px solid #ffd966;
       color: #ffd966;
-      font-size: 28px;
+      font-size: clamp(22px, 3.5vw, 28px);
       font-weight: 700;
-      width: 130px;
-      padding: 12px 20px;
+      width: min(130px, 25vw);
+      padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 20px);
       border-radius: 50px;
       text-align: center;
       outline: none;
@@ -319,15 +339,16 @@
     .drop-ball-btn {
       background: linear-gradient(145deg, #f0b429, #d4941f);
       border: none;
-      font-size: 32px;
+      font-size: clamp(22px, 4vw, 32px);
       font-weight: 800;
-      padding: 16px 60px;
+      padding: clamp(12px, 2vw, 16px) clamp(30px, 5vw, 60px);
       border-radius: 60px;
       color: #141e2c;
       cursor: pointer;
-      box-shadow: 0 8px 0 #8f6016, 0 8px 25px #f0b429;
+      box-shadow: 0 6px 0 #8f6016, 0 8px 25px #f0b429;
       transition: 0.08s linear;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .drop-ball-btn:active {
@@ -337,21 +358,24 @@
 
     .level-panel {
       display: flex;
-      gap: 12px;
+      gap: clamp(8px, 1.5vw, 12px);
       margin-top: 16px;
+      flex-wrap: wrap;
     }
 
     .level-btn {
       background: #253141;
       border: 2px solid #4d637f;
       color: #adc4f0;
-      font-size: 18px;
+      font-size: clamp(14px, 2.5vw, 18px);
       font-weight: 700;
-      padding: 12px 30px;
+      padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 30px);
       border-radius: 40px;
       cursor: pointer;
       transition: 0.2s;
       flex: 1;
+      min-width: 100px;
+      text-align: center;
     }
 
     .level-btn.active {
@@ -382,7 +406,7 @@
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
       <div class="welcome-title">SMEET</div>
-      <div class="welcome-subtitle">CASINO • PLINKO</div>
+      <div class="welcome-subtitle">CASINO</div>
       <div class="loading-dots">
         <span></span>
         <span></span>
@@ -409,7 +433,9 @@
 
     <!-- PLINKO -->
     <div id="plinkoContainer">
-      <canvas id="plinkoCanvas" width="952" height="700"></canvas>
+      <div class="canvas-wrapper">
+        <canvas id="plinkoCanvas" width="952" height="700"></canvas>
+      </div>
 
       <div class="plinko-controls">
         <div class="bet-section">
@@ -427,18 +453,18 @@
     </div>
   </div>
 
-  <!-- МЕНЮ ИГР (ПОЛНОЭКРАННОЕ) -->
+  <!-- МЕНЮ ИГР -->
   <div class="games-menu" id="gamesMenu">
     <div class="menu-close-btn" id="menuCloseBtn">✕</div>
     <div class="game-menu-item active" data-game="plinko">🎲 PLINKO</div>
-    <div class="game-menu-item disabled" data-game="dice">🎲 DICE (SOON)</div>
-    <div class="game-menu-item disabled" data-game="slots">🎰 SLOTS (SOON)</div>
-    <div class="game-menu-item disabled" data-game="roulette">🎡 ROULETTE (SOON)</div>
+    <div class="game-menu-item disabled" data-game="dice">🎲 DICE</div>
+    <div class="game-menu-item disabled" data-game="slots">🎰 SLOTS</div>
+    <div class="game-menu-item disabled" data-game="roulette">🎡 ROULETTE</div>
   </div>
 
   <script>
     (function() {
-      // ПАДАЮЩИЕ ЗВЕЗДЫ
+      // Падающие звезды
       function createStar() {
         const star = document.createElement('div');
         star.className = 'star';
@@ -454,7 +480,7 @@
       setInterval(createStar, 2000);
       for (let i = 0; i < 10; i++) setTimeout(createStar, i * 200);
 
-      // ПРИВЕТСТВИЕ -> ИГРА
+      // Приветствие
       const welcomeScreen = document.getElementById('welcomeScreen');
       const app = document.getElementById('app');
 
@@ -466,7 +492,7 @@
         }, 1000);
       }, 3000);
 
-      // БАЛАНС
+      // Баланс
       let balance = 1000;
       const balanceEl = document.getElementById('balanceDisplay');
 
@@ -479,7 +505,7 @@
         updateBalance();
       });
 
-      // МЕНЮ ИГР
+      // Меню игр
       const backButton = document.getElementById('backButton');
       const gamesMenu = document.getElementById('gamesMenu');
       const menuCloseBtn = document.getElementById('menuCloseBtn');
@@ -492,15 +518,11 @@
         gamesMenu.classList.remove('active');
       });
 
-      // Выбор игры из меню
+      // Выбор игры
       document.querySelectorAll('.game-menu-item').forEach(item => {
         item.addEventListener('click', () => {
           if (item.classList.contains('disabled')) return;
-          
-          // Здесь потом будем переключать игры
           gamesMenu.classList.remove('active');
-          
-          // Подсвечиваем активную игру
           document.querySelectorAll('.game-menu-item').forEach(i => i.classList.remove('active'));
           item.classList.add('active');
         });
@@ -516,10 +538,11 @@
       let pins = [];
       let multipliers = [];
 
+      // ПРАВИЛЬНЫЕ КОЭФФИЦИЕНТЫ: минимальные по центру, растут к краям
       const levelMultipliers = {
-        easy:   [1.2, 1.5, 2.0, 3.0, 5.0, 3.0, 2.0, 1.5, 1.2],
-        medium: [0.7, 1.0, 1.5, 3.0, 10.0, 3.0, 1.5, 1.0, 0.7],
-        hard:   [0.3, 0.7, 1.2, 2.5, 20.0, 50.0, 20.0, 2.5, 1.2, 0.7, 0.3]
+        easy:   [5.0, 3.0, 2.0, 1.5, 1.2, 1.5, 2.0, 3.0, 5.0],
+        medium: [10.0, 5.0, 3.0, 1.5, 1.0, 1.5, 3.0, 5.0, 10.0],
+        hard:   [50.0, 20.0, 10.0, 5.0, 2.0, 1.2, 2.0, 5.0, 10.0, 20.0, 50.0]
       };
 
       function generateField(level) {
@@ -556,10 +579,10 @@
         for (let i = 0; i < mults.length; i++) {
           let color;
           const v = mults[i];
-          if (v < 1) color = '#6c7a96';
-          else if (v < 2) color = '#4f9fff';
-          else if (v < 4) color = '#42d692';
-          else if (v < 8) color = '#ffb347';
+          if (v <= 1.2) color = '#6c7a96';
+          else if (v <= 2) color = '#4f9fff';
+          else if (v <= 5) color = '#42d692';
+          else if (v <= 10) color = '#ffb347';
           else color = '#ff6b6b';
           
           multipliers.push({ x: i * cellW, w: cellW, value: v, color });
