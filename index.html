@@ -28,29 +28,38 @@ h1 {
         0 0 50px #FF4500;
 }
 
-/* Падающие фишки */
+/* Фишки с текстурами */
 .chip {
     position: absolute;
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: radial-gradient(circle, #FFD700 20%, #FF4500 100%);
-    border: 5px solid #FF8C00;
+    background-image: url('https://via.placeholder.com/60x60.png?text=Chip'); /* Текстура фишки */
+    background-size: cover;
+    background-position: center;
+    animation: fall 4s infinite, rotate 6s infinite ease-in-out, bounce 1s infinite alternate;
     box-shadow: 0 0 15px rgba(255, 140, 0, 0.5), 0 0 30px rgba(255, 140, 0, 0.3);
-    animation: fall 4s infinite, rotate 6s infinite ease-in-out;
+    transform-style: preserve-3d;
 }
 
-/* Анимация падения фишек */
+/* Падение фишек */
 @keyframes fall {
     0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
     50% { transform: translateY(50vh) rotate(180deg); opacity: 0.8; }
     100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 
-/* Анимация вращения фишек */
+/* Вращение фишек */
 @keyframes rotate {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Эффект отскока фишек (физика) */
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+    100% { transform: translateY(0); }
 }
 </style>
 </head>
@@ -59,8 +68,8 @@ h1 {
 <h1>🎰 SMEET 🎰</h1>
 
 <script>
-// Генерация падающих фишек с случайными размерами и анимацией
-const numChips = 20;  // Увеличим количество фишек
+// Генерация падающих фишек с изображениями и случайными эффектами
+const numChips = 20;  // Количество фишек
 
 for (let i = 0; i < numChips; i++) {
     const chip = document.createElement('div');
@@ -69,22 +78,40 @@ for (let i = 0; i < numChips; i++) {
     // Случайное размещение фишек по ширине экрана
     chip.style.left = Math.random() * window.innerWidth + 'px';
     
-    // Случайная продолжительность анимации (падает быстрее или медленнее)
+    // Случайная продолжительность анимации
     chip.style.animationDuration = (3 + Math.random() * 5) + 's';
     
-    // Случайное задержка, чтобы фишки не падали одновременно
+    // Случайная задержка анимации
     chip.style.animationDelay = Math.random() * 5 + 's';
     
-    // Добавим случайный размер фишки
+    // Случайный угол для вращения
+    chip.style.transform = `rotate(${Math.random() * 360}deg)`;
+    
+    // Случайный размер фишек
     const size = 50 + Math.random() * 30;  // Размер от 50 до 80px
     chip.style.width = size + 'px';
     chip.style.height = size + 'px';
-    
-    // Добавим случайный угол для вращения фишек
-    chip.style.transform = `rotate(${Math.random() * 360}deg)`;
-    
-    // Добавим фишку на страницу
+
+    // Добавляем фишку на экран
     document.body.appendChild(chip);
+
+    // Простейшая физика столкновений (фишки отскакивают друг от друга)
+    setInterval(() => {
+        const allChips = document.querySelectorAll('.chip');
+        allChips.forEach(otherChip => {
+            if (chip !== otherChip) {
+                const dx = chip.offsetLeft - otherChip.offsetLeft;
+                const dy = chip.offsetTop - otherChip.offsetTop;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < chip.offsetWidth) {
+                    // Отскакивание фишек от друг друга
+                    const angle = Math.atan2(dy, dx);
+                    const force = 10;
+                    chip.style.transform = `rotate(${Math.random() * 360}deg) translateX(${Math.cos(angle) * force}px) translateY(${Math.sin(angle) * force}px)`;
+                }
+            }
+        });
+    }, 20);
 }
 </script>
 
