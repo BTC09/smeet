@@ -507,8 +507,8 @@
 <body>
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
-      <div class="welcome-title">ꜱᴍᴇᴇᴛ</div>
-      <div class="welcome-subtitle">ᴘʟɪɴᴋᴏ ᴅᴇʟᴜxᴇ</div>
+      <div class="welcome-title">SMEET</div>
+      <div class="welcome-subtitle">PLINKO DELUXE</div>
       <div class="loading-dots">
         <span></span>
         <span></span>
@@ -529,15 +529,15 @@
     </div>
 
     <div id="gamesMenu" class="games-menu">
-      <div class="game-menu-item active" data-game="plinko">ᴘʟɪɴᴋᴏ</div>
-      <div class="game-menu-item disabled" data-game="dice">ᴅɪᴄᴇ</div>
-      <div class="game-menu-item disabled" data-game="slots">sʟᴏᴛs</div>
-      <div class="game-menu-item disabled" data-game="roulette">ʀᴏᴜʟᴇᴛᴛᴇ</div>
+      <div class="game-menu-item active" data-game="plinko">PLINKO</div>
+      <div class="game-menu-item disabled" data-game="dice">DICE</div>
+      <div class="game-menu-item disabled" data-game="slots">SLOTS</div>
+      <div class="game-menu-item disabled" data-game="roulette">ROULETTE</div>
     </div>
 
     <div id="plinkoContainer">
       <div class="back-to-menu" id="backToMenuBtn">
-        <span>←</span> ʙ ᴍᴇʜю
+        <span>←</span> В МЕНЮ
       </div>
       
       <div class="canvas-wrapper">
@@ -546,16 +546,16 @@
 
       <div class="plinko-controls">
         <div class="bet-section">
-          <span class="bet-label">ᴄᴛᴀʙᴋᴀ ⭐</span>
+          <span class="bet-label">СТАВКА ⭐</span>
           <input type="number" id="betInput" class="bet-input" value="50" min="10" step="10">
         </div>
-        <button class="drop-ball-btn" id="dropBallBtn">ᴋɪʜʏᴛʙ</button>
+        <button class="drop-ball-btn" id="dropBallBtn">КИНУТЬ</button>
       </div>
 
       <div class="level-panel">
-        <button class="level-btn active" data-level="easy">🌱 ʟᴇɢᴋɪᴊ</button>
-        <button class="level-btn" data-level="medium">⚡ ᴄᴘᴇᴅʜᴇᴇ</button>
-        <button class="level-btn" data-level="hard">🔥 xᴀᴘᴅ</button>
+        <button class="level-btn active" data-level="easy">🌱 ЛЁГКИЙ</button>
+        <button class="level-btn" data-level="medium">⚡ СРЕДНИЙ</button>
+        <button class="level-btn" data-level="hard">🔥 ХАРД</button>
       </div>
     </div>
   </div>
@@ -723,7 +723,7 @@
           this.bet = bet;
           this.trail = [];
           this.glowIntensity = Math.random() * 0.5 + 0.5;
-          this.hue = 0;
+          this.hue = Math.random() * 360;
         }
 
         update() {
@@ -814,8 +814,18 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
 
-        // Туманность
-        for (let i = 0; i < 5; i++) {
+        // Туманности
+        for (let i = 0; i < 3; i++) {
           ctx.beginPath();
-          ctx.arc(200 + i*150, 200 + i*80, 150, 0, Math.PI*2);
-          ctx.fillStyle = `rgba(100, 150, 255, 0.
+          ctx.arc(200 + i*250, 150 + i*100, 120, 0, Math.PI*2);
+          ctx.fillStyle = `rgba(100, 150, 255, 0.03)`;
+          ctx.fill();
+        }
+        
+        ctx.beginPath();
+        ctx.arc(700, 400, 180, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255, 100, 150, 0.03)`;
+        ctx.fill();
+
+        // Падающие звезды на канвасе
+        for (let i =
