@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Smeet Casino</title>
 <style>
+/* Общий стиль страницы */
 body {
     margin: 0;
     height: 100vh;
@@ -27,19 +28,29 @@ h1 {
         0 0 50px #FF4500;
 }
 
-/* Фишки */
+/* Падающие фишки */
 .chip {
     position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    border: 4px solid #FFD700;
-    animation: fall linear infinite;
+    background: radial-gradient(circle, #FFD700 20%, #FF4500 100%);
+    border: 5px solid #FF8C00;
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.5), 0 0 30px rgba(255, 140, 0, 0.3);
+    animation: fall 4s infinite, rotate 6s infinite ease-in-out;
 }
 
+/* Анимация падения фишек */
 @keyframes fall {
-    0% { transform: translateY(-60px) rotate(0deg); opacity: 1; }
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+    50% { transform: translateY(50vh) rotate(180deg); opacity: 0.8; }
     100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+/* Анимация вращения фишек */
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 </head>
@@ -48,15 +59,31 @@ h1 {
 <h1>🎰 SMEET 🎰</h1>
 
 <script>
-// Генерация падающих фишек
-const numChips = 15;
+// Генерация падающих фишек с случайными размерами и анимацией
+const numChips = 20;  // Увеличим количество фишек
 
 for (let i = 0; i < numChips; i++) {
     const chip = document.createElement('div');
     chip.classList.add('chip');
+    
+    // Случайное размещение фишек по ширине экрана
     chip.style.left = Math.random() * window.innerWidth + 'px';
+    
+    // Случайная продолжительность анимации (падает быстрее или медленнее)
     chip.style.animationDuration = (3 + Math.random() * 5) + 's';
+    
+    // Случайное задержка, чтобы фишки не падали одновременно
     chip.style.animationDelay = Math.random() * 5 + 's';
+    
+    // Добавим случайный размер фишки
+    const size = 50 + Math.random() * 30;  // Размер от 50 до 80px
+    chip.style.width = size + 'px';
+    chip.style.height = size + 'px';
+    
+    // Добавим случайный угол для вращения фишек
+    chip.style.transform = `rotate(${Math.random() * 360}deg)`;
+    
+    // Добавим фишку на страницу
     document.body.appendChild(chip);
 }
 </script>
