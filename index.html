@@ -22,16 +22,20 @@ h1 {
     color: #FFD700;
     text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FF4500;
     white-space: nowrap;
-    overflow: hidden;
-    width: 0;               /* начальная ширина */
+    /* начинаем с клиппинга справа */
+    clip-path: inset(0 100% 0 0);
     animation: revealText 2s forwards ease-out;
     z-index: 10;
 }
 
-/* Анимация появления текста слева направо */
+/* Анимация появления текста слева направо без смещения */
 @keyframes revealText {
-    from { width: 0; }
-    to { width: 100%; }
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
 }
 </style>
 </head>
