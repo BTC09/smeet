@@ -504,7 +504,10 @@
       let balls = [];
       let pins = [];
       let multipliers = [];
-      let ballsInPlay = 0; // Счетчик активных шариков
+      let ballsInPlay = 0;
+      
+      // Массив для хранения позиций верхних точек
+      let topPinPositions = [];
 
       const levelMultipliers = {
         easy:   [5.0, 3.0, 1.8, 1.2, 0.7, 0.3, 0.7, 1.2, 1.8, 3.0, 5.0],
@@ -512,7 +515,6 @@
         hard:   [50.0, 20.0, 10.0, 5.0, 2.5, 1.2, 0.5, 0.1, 0.5, 1.2, 2.5, 5.0, 10.0, 20.0, 50.0]
       };
 
-      // Функция блокировки/разблокировки кнопок уровня
       function setLevelButtonsState(disabled) {
         document.querySelectorAll('.level-btn').forEach(btn => {
           if (disabled) {
@@ -525,6 +527,8 @@
 
       function generateField(level) {
         pins = [];
+        topPinPositions = []; // Очищаем массив верхних точек
+        
         const mults = levelMultipliers[level];
         
         const rows = 14;
@@ -551,6 +555,11 @@
             const x = offsetX + rowOffset + col * spacingX + (row % 2 ? spacingX/2 : 0);
             const y = startY + row * spacingY;
             pins.push({ x, y, r: pinR });
+            
+            // Если это первый ряд (верхний), сохраняем позицию
+            if (row === 0) {
+              topPinPositions.push(x);
+            }
           }
         }
 
@@ -641,10 +650,8 @@
               flashCell(idx);
             }
             
-            // Уменьшаем счетчик активных шариков
             ballsInPlay--;
             if (ballsInPlay === 0) {
-              // Разблокируем кнопки уровня
               setLevelButtonsState(false);
             }
             
@@ -770,19 +777,19 @@
         balance -= bet;
         updateBalance();
         
-        // РАЗНЫЕ МЕСТА СПАВНА:
-        // Случайная позиция от левого края до правого
-        const minX = 50;
-        const maxX = width - 50;
-        const startX = minX + Math.random() * (maxX - minX);
-        
-        balls.push(new Ball(startX, 40, bet));
-        
-        // Увеличиваем счетчик активных шариков
-        ballsInPlay++;
-        
-        // Блокируем кнопки уровня
-        setLevelButtonsState(true);
+        // Выбираем СЛУЧАЙНУЮ верхнюю точку из массива topPinPositions
+        if (topPinPositions.length > 0) {
+          const randomIndex = Math.floor(Math.random() * topPinPositions.length);
+          const startX = topPinPositions[randomIndex];
+          
+          // Добавляем небольшое случайное смещение для естественности (±5px)
+          const finalX = startX + (Math.random() * 10 - 5);
+          
+          balls.push(new Ball(finalX, 40, bet));
+          
+          ballsInPlay++;
+          setLevelButtonsState(true);
+        }
       });
 
       document.querySelectorAll('.level-btn').forEach(btn => {
