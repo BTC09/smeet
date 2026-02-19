@@ -1,170 +1,120 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smeet Casino</title>
-    <script src="https://cdn.jsdelivr.net/npm/matter-js"></script> <!-- Подключаем Matter.js -->
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            height: 100vh;
-            background: radial-gradient(circle at center, #1a0000 0%, #000000 80%);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            position: relative; /* Для использования с абсолютным позиционированием */
-        }
-
-        h1 {
-            position: absolute; /* Отцентрируем заголовок */
-            font-size: 100px;
-            color: #FFD700;
-            text-shadow:
-                0 0 10px #FFD700,
-                0 0 20px #FFD700,
-                0 0 30px #FF4500,
-                0 0 40px #FF4500,
-                0 0 50px #FF4500;
-            z-index: 10; /* Чтобы он был поверх фишек */
-        }
-
-        /* Звезды */
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: twinkle 2s infinite ease-in-out;
-        }
-
-        /* Анимация мерцания звезд */
-        @keyframes twinkle {
-            0%, 100% {
-                opacity: 0.8;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        /* Падающие кометы */
-        .comet {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, rgba(255,255,255,0.8), rgba(255,255,255,0));
-            border-radius: 50%;
-            opacity: 1;
-            animation: fall 5s infinite linear, tail 1s infinite linear;
-        }
-
-        /* Анимация падения комет */
-        @keyframes fall {
-            0% { transform: translateY(-100px) translateX(0); opacity: 1; }
-            100% { transform: translateY(100vh) translateX(200px); opacity: 0; }
-        }
-
-        /* Эффект хвоста кометы */
-        @keyframes tail {
-            0% { transform: scale(1) translateX(0); }
-            100% { transform: scale(2) translateX(40px); }
-        }
-
-        /* Падающие фишки с хвостом */
-        .chip {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: #FFD700;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
-            animation: fall 3s infinite, tailEffect 0.5s ease-out forwards;
-        }
-
-        /* Анимация падения фишек */
-        @keyframes fall {
-            0% { transform: translateY(-100px) translateX(0); opacity: 1; }
-            100% { transform: translateY(100vh) translateX(100px); opacity: 0; }
-        }
-
-        /* Эффект хвоста фишки */
-        @keyframes tailEffect {
-            0% { transform: scale(1) translateX(0); opacity: 1; }
-            100% { transform: scale(2) translateX(20px); opacity: 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smeet Casino</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        font-family: Arial, sans-serif;
+    }
+    h1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 100px;
+        color: #FFD700;
+        text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FF4500;
+        z-index: 10;
+    }
+</style>
 </head>
 <body>
 
 <h1>🎰 SMEET 🎰</h1>
+<canvas id="sky"></canvas>
 
 <script>
-// Инициализация Matter.js
-const { Engine, Render, World, Bodies } = Matter;
+// Canvas setup
+const canvas = document.getElementById('sky');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-// Создание движка Matter.js
-const engine = Engine.create();
-const world = engine.world;
+const stars = [];
+const comets = [];
 
-// Создание рендера
-const render = Render.create({
-    element: document.body,
-    engine: engine,
-    options: {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        wireframes: false, // Для 3D
+// Создание звезд
+for (let i = 0; i < 200; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5 + 0.5,
+        alpha: Math.random(),
+        alphaChange: Math.random() * 0.02 + 0.005
+    });
+}
+
+// Создание комет
+for (let i = 0; i < 5; i++) {
+    comets.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height / 2,
+        length: Math.random() * 80 + 50,
+        speedX: Math.random() * 2 + 1,
+        speedY: Math.random() * 2 + 1,
+        radius: Math.random() * 3 + 2
+    });
+}
+
+// Функция рисования звезд
+function drawStars() {
+    for (let s of stars) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+        ctx.fill();
+        ctx.closePath();
+        s.alpha += s.alphaChange;
+        if (s.alpha > 1 || s.alpha < 0) s.alphaChange *= -1;
     }
+}
+
+// Функция рисования комет
+function drawComets() {
+    for (let c of comets) {
+        // Создаем хвост кометы
+        const gradient = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.length);
+        gradient.addColorStop(0, 'rgba(255,255,255,1)');
+        gradient.addColorStop(1, 'rgba(255,255,255,0)');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+
+        // Двигаем комету
+        c.x += c.speedX;
+        c.y += c.speedY;
+
+        // Сбрасываем комету, если она ушла с экрана
+        if (c.x > canvas.width + 50 || c.y > canvas.height + 50) {
+            c.x = Math.random() * canvas.width;
+            c.y = -50;
+        }
+    }
+}
+
+// Анимация
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawStars();
+    drawComets();
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// Подстраиваем canvas под размер окна
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 });
-
-Render.run(render);
-
-// Создание падающих фишек (случайные позиции)
-function createFallingChips(numChips) {
-    for (let i = 0; i < numChips; i++) {
-        const chip = document.createElement('div');
-        chip.classList.add('chip');
-        // Случайная позиция для фишек
-        chip.style.left = Math.random() * window.innerWidth + 'px';
-        chip.style.top = -20 + 'px'; // Начинаем падение с верхней части экрана
-        chip.style.animationDuration = (Math.random() * 3 + 3) + 's'; // Случайная продолжительность падения
-        chip.style.animationDelay = Math.random() * 3 + 's'; // Случайная задержка
-
-        document.body.appendChild(chip);
-    }
-}
-
-// Создание падающих комет
-function createComets(numComets) {
-    for (let i = 0; i < numComets; i++) {
-        const comet = document.createElement('div');
-        comet.classList.add('comet');
-        // Случайная позиция для комет
-        comet.style.left = Math.random() * window.innerWidth + 'px';
-        comet.style.top = Math.random() * window.innerHeight / 2 + 'px'; // Кометы появляются в верхней половине экрана
-        comet.style.animationDuration = (Math.random() * 5 + 5) + 's'; // Случайная продолжительность падения
-
-        document.body.appendChild(comet);
-    }
-}
-
-// Создаем фишки и кометы
-createFallingChips(20);  // 20 фишек
-createComets(5);         // 5 комет
-
-// Запускаем движок Matter.js
-Engine.run(engine);
 </script>
 
 </body>
