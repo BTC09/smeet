@@ -1,118 +1,128 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Smeet Casino</title>
-<style>
-/* Общий стиль страницы */
-body {
-    margin: 0;
-    height: 100vh;
-    background: radial-gradient(circle at center, #1a0000 0%, #000000 80%);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Arial, sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smeet Casino</title>
+    <script src="https://cdn.jsdelivr.net/npm/matter-js"></script> <!-- Подключаем Matter.js -->
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a0000 0%, #000000 80%);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
 
-/* Неоновая надпись */
-h1 {
-    font-size: 100px;
-    color: #FFD700;
-    text-shadow:
-        0 0 10px #FFD700,
-        0 0 20px #FFD700,
-        0 0 30px #FF4500,
-        0 0 40px #FF4500,
-        0 0 50px #FF4500;
-}
+        h1 {
+            font-size: 100px;
+            color: #FFD700;
+            text-shadow:
+                0 0 10px #FFD700,
+                0 0 20px #FFD700,
+                0 0 30px #FF4500,
+                0 0 40px #FF4500,
+                0 0 50px #FF4500;
+        }
 
-/* Фишки с текстурами */
-.chip {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-image: url('https://via.placeholder.com/60x60.png?text=Chip'); /* Текстура фишки */
-    background-size: cover;
-    background-position: center;
-    animation: fall 4s infinite, rotate 6s infinite ease-in-out, bounce 1s infinite alternate;
-    box-shadow: 0 0 15px rgba(255, 140, 0, 0.5), 0 0 30px rgba(255, 140, 0, 0.3);
-    transform-style: preserve-3d;
-}
+        /* Фишки с изображениями */
+        .chip {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5), 0 0 30px rgba(255, 140, 0, 0.3);
+            transform-style: preserve-3d;
+            animation: fall 4s infinite, bounce 1s infinite alternate;
+        }
 
-/* Падение фишек */
-@keyframes fall {
-    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-    50% { transform: translateY(50vh) rotate(180deg); opacity: 0.8; }
-    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-}
+        /* Анимация падения фишек */
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(50vh) rotate(180deg); opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
 
-/* Вращение фишек */
-@keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        /* Эффект отскока */
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+            100% { transform: translateY(0); }
+        }
 
-/* Эффект отскока фишек (физика) */
-@keyframes bounce {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-30px); }
-    100% { transform: translateY(0); }
-}
-</style>
+        /* Для 3D-эффекта */
+        @keyframes rotateX {
+            0% { transform: rotateX(0deg); }
+            100% { transform: rotateX(360deg); }
+        }
+
+        @keyframes rotateY {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+    </style>
 </head>
 <body>
 
 <h1>🎰 SMEET 🎰</h1>
 
 <script>
-// Генерация падающих фишек с изображениями и случайными эффектами
-const numChips = 20;  // Количество фишек
+// Инициализация Matter.js
+const { Engine, Render, World, Bodies, MouseConstraint, Mouse } = Matter;
+
+// Создание движка Matter.js
+const engine = Engine.create();
+const world = engine.world;
+
+// Создание рендера
+const render = Render.create({
+    element: document.body,
+    engine: engine,
+    options: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        wireframes: false, // Для 3D
+    }
+});
+
+Render.run(render);
+
+// Создание движущихся объектов (фишек)
+const numChips = 20;
+const chips = [];
 
 for (let i = 0; i < numChips; i++) {
-    const chip = document.createElement('div');
-    chip.classList.add('chip');
-    
-    // Случайное размещение фишек по ширине экрана
-    chip.style.left = Math.random() * window.innerWidth + 'px';
-    
-    // Случайная продолжительность анимации
-    chip.style.animationDuration = (3 + Math.random() * 5) + 's';
-    
-    // Случайная задержка анимации
-    chip.style.animationDelay = Math.random() * 5 + 's';
-    
-    // Случайный угол для вращения
-    chip.style.transform = `rotate(${Math.random() * 360}deg)`;
-    
-    // Случайный размер фишек
-    const size = 50 + Math.random() * 30;  // Размер от 50 до 80px
-    chip.style.width = size + 'px';
-    chip.style.height = size + 'px';
-
-    // Добавляем фишку на экран
-    document.body.appendChild(chip);
-
-    // Простейшая физика столкновений (фишки отскакивают друг от друга)
-    setInterval(() => {
-        const allChips = document.querySelectorAll('.chip');
-        allChips.forEach(otherChip => {
-            if (chip !== otherChip) {
-                const dx = chip.offsetLeft - otherChip.offsetLeft;
-                const dy = chip.offsetTop - otherChip.offsetTop;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < chip.offsetWidth) {
-                    // Отскакивание фишек от друг друга
-                    const angle = Math.atan2(dy, dx);
-                    const force = 10;
-                    chip.style.transform = `rotate(${Math.random() * 360}deg) translateX(${Math.cos(angle) * force}px) translateY(${Math.sin(angle) * force}px)`;
-                }
+    const chip = Bodies.circle(Math.random() * window.innerWidth, -50, 30, {
+        render: {
+            sprite: {
+                texture: 'https://via.placeholder.com/60x60.png?text=Chip', // Изображение фишки
+                xScale: 0.1, // Масштаб
+                yScale: 0.1
             }
-        });
-    }, 20);
+        }
+    });
+
+    World.add(world, chip);
+    chips.push(chip);
 }
+
+// Гравитация и физика
+engine.world.gravity.y = 1;
+
+// Добавляем "мышь", чтобы взаимодействовать с фишками
+const mouse = Mouse.create(render.canvas);
+const mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse
+});
+World.add(world, mouseConstraint);
+
+// Запускаем движок
+Engine.run(engine);
 </script>
 
 </body>
