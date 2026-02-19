@@ -6,6 +6,12 @@
     <title>Smeet Casino</title>
     <script src="https://cdn.jsdelivr.net/npm/matter-js"></script> <!-- Подключаем Matter.js -->
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             height: 100vh;
@@ -15,9 +21,11 @@
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
+            position: relative; /* Для использования с абсолютным позиционированием */
         }
 
         h1 {
+            position: absolute; /* Отцентрируем заголовок */
             font-size: 100px;
             color: #FFD700;
             text-shadow:
@@ -26,6 +34,7 @@
                 0 0 30px #FF4500,
                 0 0 40px #FF4500,
                 0 0 50px #FF4500;
+            z-index: 10; /* Чтобы он был поверх фишек */
         }
 
         /* Фишки с изображениями */
