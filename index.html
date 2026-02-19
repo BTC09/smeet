@@ -168,3 +168,65 @@ function animate() {
       ball.y += ball.vy;
 
      
+      // Отскок от штырей
+      pins.forEach(pin => {
+        const dx = pin.x - ball.x, dy = pin.y - ball.y, dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 6 + ballRadius) {
+          const angle = Math.atan2(dy, dx);
+          const targetDist = 6 + ballRadius;
+          const ax = Math.cos(angle) * (targetDist - dist);
+          const ay = Math.sin(angle) * (targetDist - dist);
+          ball.x -= ax;
+          ball.y -= ay;
+          const bounce = 0.7;
+          ball.vx = -ball.vx * bounce;
+          ball.vy = -ball.vy * bounce;
+        }
+      });
+
+      // Отскок от бортиков
+      if (ball.x - ballRadius < 10) { ball.x = 10 + ballRadius; ball.vx *= -0.7; }
+      if (ball.x + ballRadius > canvas.width - 10) { ball.x = canvas.width - 10 - ballRadius; ball.vx *= -0.7; }
+      if (ball.y + ballRadius > canvas.height - 50) {
+        const sec = Math.floor(ball.x / (canvas.width / sections.length));
+        balance += ball.bet * sections[sec].coef;
+        document.getElementById('balance').innerText = balance;
+        history.push(sections[sec].coef);
+        balls.splice(index, 1);
+      }
+
+      // Рисуем шарик
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = '#ff5555';
+      ctx.fill();
+      ctx.closePath();
+    });
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// ---------- Приветствие → Меню ----------
+const welcomeDiv = document.getElementById('welcome');
+const menuDiv = document.getElementById('menu');
+setTimeout(() => {
+  welcomeDiv.classList.add('fade-out');
+  setTimeout(() => { welcomeDiv.style.display = 'none'; menuDiv.style.display = 'block'; }, 1000);
+}, 3000);
+
+// Старт игры
+function startPlinko(selectedLevel) {
+  level = selectedLevel;
+  plinkoActive = true;
+  menuDiv.style.display = 'none';
+  initPlinko();
+  document.getElementById('ui').style.display = 'block';
+}
+
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+</script>
+</body>
+</html>
