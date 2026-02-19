@@ -5,175 +5,166 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SMEET Casino - Plinko</title>
 <style>
-body{margin:0;overflow:hidden;background:#000;font-family:Arial;}
-canvas{display:block;}
+body { margin: 0; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
 
-#welcome{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-size:80px;color:#FFD700;text-shadow:0 0 10px #FFD700,0 0 20px #FFD700;
-  white-space:nowrap;overflow:hidden;clip-path:inset(0 100% 0 0);
-  animation:revealText 2s forwards ease-out; z-index:10;
-}
-@keyframes revealText{from{clip-path:inset(0 100% 0 0);}to{clip-path:inset(0 0 0 0);}}
-.fade-out{animation:fadeOut 1s forwards;}
-@keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
+canvas { display: block; }
 
-#menu{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  color:#fff;text-align:center; display:none; z-index:10;
+#welcome {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 80px; color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FF4500;
+  white-space: nowrap; overflow: hidden; clip-path: inset(0 100% 0 0);
+  animation: revealText 2s forwards ease-out; z-index: 10;
 }
-#menu button{font-size:25px;margin:15px;padding:10px 30px;background:#222;color:#FFD700;border:2px solid #FFD700;cursor:pointer;border-radius:10px;transition:0.3s;}
-#menu button:hover{background:#FFD700;color:#000;}
 
-#ui{
-  position:absolute;top:10px;left:10px;color:#fff; z-index:10;font-size:20px;
+@keyframes revealText { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+.fade-out { animation: fadeOut 1s forwards; }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+#menu {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: #fff; text-align: center; display: none; z-index: 10;
 }
-#ui label{margin-right:10px;}
+
+#menu button {
+  font-size: 25px; margin: 15px; padding: 10px 30px; background: #222; color: #FFD700;
+  border: 2px solid #FFD700; cursor: pointer; border-radius: 10px; transition: 0.3s;
+}
+
+#menu button:hover { background: #FFD700; color: #000; }
+
+#ui {
+  position: absolute; top: 10px; left: 10px; color: #fff; z-index: 10; font-size: 20px;
+}
+
+#ui label { margin-right: 10px; }
+#ui input { width: 60px; }
+#ui button {
+  font-size: 20px; padding: 10px 30px; margin-top: 10px; background: #222; color: #FFD700;
+  border: 2px solid #FFD700; border-radius: 10px; cursor: pointer; transition: 0.3s;
+}
+#ui button:hover { background: #FFD700; color: #000; }
 </style>
 </head>
 <body>
 
 <div id="welcome">🎰 SMEET 🎰</div>
 <div id="menu">
-<h2>Выберите игру</h2>
-<button onclick="startPlinko()">Плинко</button>
-<button onclick="alert('Слоты пока не готовы!')">Слоты</button>
+  <h2>Выберите уровень</h2>
+  <button onclick="startPlinko('easy')">Легкий</button>
+  <button onclick="startPlinko('medium')">Средний</button>
+  <button onclick="startPlinko('hard')">Тяжелый</button>
 </div>
 
 <div id="ui" style="display:none;">
   <label>Баланс: <span id="balance">1000</span></label>
-  <label>Ставка: <input type="number" id="bet" value="50" min="10" max="1000" style="width:60px"></label>
+  <label>Ставка: <input type="number" id="bet" value="50" min="10" max="1000"></label>
   <button onclick="dropBall()">Запустить шарик</button>
 </div>
 
 <canvas id="gameCanvas"></canvas>
 
 <script>
-const canvas=document.getElementById('gameCanvas');
-const ctx=canvas.getContext('2d');
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-// ---------- фон ----------
-const stars=[], comets=[];
-for(let i=0;i<200;i++) stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,radius:Math.random()*1.5+0.5,alpha:Math.random(),alphaChange:Math.random()*0.01+0.002});
-for(let i=0;i<5;i++) comets.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height/2,speedX:Math.random()*2+1,speedY:Math.random()*2+1,radius:Math.random()*3+2,trail:[]});
+let balance = 1000;
+let history = [];
+let level = 'easy';
+let sections = [], pins = [], balls = [];
 
-// ---------- Плинко ----------
-let plinkoActive=false;
-const cols=11, pinRadius=6, pinSpacingX=80, pinSpacingY=80, ballRadius=12;
-let sections=[], pins=[], balls=[];
-let balance=1000, history=[];
+// Уровни сложности и коэффициенты выигрыша
+const levels = {
+  easy:   [0.8, 1, 1.5, 2, 2.5, 5],
+  medium: [0.5, 0.8, 1, 1.3, 1.5, 2, 2.5, 4.5, 10],
+  hard:   [0.2, 0.5, 0.8, 1, 1.3, 1.5, 1.8, 2.2, 4, 6, 10, 25, 50, 100]
+};
 
-function initPlinko(){
-  sections=[]; pins=[]; balls=[];
-  // создаём секции с разными призами
-  const prizes=[100,50,0,200,50,0,200,50,0,100,150];
-  for(let i=0;i<cols;i++){
-    sections.push({x:i*(canvas.width/cols), width:canvas.width/cols, prize:prizes[i], color:`hsl(${Math.random()*360},70%,50%)`});
+// ---------- Фон ----------
+const stars = [];
+const comets = [];
+for (let i = 0; i < 200; i++) stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.5 + 0.5, alpha: Math.random(), alphaChange: Math.random() * 0.01 + 0.002 });
+for (let i = 0; i < 5; i++) comets.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height / 2, speedX: Math.random() * 2 + 1, speedY: Math.random() * 2 + 1, radius: Math.random() * 3 + 2, trail: [] });
+
+// ---------- Инициализация Плинко ----------
+function initPlinko() {
+  sections = [];
+  pins = [];
+  balls = [];
+  const prizeList = levels[level];
+  // создаём секции
+  for (let i = 0; i < prizeList.length; i++) {
+    sections.push({ x: i * (canvas.width / prizeList.length), width: canvas.width / prizeList.length, coef: prizeList[i], color: `hsl(${Math.random() * 360},70%,50%)` });
   }
-  // штыри в треугольной структуре
-  const rows=7;
-  for(let row=0; row<rows; row++){
-    for(let col=0; col<cols; col++){
-      const offset=row%2===0?0:pinSpacingX/2;
-      const x=col*pinSpacingX+offset+(canvas.width-cols*pinSpacingX)/2;
-      const y=row*pinSpacingY+150;
-      pins.push({x,y});
+  // создаём штыри
+  const rows = 7;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < prizeList.length; col++) {
+      const offset = row % 2 === 0 ? 0 : 40;
+      const x = col * 80 + offset + (canvas.width - prizeList.length * 80) / 2;
+      const y = row * 80 + 150;
+      pins.push({ x, y });
     }
   }
 }
 
-function dropBall(){
-  const bet=parseInt(document.getElementById('bet').value);
-  if(balance<bet) return alert('Недостаточно баланса!');
-  balance-=bet;
-  document.getElementById('balance').innerText=balance;
-  balls.push({x:canvas.width/2, y:50, vx:(Math.random()*2-1)*3, vy:0, bet});
+// Запуск шарика
+function dropBall() {
+  const bet = parseInt(document.getElementById('bet').value);
+  if (balance < bet) return alert('Недостаточно баланса!');
+  balance -= bet;
+  document.getElementById('balance').innerText = balance;
+  balls.push({ x: canvas.width / 2, y: 50, vx: (Math.random() * 2 - 1) * 3, vy: 0, bet });
 }
 
 // ---------- Анимация ----------
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // звёзды
-  stars.forEach(s=>{
-    ctx.beginPath(); ctx.arc(s.x,s.y,s.radius,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${s.alpha})`; ctx.fill(); ctx.closePath();
-    s.alpha+=s.alphaChange; if(s.alpha>1||s.alpha<0) s.alphaChange*=-1;
+  // --- Звезды ---
+  stars.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+    ctx.fill();
+    ctx.closePath();
+    s.alpha += s.alphaChange;
+    if (s.alpha > 1 || s.alpha < 0) s.alphaChange *= -1;
   });
 
-  // кометы
-  comets.forEach(c=>{
-    c.trail.push({x:c.x,y:c.y});
-    if(c.trail.length>20) c.trail.shift();
-    c.trail.forEach((p,i)=>{
-      const alpha=i/c.trail.length*0.5;
-      ctx.beginPath(); ctx.arc(p.x,p.y,c.radius,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${alpha})`; ctx.fill(); ctx.closePath();
+  // --- Кометы ---
+  comets.forEach(c => {
+    c.trail.push({ x: c.x, y: c.y });
+    if (c.trail.length > 20) c.trail.shift();
+    c.trail.forEach((p, i) => {
+      const alpha = i / c.trail.length * 0.5;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, c.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+      ctx.fill();
+      ctx.closePath();
     });
-    ctx.beginPath(); ctx.arc(c.x,c.y,c.radius,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); ctx.closePath();
-    c.x+=c.speedX; c.y+=c.speedY;
-    if(c.x>canvas.width+50||c.y>canvas.height+50){c.x=Math.random()*canvas.width;c.y=-50;c.trail=[];}
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.closePath();
+    c.x += c.speedX;
+    c.y += c.speedY;
+    if (c.x > canvas.width + 50 || c.y > canvas.height + 50) {
+      c.x = Math.random() * canvas.width;
+      c.y = -50;
+      c.trail = [];
+    }
   });
 
-  if(plinkoActive){
-    // секции
-    sections.forEach(s=>{
-      ctx.fillStyle=s.color;
-      ctx.fillRect(s.x,canvas.height-50,s.width,50);
-      ctx.fillStyle='#fff'; ctx.font='20px Arial';
-      ctx.fillText(s.prize, s.x+s.width/2-10, canvas.height-20);
-    });
-    // бортики
-    ctx.fillStyle='#FFD700';
-    ctx.fillRect(0,0,10,canvas.height);
-    ctx.fillRect(canvas.width-10,0,10,canvas.height);
-    // штыри
-    pins.forEach(pin=>{ctx.beginPath();ctx.arc(pin.x,pin.y,pinRadius,0,Math.PI*2);ctx.fillStyle='#FFD700';ctx.fill();ctx.closePath();});
-    // шарики
-    balls.forEach((ball,i)=>{
-      ball.vy+=0.35; ball.vx*=0.995; ball.x+=ball.vx; ball.y+=ball.vy;
+  if (balls.length > 0) {
+    balls.forEach((ball, index) => {
+      ball.vy += 0.35;
+      ball.vx *= 0.995;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
 
-      pins.forEach(pin=>{
-        const dx=pin.x-ball.x, dy=pin.y-ball.y, dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<pinRadius+ballRadius){
-          const angle=Math.atan2(dy,dx);
-          const target=pinRadius+ballRadius;
-          const ax=Math.cos(angle)*(target-dist), ay=Math.sin(angle)*(target-dist);
-          ball.x-=ax; ball.y-=ay;
-          const bounce=0.7;
-          ball.vx=-ball.vx*bounce; ball.vy=-ball.vy*bounce;
-        }
-      });
-
-      if(ball.x-ballRadius<10){ball.x=10+ballRadius; ball.vx*=-0.7;}
-      if(ball.x+ballRadius>canvas.width-10){ball.x=canvas.width-10-ballRadius; ball.vx*=-0.7;}
-      if(ball.y+ballRadius>canvas.height-50){
-        const sec=Math.floor(ball.x/(canvas.width/cols));
-        balance+=ball.bet+sections[sec].prize;
-        document.getElementById('balance').innerText=balance;
-        history.push(sections[sec].prize);
-        balls.splice(i,1);
-      }
-
-      ctx.beginPath(); ctx.arc(ball.x,ball.y,ballRadius,0,Math.PI*2); ctx.fillStyle='#ff5555'; ctx.fill(); ctx.closePath();
-    });
-  }
-
-  requestAnimationFrame(animate);
-}
-
-animate();
-
-// приветствие → меню
-const welcomeDiv=document.getElementById('welcome');
-const menuDiv=document.getElementById('menu');
-setTimeout(()=>{
-  welcomeDiv.classList.add('fade-out');
-  setTimeout(()=>{welcomeDiv.style.display='none'; menuDiv.style.display='block';},1000);
-},3000);
-
-function startPlinko(){ plinkoActive=true; menuDiv.style.display='none'; initPlinko(); document.getElementById('ui').style.display='block'; }
-window.addEventListener('resize',()=>{canvas.width=window.innerWidth; canvas.height=window.innerHeight;});
-</script>
-</body>
-</html>
+     
