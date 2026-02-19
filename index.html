@@ -174,7 +174,7 @@
       box-shadow: 0 1px 0 #0f1a2a;
     }
 
-    /* МЕНЮ ИГР (ОСНОВНОЕ) */
+    /* МЕНЮ ИГР */
     .games-menu {
       display: flex;
       flex-direction: column;
@@ -472,8 +472,8 @@
         setTimeout(() => {
           welcomeScreen.style.display = 'none';
           app.classList.add('visible');
-          gamesMenu.style.display = 'flex'; // Показываем меню
-          plinkoContainer.style.display = 'none'; // Прячем Plinko
+          gamesMenu.style.display = 'flex';
+          plinkoContainer.style.display = 'none';
         }, 1000);
       }, 3000);
 
@@ -522,54 +522,69 @@
       let pins = [];
       let multipliers = [];
 
-      // НОВЫЕ КОЭФФИЦИЕНТЫ С МИНУСАМИ
+      // НОВЫЕ ПРАВИЛЬНЫЕ КОЭФФИЦИЕНТЫ:
+      // Сливы (минус) - в центре
+      // От центра к краям - рост выигрыша
       const levelMultipliers = {
-        easy:   [0.1, 0.3, 0.7, 1.2, 1.8, 1.2, 0.7, 0.3, 0.1],
-        medium: [0.1, 0.2, 0.5, 1.0, 2.5, 5.0, 2.5, 1.0, 0.5, 0.2, 0.1],
-        hard:   [0.05, 0.1, 0.2, 0.5, 1.0, 3.0, 10.0, 3.0, 1.0, 0.5, 0.2, 0.1, 0.05]
+        easy:   [5.0, 3.0, 1.8, 1.2, 0.7, 0.3, 0.7, 1.2, 1.8, 3.0, 5.0],
+        medium: [10.0, 5.0, 2.5, 1.5, 1.0, 0.5, 0.2, 0.5, 1.0, 1.5, 2.5, 5.0, 10.0],
+        hard:   [50.0, 20.0, 10.0, 5.0, 2.5, 1.2, 0.5, 0.1, 0.5, 1.2, 2.5, 5.0, 10.0, 20.0, 50.0]
       };
 
       function generateField(level) {
         pins = [];
         const mults = levelMultipliers[level];
-        const rows = 12;
-        const startY = 100;
+        
+        // Расширяем пирамиду - больше рядов и колонок
+        const rows = 14; // Больше рядов
+        const startY = 80;
         const pinR = 5;
-        const spacingX = 52;
-        const spacingY = 38;
+        const spacingX = 48; // Чуть меньше расстояние
+        const spacingY = 36;
 
-        const maxCols = mults.length + 2;
+        // Рассчитываем так, чтобы покрыть все ячейки
+        const maxCols = mults.length + 4; // Шире поле
         const totalW = (maxCols - 1) * spacingX;
         const offsetX = (width - totalW) / 2;
 
         for (let row = 0; row < rows; row++) {
+          // Пирамида: расширяемся до середины, потом сужаемся
           let cols;
-          if (row < 5) cols = 5 + row;
-          else if (row < 8) cols = 9;
-          else cols = 17 - row;
-          cols = Math.min(cols, mults.length + 3);
+          if (row < 6) cols = 6 + row; // Растет
+          else if (row < 9) cols = 12; // Максимум
+          else cols = 21 - row; // Сужается
+          
+          // Ограничиваем, но делаем достаточно широкой для крайних ячеек
+          cols = Math.min(cols, mults.length + 5);
           
           const rowOffset = (maxCols - cols) * spacingX / 2;
           
           for (let col = 0; col < cols; col++) {
+            // Смещение для четных/нечетных рядов
             const x = offsetX + rowOffset + col * spacingX + (row % 2 ? spacingX/2 : 0);
             const y = startY + row * spacingY;
             pins.push({ x, y, r: pinR });
           }
         }
 
+        // Ячейки снизу
         multipliers = [];
         const cellW = width / mults.length;
         for (let i = 0; i < mults.length; i++) {
           let color;
           const v = mults[i];
-          if (v <= 0.3) color = '#6c7a96';
-          else if (v <= 0.7) color = '#4f9fff';
-          else if (v <= 1.5) color = '#42d692';
-          else if (v <= 3) color = '#ffb347';
-          else color = '#ff6b6b';
+          if (v <= 0.5) color = '#6c7a96'; // Серый (слив)
+          else if (v <= 1.0) color = '#4f9fff'; // Синий (ноль)
+          else if (v <= 2.0) color = '#42d692'; // Зеленый (плюс)
+          else if (v <= 5.0) color = '#ffb347'; // Оранж (х2-х5)
+          else color = '#ff6b6b'; // Красный (джекпот)
           
-          multipliers.push({ x: i * cellW, w: cellW, value: v, color });
+          multipliers.push({ 
+            x: i * cellW, 
+            w: cellW, 
+            value: v, 
+            color 
+          });
         }
       }
 
@@ -579,15 +594,15 @@
         constructor(x, y, bet) {
           this.x = x;
           this.y = y;
-          this.vx = (Math.random() - 0.5) * 1.5;
-          this.vy = 1;
-          this.r = 9;
+          this.vx = (Math.random() - 0.5) * 2.0; // Больше случайности
+          this.vy = 0.8;
+          this.r = 8;
           this.bet = bet;
           this.trail = [];
         }
 
         update() {
-          this.vy += 0.25;
+          this.vy += 0.22;
           this.vx *= 0.995;
           this.x += this.vx;
           this.y += this.vy;
@@ -595,6 +610,7 @@
           this.trail.push({x: this.x, y: this.y});
           if (this.trail.length > 8) this.trail.shift();
 
+          // Отскоки от штырей
           for (let p of pins) {
             const dx = this.x - p.x;
             const dy = this.y - p.y;
@@ -604,29 +620,37 @@
             if (dist < minDist) {
               const angle = Math.atan2(dy, dx);
               const overlap = minDist - dist;
-              this.x += Math.cos(angle) * overlap * 0.8;
-              this.y += Math.sin(angle) * overlap * 0.8;
+              this.x += Math.cos(angle) * overlap * 0.7;
+              this.y += Math.sin(angle) * overlap * 0.7;
               
               const speed = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
               if (speed > 0.1) {
                 const nx = dx/dist;
                 const ny = dy/dist;
                 const dot = this.vx * nx + this.vy * ny;
-                this.vx = (this.vx - 1.6 * dot * nx) * 0.75;
-                this.vy = (this.vy - 1.6 * dot * ny) * 0.75;
+                
+                // Разный отскок для более случайного движения
+                this.vx = (this.vx - 1.4 * dot * nx) * 0.7;
+                this.vy = (this.vy - 1.4 * dot * ny) * 0.7;
+                
+                // Добавляем немного случайности при отскоке
+                this.vx += (Math.random() - 0.5) * 0.5;
+                this.vy += (Math.random() - 0.5) * 0.3;
               }
             }
           }
 
-          if (this.x - this.r < 15) {
-            this.x = 15 + this.r;
-            this.vx *= -0.7;
+          // Боковые стенки
+          if (this.x - this.r < 10) {
+            this.x = 10 + this.r;
+            this.vx *= -0.6;
           }
-          if (this.x + this.r > width - 15) {
-            this.x = width - 15 - this.r;
-            this.vx *= -0.7;
+          if (this.x + this.r > width - 10) {
+            this.x = width - 10 - this.r;
+            this.vx *= -0.6;
           }
 
+          // Достиг дна?
           if (this.y + this.r > height - 55) {
             const idx = Math.floor(this.x / (width / multipliers.length));
             if (idx >= 0 && idx < multipliers.length) {
@@ -652,23 +676,36 @@
         ctx.clearRect(0, 0, width, height);
         
         const grad = ctx.createLinearGradient(0, 0, 0, height);
-        grad.addColorStop(0, '#10212e');
-        grad.addColorStop(1, '#1d3142');
+        grad.addColorStop(0, '#0a1a2a');
+        grad.addColorStop(1, '#1a2a3a');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
 
+        // Рисуем штыри
         pins.forEach(p => {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-          ctx.fillStyle = '#d4af37';
+          
+          const gradPin = ctx.createRadialGradient(p.x-2, p.y-2, 2, p.x, p.y, p.r+2);
+          gradPin.addColorStop(0, '#ffd966');
+          gradPin.addColorStop(0.7, '#b8860b');
+          gradPin.addColorStop(1, '#8b6508');
+          
+          ctx.fillStyle = gradPin;
           ctx.shadowColor = '#ffd966';
-          ctx.shadowBlur = 8;
+          ctx.shadowBlur = 10;
+          ctx.fill();
+          
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.arc(p.x-1.5, p.y-1.5, 1.5, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(255,255,220,0.7)';
           ctx.fill();
         });
-        ctx.shadowBlur = 0;
 
+        // Рисуем ячейки с коэффициентами
         multipliers.forEach((m, i) => {
-          ctx.fillStyle = m.color + '33';
+          ctx.fillStyle = m.color + '80';
           ctx.fillRect(m.x, height-60, m.w-1, 45);
           
           if (flash.active && flash.index === i) {
@@ -678,39 +715,54 @@
             if (flash.alpha < 0.05) flash.active = false;
           }
           
-          ctx.strokeStyle = '#5a779c';
+          ctx.strokeStyle = '#ffffff40';
           ctx.lineWidth = 2;
           ctx.strokeRect(m.x, height-60, m.w-1, 45);
           
-          ctx.font = 'bold 22px "Segoe UI"';
-          ctx.fillStyle = 'white';
+          ctx.font = 'bold 20px "Segoe UI"';
+          ctx.fillStyle = '#ffffff';
           ctx.shadowColor = '#000';
-          ctx.shadowBlur = 8;
+          ctx.shadowBlur = 5;
           ctx.textAlign = 'center';
-          ctx.fillText('x' + m.value.toFixed(2), m.x + m.w/2, height-32);
+          
+          let text = m.value.toFixed(1);
+          if (m.value < 1) text = m.value.toFixed(1);
+          else if (m.value < 10) text = 'x' + m.value.toFixed(1);
+          else text = 'x' + Math.round(m.value);
+          
+          ctx.fillText(text, m.x + m.w/2, height-32);
         });
         ctx.shadowBlur = 0;
 
+        // Рисуем шарики
         balls.forEach(b => {
+          // След
           b.trail.forEach((t, i) => {
             const alpha = (i / b.trail.length) * 0.3;
             ctx.beginPath();
-            ctx.arc(t.x, t.y, b.r*0.7, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255,80,80,${alpha})`;
+            ctx.arc(t.x, t.y, b.r*0.6, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(255,100,100,${alpha})`;
             ctx.fill();
           });
           
+          // Шарик
           ctx.beginPath();
           ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
           const gradBall = ctx.createRadialGradient(b.x-3, b.y-3, 3, b.x, b.y, b.r+2);
-          gradBall.addColorStop(0, '#ffaaaa');
-          gradBall.addColorStop(1, '#c03030');
+          gradBall.addColorStop(0, '#ffcccc');
+          gradBall.addColorStop(0.5, '#ff4444');
+          gradBall.addColorStop(1, '#aa2222');
           ctx.fillStyle = gradBall;
-          ctx.shadowColor = '#ff6060';
-          ctx.shadowBlur = 20;
+          ctx.shadowColor = '#ff8888';
+          ctx.shadowBlur = 15;
+          ctx.fill();
+          
+          ctx.shadowBlur = 0;
+          ctx.beginPath();
+          ctx.arc(b.x-2, b.y-2, 2, 0, Math.PI*2);
+          ctx.fillStyle = 'rgba(255,255,255,0.4)';
           ctx.fill();
         });
-        ctx.shadowBlur = 0;
       }
 
       function gameLoop() {
@@ -733,7 +785,10 @@
         
         balance -= bet;
         updateBalance();
-        balls.push(new Ball(width/2 + (Math.random()*30-15), 45, bet));
+        
+        // Небольшая случайность стартовой позиции
+        const startX = width/2 + (Math.random() * 40 - 20);
+        balls.push(new Ball(startX, 40, bet));
       });
 
       document.querySelectorAll('.level-btn').forEach(btn => {
