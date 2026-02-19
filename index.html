@@ -23,7 +23,6 @@
       padding: 10px;
     }
 
-    /* ПРИВЕТСТВЕННЫЙ ЭКРАН */
     .welcome-screen {
       position: fixed;
       top: 0;
@@ -95,7 +94,6 @@
       40% { transform: scale(1.2); opacity: 1; }
     }
 
-    /* ОСНОВНОЙ КОНТЕЙНЕР */
     .app {
       width: 100%;
       max-width: 1000px;
@@ -115,7 +113,6 @@
       transform: scale(1);
     }
 
-    /* ШАПКА С БАЛАНСОМ */
     .header {
       background: #0f151f;
       border-radius: 100px;
@@ -174,7 +171,6 @@
       box-shadow: 0 1px 0 #0f1a2a;
     }
 
-    /* МЕНЮ ИГР */
     .games-menu {
       display: flex;
       flex-direction: column;
@@ -213,13 +209,6 @@
       box-shadow: 0 4px 0 #0f1a2a;
     }
 
-    .game-menu-item.disabled:active {
-      transform: translateY(4px);
-      background: #1e2a3a;
-      color: #6c7a96;
-    }
-
-    /* PLINKO КОНТЕЙНЕР */
     #plinkoContainer {
       display: none;
     }
@@ -228,7 +217,6 @@
       display: block;
     }
 
-    /* КНОПКА НАЗАД В МЕНЮ */
     .back-to-menu {
       display: inline-flex;
       align-items: center;
@@ -251,11 +239,6 @@
       box-shadow: 0 1px 0 #0f1a2a;
     }
 
-    .back-to-menu span {
-      font-size: clamp(24px, 4vw, 32px);
-    }
-
-    /* CANVAS */
     .canvas-wrapper {
       width: 100%;
       aspect-ratio: 952/700;
@@ -273,7 +256,6 @@
       background: #0f1a24;
     }
 
-    /* КОНТРОЛЫ PLINKO */
     .plinko-controls {
       display: flex;
       align-items: center;
@@ -337,6 +319,12 @@
       box-shadow: 0 2px 0 #8f6016, 0 8px 25px #f0b429;
     }
 
+    .drop-ball-btn.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.8);
+    }
+
     .level-panel {
       display: flex;
       gap: clamp(8px, 1.5vw, 12px);
@@ -366,7 +354,12 @@
       box-shadow: 0 0 15px #ffd966;
     }
 
-    /* Падающие звезды */
+    .level-btn.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(0.8);
+    }
+
     .star {
       position: fixed;
       background: white;
@@ -383,7 +376,6 @@
   </style>
 </head>
 <body>
-  <!-- ПРИВЕТСТВЕННЫЙ ЭКРАН -->
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
       <div class="welcome-title">SMEET</div>
@@ -396,9 +388,7 @@
     </div>
   </div>
 
-  <!-- ОСНОВНОЙ КОНТЕЙНЕР -->
   <div class="app" id="app">
-    <!-- ШАПКА -->
     <div class="header">
       <div class="balance-block">
         <span class="stars-icon">⭐</span>
@@ -409,7 +399,6 @@
       </button>
     </div>
 
-    <!-- МЕНЮ ИГР -->
     <div id="gamesMenu" class="games-menu">
       <div class="game-menu-item active" data-game="plinko">🎲 PLINKO</div>
       <div class="game-menu-item disabled" data-game="dice">🎲 DICE</div>
@@ -417,7 +406,6 @@
       <div class="game-menu-item disabled" data-game="roulette">🎡 ROULETTE</div>
     </div>
 
-    <!-- PLINKO -->
     <div id="plinkoContainer">
       <div class="back-to-menu" id="backToMenuBtn">
         <span>←</span> В МЕНЮ
@@ -445,7 +433,6 @@
 
   <script>
     (function() {
-      // Падающие звезды
       function createStar() {
         const star = document.createElement('div');
         star.className = 'star';
@@ -461,7 +448,6 @@
       setInterval(createStar, 2000);
       for (let i = 0; i < 10; i++) setTimeout(createStar, i * 200);
 
-      // Приветствие -> сразу в меню игр
       const welcomeScreen = document.getElementById('welcomeScreen');
       const app = document.getElementById('app');
       const gamesMenu = document.getElementById('gamesMenu');
@@ -477,7 +463,6 @@
         }, 1000);
       }, 3000);
 
-      // Баланс
       let balance = 1000;
       const balanceEl = document.getElementById('balanceDisplay');
 
@@ -490,7 +475,6 @@
         updateBalance();
       });
 
-      // Переключение между меню и Plinko
       const backToMenuBtn = document.getElementById('backToMenuBtn');
 
       document.querySelectorAll('.game-menu-item').forEach(item => {
@@ -512,7 +496,6 @@
         gamesMenu.style.display = 'flex';
       });
 
-      // PLINKO
       const canvas = document.getElementById('plinkoCanvas');
       const ctx = canvas.getContext('2d');
       const width = 952, height = 700;
@@ -521,63 +504,66 @@
       let balls = [];
       let pins = [];
       let multipliers = [];
+      let ballsInPlay = 0; // Счетчик активных шариков
 
-      // НОВЫЕ ПРАВИЛЬНЫЕ КОЭФФИЦИЕНТЫ:
-      // Сливы (минус) - в центре
-      // От центра к краям - рост выигрыша
       const levelMultipliers = {
         easy:   [5.0, 3.0, 1.8, 1.2, 0.7, 0.3, 0.7, 1.2, 1.8, 3.0, 5.0],
         medium: [10.0, 5.0, 2.5, 1.5, 1.0, 0.5, 0.2, 0.5, 1.0, 1.5, 2.5, 5.0, 10.0],
         hard:   [50.0, 20.0, 10.0, 5.0, 2.5, 1.2, 0.5, 0.1, 0.5, 1.2, 2.5, 5.0, 10.0, 20.0, 50.0]
       };
 
+      // Функция блокировки/разблокировки кнопок уровня
+      function setLevelButtonsState(disabled) {
+        document.querySelectorAll('.level-btn').forEach(btn => {
+          if (disabled) {
+            btn.classList.add('disabled');
+          } else {
+            btn.classList.remove('disabled');
+          }
+        });
+      }
+
       function generateField(level) {
         pins = [];
         const mults = levelMultipliers[level];
         
-        // Расширяем пирамиду - больше рядов и колонок
-        const rows = 14; // Больше рядов
+        const rows = 14;
         const startY = 80;
         const pinR = 5;
-        const spacingX = 48; // Чуть меньше расстояние
+        const spacingX = 48;
         const spacingY = 36;
 
-        // Рассчитываем так, чтобы покрыть все ячейки
-        const maxCols = mults.length + 4; // Шире поле
+        const maxCols = mults.length + 4;
         const totalW = (maxCols - 1) * spacingX;
         const offsetX = (width - totalW) / 2;
 
         for (let row = 0; row < rows; row++) {
-          // Пирамида: расширяемся до середины, потом сужаемся
           let cols;
-          if (row < 6) cols = 6 + row; // Растет
-          else if (row < 9) cols = 12; // Максимум
-          else cols = 21 - row; // Сужается
+          if (row < 6) cols = 6 + row;
+          else if (row < 9) cols = 12;
+          else cols = 21 - row;
           
-          // Ограничиваем, но делаем достаточно широкой для крайних ячеек
           cols = Math.min(cols, mults.length + 5);
           
           const rowOffset = (maxCols - cols) * spacingX / 2;
           
           for (let col = 0; col < cols; col++) {
-            // Смещение для четных/нечетных рядов
             const x = offsetX + rowOffset + col * spacingX + (row % 2 ? spacingX/2 : 0);
             const y = startY + row * spacingY;
             pins.push({ x, y, r: pinR });
           }
         }
 
-        // Ячейки снизу
         multipliers = [];
         const cellW = width / mults.length;
         for (let i = 0; i < mults.length; i++) {
           let color;
           const v = mults[i];
-          if (v <= 0.5) color = '#6c7a96'; // Серый (слив)
-          else if (v <= 1.0) color = '#4f9fff'; // Синий (ноль)
-          else if (v <= 2.0) color = '#42d692'; // Зеленый (плюс)
-          else if (v <= 5.0) color = '#ffb347'; // Оранж (х2-х5)
-          else color = '#ff6b6b'; // Красный (джекпот)
+          if (v <= 0.5) color = '#6c7a96';
+          else if (v <= 1.0) color = '#4f9fff';
+          else if (v <= 2.0) color = '#42d692';
+          else if (v <= 5.0) color = '#ffb347';
+          else color = '#ff6b6b';
           
           multipliers.push({ 
             x: i * cellW, 
@@ -594,7 +580,7 @@
         constructor(x, y, bet) {
           this.x = x;
           this.y = y;
-          this.vx = (Math.random() - 0.5) * 2.0; // Больше случайности
+          this.vx = (Math.random() - 0.5) * 2.0;
           this.vy = 0.8;
           this.r = 8;
           this.bet = bet;
@@ -610,7 +596,6 @@
           this.trail.push({x: this.x, y: this.y});
           if (this.trail.length > 8) this.trail.shift();
 
-          // Отскоки от штырей
           for (let p of pins) {
             const dx = this.x - p.x;
             const dy = this.y - p.y;
@@ -629,18 +614,15 @@
                 const ny = dy/dist;
                 const dot = this.vx * nx + this.vy * ny;
                 
-                // Разный отскок для более случайного движения
                 this.vx = (this.vx - 1.4 * dot * nx) * 0.7;
                 this.vy = (this.vy - 1.4 * dot * ny) * 0.7;
                 
-                // Добавляем немного случайности при отскоке
                 this.vx += (Math.random() - 0.5) * 0.5;
                 this.vy += (Math.random() - 0.5) * 0.3;
               }
             }
           }
 
-          // Боковые стенки
           if (this.x - this.r < 10) {
             this.x = 10 + this.r;
             this.vx *= -0.6;
@@ -650,7 +632,6 @@
             this.vx *= -0.6;
           }
 
-          // Достиг дна?
           if (this.y + this.r > height - 55) {
             const idx = Math.floor(this.x / (width / multipliers.length));
             if (idx >= 0 && idx < multipliers.length) {
@@ -659,6 +640,14 @@
               updateBalance();
               flashCell(idx);
             }
+            
+            // Уменьшаем счетчик активных шариков
+            ballsInPlay--;
+            if (ballsInPlay === 0) {
+              // Разблокируем кнопки уровня
+              setLevelButtonsState(false);
+            }
+            
             return false;
           }
           return true;
@@ -681,7 +670,6 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
 
-        // Рисуем штыри
         pins.forEach(p => {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
@@ -703,7 +691,6 @@
           ctx.fill();
         });
 
-        // Рисуем ячейки с коэффициентами
         multipliers.forEach((m, i) => {
           ctx.fillStyle = m.color + '80';
           ctx.fillRect(m.x, height-60, m.w-1, 45);
@@ -734,9 +721,7 @@
         });
         ctx.shadowBlur = 0;
 
-        // Рисуем шарики
         balls.forEach(b => {
-          // След
           b.trail.forEach((t, i) => {
             const alpha = (i / b.trail.length) * 0.3;
             ctx.beginPath();
@@ -745,7 +730,6 @@
             ctx.fill();
           });
           
-          // Шарик
           ctx.beginPath();
           ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
           const gradBall = ctx.createRadialGradient(b.x-3, b.y-3, 3, b.x, b.y, b.r+2);
@@ -786,13 +770,25 @@
         balance -= bet;
         updateBalance();
         
-        // Небольшая случайность стартовой позиции
-        const startX = width/2 + (Math.random() * 40 - 20);
+        // РАЗНЫЕ МЕСТА СПАВНА:
+        // Случайная позиция от левого края до правого
+        const minX = 50;
+        const maxX = width - 50;
+        const startX = minX + Math.random() * (maxX - minX);
+        
         balls.push(new Ball(startX, 40, bet));
+        
+        // Увеличиваем счетчик активных шариков
+        ballsInPlay++;
+        
+        // Блокируем кнопки уровня
+        setLevelButtonsState(true);
       });
 
       document.querySelectorAll('.level-btn').forEach(btn => {
         btn.addEventListener('click', e => {
+          if (btn.classList.contains('disabled')) return;
+          
           document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentLevel = btn.dataset.level;
