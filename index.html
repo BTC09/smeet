@@ -3,24 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SMEET CASINO</title>
+  <title>SMEET CASINO | PLINKO DELUXE</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: #0b0e14;
+      background: linear-gradient(145deg, #03050a 0%, #0f1a2f 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 10px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Анимированные звезды на фоне */
+    body::before {
+      content: '';
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(3px 3px at 90px 40px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(2px 2px at 230px 190px, #ffd966, rgba(0,0,0,0)),
+                  radial-gradient(4px 4px at 320px 250px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(2px 2px at 410px 80px, #ffd966, rgba(0,0,0,0)),
+                  radial-gradient(3px 3px at 500px 340px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(2px 2px at 600px 200px, #ffd966, rgba(0,0,0,0)),
+                  radial-gradient(4px 4px at 720px 450px, #fff, rgba(0,0,0,0)),
+                  radial-gradient(2px 2px at 800px 150px, #ffd966, rgba(0,0,0,0)),
+                  radial-gradient(3px 3px at 880px 520px, #fff, rgba(0,0,0,0));
+      background-size: 200px 200px;
+      opacity: 0.5;
+      animation: starsFloat 120s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes starsFloat {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-200px); }
     }
 
     .welcome-screen {
@@ -29,7 +60,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, #1a1f2e, #0a0c15);
+      background: radial-gradient(circle at 30% 50%, #1e2b4a, #030614);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -40,173 +71,237 @@
     .welcome-content {
       text-align: center;
       padding: 20px;
+      position: relative;
+    }
+
+    .welcome-content::before {
+      content: '';
+      position: absolute;
+      top: -50px;
+      left: -50px;
+      right: -50px;
+      bottom: -50px;
+      background: radial-gradient(circle at center, rgba(255,215,0,0.2) 0%, transparent 70%);
+      animation: pulseGlow 3s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { opacity: 0.3; transform: scale(0.95); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+      100% { opacity: 0.3; transform: scale(0.95); }
     }
 
     .welcome-title {
-      font-size: clamp(60px, 15vw, 120px);
+      font-size: clamp(70px, 18vw, 140px);
       font-weight: 900;
-      color: #ffd966;
-      text-shadow: 0 0 30px #f0b429, 0 0 60px #ff8800;
-      letter-spacing: 4px;
+      background: linear-gradient(135deg, #fff5c0, #ffd966, #ffaa33, #ffd966);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px #ffaa33, 0 0 80px #ff6600;
+      letter-spacing: 8px;
       margin-bottom: 20px;
       animation: slideInDown 1.2s ease;
       line-height: 1;
+      filter: drop-shadow(0 20px 20px #00000066);
     }
 
     .welcome-subtitle {
-      font-size: clamp(20px, 5vw, 32px);
-      color: #b9c7da;
-      text-shadow: 0 0 15px #4f9fff;
+      font-size: clamp(24px, 6vw, 36px);
+      color: #fff;
+      text-shadow: 0 0 20px #4f9fff, 0 0 40px #2f6fbf;
       animation: slideInUp 1.2s ease 0.2s both;
+      letter-spacing: 3px;
     }
 
     .loading-dots {
-      margin-top: 30px;
+      margin-top: 40px;
       display: flex;
       justify-content: center;
-      gap: 15px;
+      gap: 20px;
     }
 
     .loading-dots span {
-      width: clamp(15px, 4vw, 20px);
-      height: clamp(15px, 4vw, 20px);
-      background: #ffd966;
+      width: clamp(18px, 5vw, 24px);
+      height: clamp(18px, 5vw, 24px);
+      background: linear-gradient(145deg, #ffd966, #ffaa33);
       border-radius: 50%;
-      animation: bounce 1.4s infinite;
-      box-shadow: 0 0 20px #f0b429;
+      animation: bounceDeluxe 1.4s infinite;
+      box-shadow: 0 0 30px #ffaa33, 0 0 60px #ff6600;
     }
 
     .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
     .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
+    @keyframes bounceDeluxe {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; filter: brightness(0.8); }
+      40% { transform: scale(1.3); opacity: 1; filter: brightness(1.3); }
+    }
+
     @keyframes slideInDown {
-      from { transform: translateY(-100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      from { transform: translateY(-150px); opacity: 0; filter: blur(10px); }
+      to { transform: translateY(0); opacity: 1; filter: blur(0); }
     }
 
     @keyframes slideInUp {
-      from { transform: translateY(100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes bounce {
-      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-      40% { transform: scale(1.2); opacity: 1; }
+      from { transform: translateY(150px); opacity: 0; filter: blur(10px); }
+      to { transform: translateY(0); opacity: 1; filter: blur(0); }
     }
 
     .app {
       width: 100%;
       max-width: 1000px;
-      background: #141a24;
-      border-radius: clamp(24px, 5vw, 48px);
-      padding: clamp(16px, 3vw, 24px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-      border: 1px solid #2d3848;
+      background: rgba(20, 28, 40, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: clamp(32px, 6vw, 56px);
+      padding: clamp(18px, 3.5vw, 26px);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 215, 0, 0.2) inset, 0 0 30px rgba(255, 200, 50, 0.3);
+      border: 1px solid rgba(255, 215, 0, 0.4);
       opacity: 0;
-      transform: scale(0.95);
+      transform: scale(0.95) translateY(20px);
       transition: opacity 0.8s ease, transform 0.8s ease;
       position: relative;
     }
 
     .app.visible {
       opacity: 1;
-      transform: scale(1);
+      transform: scale(1) translateY(0);
     }
 
     .header {
-      background: #0f151f;
+      background: rgba(15, 25, 35, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-radius: 100px;
-      padding: clamp(12px, 2vw, 15px) clamp(20px, 3vw, 30px);
-      margin-bottom: clamp(16px, 3vw, 24px);
+      padding: clamp(12px, 2.5vw, 16px) clamp(22px, 4vw, 32px);
+      margin-bottom: clamp(18px, 3vw, 24px);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border: 1px solid #334153;
-      box-shadow: inset 0 2px 5px #00000055;
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      box-shadow: 0 8px 20px #00000055, 0 0 20px rgba(255, 200, 0, 0.2) inset;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
     }
 
     .balance-block {
       display: flex;
       align-items: center;
-      gap: clamp(10px, 2vw, 20px);
-      background: #1a2332;
-      padding: clamp(6px, 1.5vw, 8px) clamp(20px, 4vw, 30px) clamp(6px, 1.5vw, 8px) clamp(15px, 3vw, 20px);
+      gap: clamp(12px, 2.5vw, 22px);
+      background: linear-gradient(145deg, #1a2638, #0f1a28);
+      padding: clamp(6px, 1.8vw, 8px) clamp(22px, 5vw, 35px) clamp(6px, 1.8vw, 8px) clamp(18px, 3.5vw, 25px);
       border-radius: 60px;
-      border: 1px solid #4d607c;
+      border: 1px solid #ffd966;
+      box-shadow: 0 0 15px #ffd96666;
     }
 
     .stars-icon {
-      font-size: clamp(24px, 5vw, 32px);
-      filter: drop-shadow(0 0 8px gold);
+      font-size: clamp(28px, 6vw, 36px);
+      filter: drop-shadow(0 0 12px gold) drop-shadow(0 0 25px orange);
+      animation: starTwinkle 2s infinite;
+    }
+
+    @keyframes starTwinkle {
+      0% { filter: drop-shadow(0 0 8px gold) drop-shadow(0 0 15px orange); }
+      50% { filter: drop-shadow(0 0 18px gold) drop-shadow(0 0 30px #ff8800); }
+      100% { filter: drop-shadow(0 0 8px gold) drop-shadow(0 0 15px orange); }
     }
 
     .balance-value {
-      font-size: clamp(24px, 5vw, 36px);
+      font-size: clamp(28px, 6vw, 40px);
       font-weight: 800;
-      color: #ffd966;
-      text-shadow: 0 0 10px #f0b429;
+      background: linear-gradient(135deg, #ffd966, #ffb347);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px #ffaa33;
     }
 
     .add-stars-btn {
-      background: linear-gradient(145deg, #2a3a55, #1b263b);
+      background: linear-gradient(145deg, #2a3f60, #1a2b40);
       border: 2px solid #ffd966;
       color: #ffd966;
-      font-size: clamp(16px, 3vw, 20px);
+      font-size: clamp(16px, 3.5vw, 22px);
       font-weight: 700;
-      padding: clamp(8px, 2vw, 12px) clamp(20px, 4vw, 30px);
+      padding: clamp(8px, 2.2vw, 12px) clamp(22px, 5vw, 35px);
       border-radius: 60px;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 4px 0 #0f1a2a;
+      box-shadow: 0 6px 0 #0f1a2a, 0 0 20px #ffd96666;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       white-space: nowrap;
+      backdrop-filter: blur(4px);
+    }
+
+    .add-stars-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 0 #0f1a2a, 0 0 30px #ffd966;
     }
 
     .add-stars-btn:active {
       transform: translateY(4px);
-      box-shadow: 0 1px 0 #0f1a2a;
+      box-shadow: 0 2px 0 #0f1a2a, 0 0 20px #ffd966;
     }
 
     .games-menu {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       padding: 20px 0;
     }
 
     .game-menu-item {
-      background: #1e2a3a;
-      border: 3px solid #ffd966;
-      border-radius: 60px;
-      padding: clamp(20px, 4vw, 30px);
-      font-size: clamp(32px, 6vw, 48px);
+      background: rgba(30, 45, 65, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 3px solid rgba(255, 215, 0, 0.8);
+      border-radius: 70px;
+      padding: clamp(22px, 5vw, 32px);
+      font-size: clamp(34px, 7vw, 52px);
       font-weight: 800;
-      color: #ffd966;
+      background: linear-gradient(145deg, #ffe5a3, #ffc800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       cursor: pointer;
       transition: 0.3s;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
       text-align: center;
-      box-shadow: 0 8px 0 #0f1a2a;
+      box-shadow: 0 10px 0 #0f1a2a, 0 0 30px rgba(255, 215, 0, 0.5);
+      border-image: linear-gradient(145deg, #ffd966, #ffaa33) 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-menu-item::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.3), transparent 70%);
+      animation: shine 6s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+      20% { opacity: 0.5; }
+      40% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+      100% { opacity: 0; }
     }
 
     .game-menu-item:active {
       transform: translateY(6px);
-      box-shadow: 0 2px 0 #0f1a2a;
-      background: #ffd966;
-      color: #1a2538;
+      box-shadow: 0 4px 0 #0f1a2a, 0 0 40px #ffd966;
     }
 
     .game-menu-item.disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      border-color: #6c7a96;
-      color: #6c7a96;
-      box-shadow: 0 4px 0 #0f1a2a;
+      opacity: 0.3;
+      filter: grayscale(1);
+      pointer-events: none;
     }
 
     #plinkoContainer {
@@ -215,55 +310,77 @@
 
     #plinkoContainer.active {
       display: block;
+      animation: fadeIn 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .back-to-menu {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      background: #1e2a3a;
+      gap: 12px;
+      background: rgba(30, 45, 65, 0.6);
+      backdrop-filter: blur(8px);
       border: 2px solid #ffd966;
       color: #ffd966;
-      font-size: clamp(18px, 3vw, 24px);
+      font-size: clamp(18px, 3.5vw, 24px);
       font-weight: 700;
-      padding: clamp(10px, 2vw, 15px) clamp(20px, 4vw, 30px);
+      padding: clamp(10px, 2.2vw, 15px) clamp(22px, 5vw, 32px);
       border-radius: 60px;
       cursor: pointer;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       transition: 0.2s;
-      box-shadow: 0 4px 0 #0f1a2a;
+      box-shadow: 0 6px 0 #0f1a2a, 0 0 20px #ffd96666;
     }
 
-    .back-to-menu:active {
-      transform: translateY(4px);
-      box-shadow: 0 1px 0 #0f1a2a;
+    .back-to-menu span {
+      font-size: clamp(26px, 5vw, 34px);
+      filter: drop-shadow(0 0 8px gold);
     }
 
     .canvas-wrapper {
       width: 100%;
       aspect-ratio: 952/700;
-      margin-bottom: 20px;
-      border-radius: clamp(24px, 4vw, 36px);
+      margin-bottom: 22px;
+      border-radius: clamp(28px, 5vw, 42px);
       overflow: hidden;
-      background: #0f1a24;
-      box-shadow: inset 0 0 30px #00000099;
+      background: #030b14;
+      box-shadow: 0 20px 40px #000000cc, 0 0 0 2px rgba(255, 215, 0, 0.4) inset, 0 0 40px rgba(255, 200, 0, 0.3);
+      position: relative;
+    }
+
+    .canvas-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(255,215,0,0.1), transparent 70%);
+      pointer-events: none;
+      z-index: 2;
     }
 
     canvas {
       display: block;
       width: 100%;
       height: 100%;
-      background: #0f1a24;
+      background: #030b14;
     }
 
     .plinko-controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #1b2432;
-      padding: clamp(15px, 2.5vw, 20px) clamp(20px, 3vw, 30px);
-      border-radius: 60px;
-      border: 1px solid #3a4a60;
+      background: rgba(25, 38, 52, 0.7);
+      backdrop-filter: blur(8px);
+      padding: clamp(15px, 3vw, 22px) clamp(22px, 4vw, 32px);
+      border-radius: 70px;
+      border: 1px solid rgba(255, 215, 0, 0.6);
+      box-shadow: 0 10px 20px #00000066, 0 0 20px rgba(255, 200, 0, 0.2) inset;
       flex-wrap: wrap;
       gap: 15px;
     }
@@ -271,91 +388,102 @@
     .bet-section {
       display: flex;
       align-items: center;
-      gap: clamp(10px, 2vw, 25px);
-      background: #121b28;
-      padding: clamp(6px, 1.5vw, 8px) clamp(15px, 3vw, 25px);
-      border-radius: 50px;
+      gap: clamp(12px, 2.5vw, 28px);
+      background: rgba(15, 25, 38, 0.8);
+      backdrop-filter: blur(4px);
+      padding: clamp(6px, 1.8vw, 8px) clamp(18px, 3.5vw, 28px);
+      border-radius: 60px;
       flex: 1;
-      min-width: 250px;
+      min-width: 260px;
+      border: 1px solid #ffd96688;
+      box-shadow: 0 0 15px #ffd96633 inset;
     }
 
     .bet-label {
-      color: #a5bbdd;
-      font-size: clamp(16px, 2.5vw, 20px);
+      color: #fff;
+      font-size: clamp(16px, 2.8vw, 22px);
       font-weight: 500;
       white-space: nowrap;
+      text-shadow: 0 0 8px #ffd966;
+      letter-spacing: 1px;
     }
 
     .bet-input {
-      background: #1f3147;
+      background: linear-gradient(145deg, #1a2b42, #0f1a2a);
       border: 2px solid #ffd966;
       color: #ffd966;
-      font-size: clamp(22px, 3.5vw, 28px);
+      font-size: clamp(24px, 4vw, 30px);
       font-weight: 700;
-      width: min(130px, 25vw);
-      padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 20px);
-      border-radius: 50px;
+      width: min(140px, 28vw);
+      padding: clamp(8px, 1.8vw, 12px) clamp(12px, 2.2vw, 20px);
+      border-radius: 60px;
       text-align: center;
       outline: none;
+      box-shadow: 0 0 15px #ffd96666;
+    }
+
+    .bet-input:focus {
+      box-shadow: 0 0 30px #ffd966;
     }
 
     .drop-ball-btn {
-      background: linear-gradient(145deg, #f0b429, #d4941f);
+      background: linear-gradient(145deg, #ffc800, #ff9500);
       border: none;
-      font-size: clamp(22px, 4vw, 32px);
+      font-size: clamp(24px, 5vw, 34px);
       font-weight: 800;
-      padding: clamp(12px, 2vw, 16px) clamp(30px, 5vw, 60px);
-      border-radius: 60px;
+      padding: clamp(12px, 2.5vw, 18px) clamp(35px, 6vw, 70px);
+      border-radius: 70px;
       color: #141e2c;
       cursor: pointer;
-      box-shadow: 0 6px 0 #8f6016, 0 8px 25px #f0b429;
+      box-shadow: 0 10px 0 #b15d00, 0 10px 30px #ffaa33, 0 0 30px #ffd966;
       transition: 0.08s linear;
       text-transform: uppercase;
       white-space: nowrap;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 5px #ffffff80;
     }
 
     .drop-ball-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 2px 0 #8f6016, 0 8px 25px #f0b429;
-    }
-
-    .drop-ball-btn.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-      filter: grayscale(0.8);
+      transform: translateY(8px);
+      box-shadow: 0 2px 0 #b15d00, 0 10px 30px #ffaa33;
     }
 
     .level-panel {
       display: flex;
-      gap: clamp(8px, 1.5vw, 12px);
-      margin-top: 16px;
+      gap: clamp(8px, 1.8vw, 14px);
+      margin-top: 18px;
       flex-wrap: wrap;
     }
 
     .level-btn {
-      background: #253141;
-      border: 2px solid #4d637f;
-      color: #adc4f0;
-      font-size: clamp(14px, 2.5vw, 18px);
+      background: rgba(30, 45, 68, 0.6);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255, 215, 0, 0.5);
+      color: #fff;
+      font-size: clamp(14px, 2.8vw, 20px);
       font-weight: 700;
-      padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 30px);
-      border-radius: 40px;
+      padding: clamp(8px, 1.8vw, 12px) clamp(18px, 3.5vw, 35px);
+      border-radius: 50px;
       cursor: pointer;
       transition: 0.2s;
       flex: 1;
       min-width: 100px;
       text-align: center;
+      text-shadow: 0 0 8px gold;
+      letter-spacing: 1px;
+      box-shadow: 0 6px 0 #0f1a2a;
     }
 
     .level-btn.active {
-      background: #ffd966;
+      background: linear-gradient(145deg, #ffd966, #ffb347);
       border-color: #fff1b0;
       color: #1a2538;
-      box-shadow: 0 0 15px #ffd966;
+      box-shadow: 0 6px 0 #b15d00, 0 0 30px #ffd966;
+      transform: scale(1.05);
     }
 
     .level-btn.disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       pointer-events: none;
       filter: grayscale(0.8);
     }
@@ -364,12 +492,13 @@
       position: fixed;
       background: white;
       border-radius: 50%;
-      box-shadow: 0 0 10px white;
+      box-shadow: 0 0 20px white, 0 0 40px gold;
       pointer-events: none;
-      z-index: 999;
+      z-index: 9999;
+      animation: fallStarLinear 3s linear forwards;
     }
 
-    @keyframes fallStar {
+    @keyframes fallStarLinear {
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
     }
@@ -378,8 +507,8 @@
 <body>
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
-      <div class="welcome-title">SMEET</div>
-      <div class="welcome-subtitle">CASINO</div>
+      <div class="welcome-title">ꜱᴍᴇᴇᴛ</div>
+      <div class="welcome-subtitle">ᴘʟɪɴᴋᴏ ᴅᴇʟᴜxᴇ</div>
       <div class="loading-dots">
         <span></span>
         <span></span>
@@ -395,20 +524,20 @@
         <span class="balance-value" id="balanceDisplay">1000</span>
       </div>
       <button class="add-stars-btn" id="addStarsBtn">
-        <span>➕</span> 1000 ⭐
+        <span>✨</span> +1000 ⭐
       </button>
     </div>
 
     <div id="gamesMenu" class="games-menu">
-      <div class="game-menu-item active" data-game="plinko">🎲 PLINKO</div>
-      <div class="game-menu-item disabled" data-game="dice">🎲 DICE</div>
-      <div class="game-menu-item disabled" data-game="slots">🎰 SLOTS</div>
-      <div class="game-menu-item disabled" data-game="roulette">🎡 ROULETTE</div>
+      <div class="game-menu-item active" data-game="plinko">ᴘʟɪɴᴋᴏ</div>
+      <div class="game-menu-item disabled" data-game="dice">ᴅɪᴄᴇ</div>
+      <div class="game-menu-item disabled" data-game="slots">sʟᴏᴛs</div>
+      <div class="game-menu-item disabled" data-game="roulette">ʀᴏᴜʟᴇᴛᴛᴇ</div>
     </div>
 
     <div id="plinkoContainer">
       <div class="back-to-menu" id="backToMenuBtn">
-        <span>←</span> В МЕНЮ
+        <span>←</span> ʙ ᴍᴇʜю
       </div>
       
       <div class="canvas-wrapper">
@@ -417,16 +546,16 @@
 
       <div class="plinko-controls">
         <div class="bet-section">
-          <span class="bet-label">СТАВКА ⭐</span>
+          <span class="bet-label">ᴄᴛᴀʙᴋᴀ ⭐</span>
           <input type="number" id="betInput" class="bet-input" value="50" min="10" step="10">
         </div>
-        <button class="drop-ball-btn" id="dropBallBtn">🎲 КИНУТЬ</button>
+        <button class="drop-ball-btn" id="dropBallBtn">ᴋɪʜʏᴛʙ</button>
       </div>
 
       <div class="level-panel">
-        <button class="level-btn active" data-level="easy">🌱 ЛЁГКИЙ</button>
-        <button class="level-btn" data-level="medium">⚡ СРЕДНИЙ</button>
-        <button class="level-btn" data-level="hard">🔥 ХАРД</button>
+        <button class="level-btn active" data-level="easy">🌱 ʟᴇɢᴋɪᴊ</button>
+        <button class="level-btn" data-level="medium">⚡ ᴄᴘᴇᴅʜᴇᴇ</button>
+        <button class="level-btn" data-level="hard">🔥 xᴀᴘᴅ</button>
       </div>
     </div>
   </div>
@@ -438,15 +567,16 @@
         star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
         star.style.top = '-10px';
-        star.style.width = star.style.height = (Math.random() * 4 + 2) + 'px';
-        star.style.animation = `fallStar ${Math.random() * 3 + 2}s linear`;
+        star.style.width = star.style.height = (Math.random() * 6 + 3) + 'px';
+        star.style.animationDuration = (Math.random() * 4 + 3) + 's';
         star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.background = Math.random() > 0.7 ? '#ffd966' : '#ffffff';
         document.body.appendChild(star);
-        setTimeout(() => star.remove(), 5000);
+        setTimeout(() => star.remove(), 7000);
       }
 
-      setInterval(createStar, 2000);
-      for (let i = 0; i < 10; i++) setTimeout(createStar, i * 200);
+      setInterval(createStar, 300);
+      for (let i = 0; i < 30; i++) setTimeout(createStar, i * 50);
 
       const welcomeScreen = document.getElementById('welcomeScreen');
       const app = document.getElementById('app');
@@ -532,7 +662,7 @@
         
         const rows = 14;
         const startY = 80;
-        const pinR = 5;
+        const pinR = 6;
         const spacingX = 48;
         const spacingY = 36;
 
@@ -587,28 +717,27 @@
         constructor(x, y, bet) {
           this.x = x;
           this.y = y;
-          this.vx = (Math.random() - 0.5) * 1.8; // Нормальная скорость
-          this.vy = 0.6; // Начальная скорость вниз
-          this.r = 8;
+          this.vx = (Math.random() - 0.5) * 1.8;
+          this.vy = 0.6;
+          this.r = 9;
           this.bet = bet;
           this.trail = [];
+          this.glowIntensity = Math.random() * 0.5 + 0.5;
+          this.hue = 0;
         }
 
         update() {
-          // Гравитация
-          this.vy += 0.2;
+          this.hue = (this.hue + 1) % 360;
           
-          // Нормальное трение
+          this.vy += 0.2;
           this.vx *= 0.99;
           
-          // Движение
           this.x += this.vx;
           this.y += this.vy;
           
-          this.trail.push({x: this.x, y: this.y});
-          if (this.trail.length > 8) this.trail.shift();
+          this.trail.push({x: this.x, y: this.y, hue: this.hue});
+          if (this.trail.length > 10) this.trail.shift();
 
-          // Отскоки от штырей - ЧЕСТНЫЕ, без притяжения
           for (let p of pins) {
             const dx = this.x - p.x;
             const dy = this.y - p.y;
@@ -627,18 +756,15 @@
                 const ny = dy/dist;
                 const dot = this.vx * nx + this.vy * ny;
                 
-                // Чистый отскок, без дополнительных сил
                 this.vx = (this.vx - 1.4 * dot * nx) * 0.7;
                 this.vy = (this.vy - 1.4 * dot * ny) * 0.7;
                 
-                // Только небольшая случайность, без притяжения
                 this.vx += (Math.random() - 0.5) * 0.4;
                 this.vy += (Math.random() - 0.5) * 0.2;
               }
             }
           }
 
-          // Боковые стенки
           if (this.x - this.r < 10) {
             this.x = 10 + this.r;
             this.vx *= -0.6;
@@ -648,14 +774,13 @@
             this.vx *= -0.6;
           }
 
-          // Достиг дна?
           if (this.y + this.r > height - 55) {
             const idx = Math.floor(this.x / (width / multipliers.length));
             if (idx >= 0 && idx < multipliers.length) {
               const win = Math.floor(this.bet * multipliers[idx].value);
               balance += win;
               updateBalance();
-              flashCell(idx);
+              flashCell(idx, win);
             }
             
             ballsInPlay--;
@@ -669,155 +794,28 @@
         }
       }
 
-      let flash = { active: false, index: -1, alpha: 0 };
-      function flashCell(idx) {
+      let flash = { active: false, index: -1, alpha: 0, color: '#ffffff' };
+      function flashCell(idx, winAmount) {
         flash.active = true;
         flash.index = idx;
-        flash.alpha = 1;
+        flash.alpha = 1.0;
+        flash.color = winAmount > 0 ? '#ffd966' : '#ff8888';
       }
 
       function draw() {
         ctx.clearRect(0, 0, width, height);
         
+        // Космический фон
         const grad = ctx.createLinearGradient(0, 0, 0, height);
-        grad.addColorStop(0, '#0a1a2a');
-        grad.addColorStop(1, '#1a2a3a');
+        grad.addColorStop(0, '#030614');
+        grad.addColorStop(0.3, '#0a1a2f');
+        grad.addColorStop(0.7, '#1a2a45');
+        grad.addColorStop(1, '#0f1a30');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
 
-        pins.forEach(p => {
+        // Туманность
+        for (let i = 0; i < 5; i++) {
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-          
-          const gradPin = ctx.createRadialGradient(p.x-2, p.y-2, 2, p.x, p.y, p.r+2);
-          gradPin.addColorStop(0, '#ffd966');
-          gradPin.addColorStop(0.7, '#b8860b');
-          gradPin.addColorStop(1, '#8b6508');
-          
-          ctx.fillStyle = gradPin;
-          ctx.shadowColor = '#ffd966';
-          ctx.shadowBlur = 10;
-          ctx.fill();
-          
-          ctx.shadowBlur = 0;
-          ctx.beginPath();
-          ctx.arc(p.x-1.5, p.y-1.5, 1.5, 0, Math.PI*2);
-          ctx.fillStyle = 'rgba(255,255,220,0.7)';
-          ctx.fill();
-        });
-
-        multipliers.forEach((m, i) => {
-          ctx.fillStyle = m.color + '80';
-          ctx.fillRect(m.x, height-60, m.w-1, 45);
-          
-          if (flash.active && flash.index === i) {
-            ctx.fillStyle = `rgba(255,255,255,${flash.alpha})`;
-            ctx.fillRect(m.x, height-60, m.w-1, 45);
-            flash.alpha *= 0.6;
-            if (flash.alpha < 0.05) flash.active = false;
-          }
-          
-          ctx.strokeStyle = '#ffffff40';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(m.x, height-60, m.w-1, 45);
-          
-          ctx.font = 'bold 20px "Segoe UI"';
-          ctx.fillStyle = '#ffffff';
-          ctx.shadowColor = '#000';
-          ctx.shadowBlur = 5;
-          ctx.textAlign = 'center';
-          
-          let text = m.value.toFixed(1);
-          if (m.value < 1) text = m.value.toFixed(1);
-          else if (m.value < 10) text = 'x' + m.value.toFixed(1);
-          else text = 'x' + Math.round(m.value);
-          
-          ctx.fillText(text, m.x + m.w/2, height-32);
-        });
-        ctx.shadowBlur = 0;
-
-        balls.forEach(b => {
-          b.trail.forEach((t, i) => {
-            const alpha = (i / b.trail.length) * 0.3;
-            ctx.beginPath();
-            ctx.arc(t.x, t.y, b.r*0.6, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255,100,100,${alpha})`;
-            ctx.fill();
-          });
-          
-          ctx.beginPath();
-          ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
-          const gradBall = ctx.createRadialGradient(b.x-3, b.y-3, 3, b.x, b.y, b.r+2);
-          gradBall.addColorStop(0, '#ffcccc');
-          gradBall.addColorStop(0.5, '#ff4444');
-          gradBall.addColorStop(1, '#aa2222');
-          ctx.fillStyle = gradBall;
-          ctx.shadowColor = '#ff8888';
-          ctx.shadowBlur = 15;
-          ctx.fill();
-          
-          ctx.shadowBlur = 0;
-          ctx.beginPath();
-          ctx.arc(b.x-2, b.y-2, 2, 0, Math.PI*2);
-          ctx.fillStyle = 'rgba(255,255,255,0.4)';
-          ctx.fill();
-        });
-      }
-
-      function gameLoop() {
-        for (let i = balls.length - 1; i >= 0; i--) {
-          if (!balls[i].update()) balls.splice(i, 1);
-        }
-        draw();
-        requestAnimationFrame(gameLoop);
-      }
-      gameLoop();
-
-      document.getElementById('dropBallBtn').addEventListener('click', () => {
-        const betInput = document.getElementById('betInput');
-        let bet = parseInt(betInput.value);
-        if (isNaN(bet) || bet < 10) bet = 10;
-        if (bet > balance) {
-          alert('❌ Не хватает звёзд!');
-          return;
-        }
-        
-        balance -= bet;
-        updateBalance();
-        
-        if (topPinPositions.length > 0) {
-          const randomIndex = Math.floor(Math.random() * topPinPositions.length);
-          const startX = topPinPositions[randomIndex];
-          
-          // Только небольшое случайное смещение, никакого притяжения
-          const finalX = startX + (Math.random() * 8 - 4);
-          
-          balls.push(new Ball(finalX, 40, bet));
-          
-          ballsInPlay++;
-          setLevelButtonsState(true);
-        }
-      });
-
-      document.querySelectorAll('.level-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          if (btn.classList.contains('disabled')) return;
-          
-          document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          currentLevel = btn.dataset.level;
-          generateField(currentLevel);
-        });
-      });
-
-      document.getElementById('betInput').addEventListener('change', function() {
-        let v = parseInt(this.value);
-        if (v < 10) this.value = 10;
-        if (v > 10000) this.value = 10000;
-      });
-
-      updateBalance();
-    })();
-  </script>
-</body>
-</html>
+          ctx.arc(200 + i*150, 200 + i*80, 150, 0, Math.PI*2);
+          ctx.fillStyle = `rgba(100, 150, 255, 0.
