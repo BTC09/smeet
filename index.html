@@ -37,6 +37,50 @@
             z-index: 10; /* Чтобы он был поверх фишек */
         }
 
+        /* Звезды */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle 2s infinite ease-in-out;
+        }
+
+        /* Анимация мерцания звезд */
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Падающие кометы */
+        .comet {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, rgba(255,255,255,0.5), rgba(255,255,255,0));
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall 5s infinite linear, tail 1s infinite linear;
+        }
+
+        /* Анимация падения комет */
+        @keyframes fall {
+            0% { transform: translateY(-100px) translateX(0); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(200px); opacity: 0; }
+        }
+
+        /* Анимация хвоста кометы */
+        @keyframes tail {
+            0% { transform: scale(1) translateX(0); }
+            100% { transform: scale(2) translateX(40px); }
+        }
+
         /* Фишки с изображениями */
         .chip {
             position: absolute;
@@ -62,17 +106,6 @@
             0% { transform: translateY(0); }
             50% { transform: translateY(-30px); }
             100% { transform: translateY(0); }
-        }
-
-        /* Для 3D-эффекта */
-        @keyframes rotateX {
-            0% { transform: rotateX(0deg); }
-            100% { transform: rotateX(360deg); }
-        }
-
-        @keyframes rotateY {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
         }
     </style>
 </head>
@@ -125,6 +158,33 @@ engine.world.gravity.y = 1;
 
 // Запускаем движок
 Engine.run(engine);
+
+// Функция для создания звезд
+function createStars(numStars) {
+    for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.top = Math.random() * window.innerHeight + 'px';
+        star.style.left = Math.random() * window.innerWidth + 'px';
+        document.body.appendChild(star);
+    }
+}
+
+// Функция для создания падающих комет
+function createComets(numComets) {
+    for (let i = 0; i < numComets; i++) {
+        const comet = document.createElement('div');
+        comet.classList.add('comet');
+        comet.style.top = Math.random() * window.innerHeight + 'px';
+        comet.style.left = Math.random() * window.innerWidth + 'px';
+        document.body.appendChild(comet);
+    }
+}
+
+// Создаем звезды и кометы
+createStars(100); // 100 звезд
+createComets(5);   // 5 комет
+
 </script>
 
 </body>
