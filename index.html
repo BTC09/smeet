@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SMEET ✦ DELUXE CASINO</title>
+  <title>SMEET ✦ MEGA CASINO</title>
   <style>
     * {
       margin: 0;
@@ -387,10 +387,6 @@
       margin: 40px 0;
     }
 
-    .player-area, .dealer-area-side {
-      text-align: center;
-    }
-
     .dealer-avatar {
       font-size: 100px;
       filter: drop-shadow(0 0 30px #ff44aa);
@@ -452,7 +448,147 @@
       margin-top: 20px;
     }
 
-    /* ROULETTE СУПЕР-КОЛЕСО */
+    /* СУПЕР-СЛОТЫ С МЕГА-ЭФФЕКТАМИ */
+    .slots-container {
+      background: #0f1830ee;
+      backdrop-filter: blur(10px);
+      border-radius: 60px;
+      padding: 40px;
+      border: 3px solid #ffd966;
+      box-shadow: 0 0 70px #ff44aa99;
+    }
+
+    .slot-machine {
+      background: #1a1f2a;
+      border-radius: 50px;
+      padding: 40px;
+      margin: 30px 0;
+      box-shadow: 0 20px 30px #000000cc, 0 0 0 3px #ffd966 inset;
+    }
+
+    .reels-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .reel-wrapper {
+      width: 140px;
+      height: 200px;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .reel {
+      width: 140px;
+      height: 200px;
+      background: linear-gradient(145deg, #2a2f3a, #1a1f2a);
+      border: 4px solid #ffd966;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 90px;
+      box-shadow: 0 0 40px #ff44aa, inset 0 0 30px #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .reel::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(145deg, transparent, rgba(255,255,255,0.1), transparent);
+      animation: reelShine 3s infinite;
+    }
+
+    @keyframes reelShine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .reel.spinning {
+      animation: spinReelVertical 0.2s infinite linear;
+    }
+
+    @keyframes spinReelVertical {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(200px); }
+    }
+
+    .reel.spinning-glow {
+      animation: spinGlow 0.2s infinite;
+    }
+
+    @keyframes spinGlow {
+      0% { box-shadow: 0 0 40px #ff44aa; }
+      50% { box-shadow: 0 0 80px #ffaa44, 0 0 120px #ff44aa; }
+      100% { box-shadow: 0 0 40px #ff44aa; }
+    }
+
+    .reel.stop-animation {
+      animation: winPop 0.5s;
+    }
+
+    @keyframes winPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); filter: brightness(1.5); }
+      100% { transform: scale(1); }
+    }
+
+    .slot-win-line {
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #ffd966, #ff44aa, #ffd966, transparent);
+      margin: 20px 0;
+      box-shadow: 0 0 30px #ff44aa;
+      animation: linePulse 1s infinite;
+    }
+
+    @keyframes linePulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .slot-result {
+      font-size: 48px;
+      font-weight: 800;
+      text-align: center;
+      margin: 30px 0;
+      animation: resultGlow 1s infinite;
+    }
+
+    @keyframes resultGlow {
+      0% { text-shadow: 0 0 20px #ffd966; }
+      50% { text-shadow: 0 0 40px #ff44aa, 0 0 60px #aa44ff; }
+      100% { text-shadow: 0 0 20px #ffd966; }
+    }
+
+    .win-badge {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      background: linear-gradient(145deg, #ff44aa, #aa44ff);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 60px;
+      font-size: 28px;
+      font-weight: 800;
+      box-shadow: 0 0 40px #ff44aa;
+      animation: badgePulse 1s infinite;
+    }
+
+    @keyframes badgePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* ROULETTE СУПЕР */
     .roulette-container {
       background: #0f1830ee;
       backdrop-filter: blur(10px);
@@ -487,25 +623,6 @@
       box-shadow: 0 0 60px #ff44aa, 0 0 120px #aa44ff;
       transition: transform 3s cubic-bezier(0.1, 0.9, 0.2, 1);
       position: relative;
-    }
-
-    .wheel-numbers {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
-
-    .wheel-number {
-      position: absolute;
-      left: 50%;
-      top: 10px;
-      transform: translateX(-50%);
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
-      text-shadow: 0 0 10px black;
     }
 
     .wheel-pointer {
@@ -607,13 +724,13 @@
       to { transform: translateX(-50%) scale(1); }
     }
 
-    /* Адаптация */
     @media (max-width: 600px) {
       .games-grid { grid-template-columns: 1fr; }
       .dealer-area { flex-direction: column; }
       .wheel-wrapper { width: 280px; height: 280px; }
       .action-btn { padding: 12px 30px; font-size: 26px; }
       .bet-option { padding: 12px 20px; font-size: 20px; }
+      .reels-container { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -623,7 +740,7 @@
   <div class="welcome-screen" id="welcomeScreen">
     <div class="welcome-content">
       <div class="welcome-title">SMEET</div>
-      <div class="welcome-subtitle">DELUXE CASINO</div>
+      <div class="welcome-subtitle">MEGA CASINO</div>
     </div>
   </div>
 
@@ -676,7 +793,7 @@
       </div>
     </div>
 
-    <!-- DICE С ДИЛЛЕРОМ -->
+    <!-- DICE -->
     <div id="diceContainer" class="game-container">
       <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
       <div class="dice-container">
@@ -717,26 +834,36 @@
       </div>
     </div>
 
-    <!-- SLOTS -->
+    <!-- SLOTS С СУПЕР-ЭФФЕКТАМИ -->
     <div id="slotsContainer" class="game-container">
       <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
-      <div class="slots-container" style="background:#0f1830ee; border-radius:60px; padding:40px; border:3px solid #ffd966;">
-        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎰 SLOTS</h2>
-        <div style="display:flex; gap:20px; justify-content:center; margin:40px 0;">
-          <div style="width:140px; height:140px; background:#1a2a50; border:4px solid #ffd966; border-radius:40px; display:flex; align-items:center; justify-content:center; font-size:70px; box-shadow:0 0 40px #ff44aa;" id="slot1">🍒</div>
-          <div style="width:140px; height:140px; background:#1a2a50; border:4px solid #ffd966; border-radius:40px; display:flex; align-items:center; justify-content:center; font-size:70px; box-shadow:0 0 40px #ff44aa;" id="slot2">🍒</div>
-          <div style="width:140px; height:140px; background:#1a2a50; border:4px solid #ffd966; border-radius:40px; display:flex; align-items:center; justify-content:center; font-size:70px; box-shadow:0 0 40px #ff44aa;" id="slot3">🍒</div>
+      <div class="slots-container">
+        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎰 MEGA SLOTS</h2>
+        <div class="slot-machine">
+          <div class="reels-container" id="reelsContainer">
+            <div class="reel-wrapper">
+              <div class="reel" id="slotReel1">🍒</div>
+            </div>
+            <div class="reel-wrapper">
+              <div class="reel" id="slotReel2">🍒</div>
+            </div>
+            <div class="reel-wrapper">
+              <div class="reel" id="slotReel3">🍒</div>
+            </div>
+          </div>
+          <div class="slot-win-line"></div>
+          <div class="slot-result" id="slotResult">⚡ READY ⚡</div>
+          <div id="winBadge" class="win-badge" style="display: none;">WIN!</div>
         </div>
-        <div style="text-align:center; font-size:36px; color:#ffd966; margin:20px 0;" id="slotResult">КРУТИ!</div>
         <div class="bet-section" style="justify-content:center; margin:30px 0;">
           <span class="bet-label">СТАВКА ✦</span>
           <input type="number" id="slotsBet" class="bet-input" value="50" min="10">
         </div>
-        <button class="action-btn" id="spinSlotsBtn">🎰 КРУТИТЬ</button>
+        <button class="action-btn" id="spinSlotsBtn">🎰 SPIN</button>
       </div>
     </div>
 
-    <!-- ROULETTE СУПЕР -->
+    <!-- ROULETTE -->
     <div id="rouletteContainer" class="game-container">
       <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
       <div class="roulette-container">
@@ -1052,7 +1179,7 @@
         };
       });
 
-      // ========== DICE С ДИЛЛЕРОМ ==========
+      // ========== DICE ==========
       const playerDice = document.getElementById('playerDice');
       const dealerDice = document.getElementById('dealerDice');
       
@@ -1063,7 +1190,6 @@
         let playerVal = Math.floor(Math.random() * 6) + 1;
         let dealerVal = Math.floor(Math.random() * 6) + 1;
         
-        // Анимация кубиков
         playerDice.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
         dealerDice.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
         
@@ -1089,32 +1215,94 @@
         }, 1000);
       };
 
-      // ========== SLOTS ==========
+      // ========== СУПЕР-СЛОТЫ ==========
       const slotSymbols = ['🍒', '🍋', '🍊', '🍇', '💎', '7️⃣', '⭐', '🔔'];
+      const reel1 = document.getElementById('slotReel1');
+      const reel2 = document.getElementById('slotReel2');
+      const reel3 = document.getElementById('slotReel3');
+      const winBadge = document.getElementById('winBadge');
       
       document.getElementById('spinSlotsBtn').onclick = () => {
         let bet = parseInt(document.getElementById('slotsBet').value) || 50;
         if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
         
-        let s1 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-        let s2 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-        let s3 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+        // Скрываем бейдж
+        winBadge.style.display = 'none';
         
-        document.getElementById('slot1').innerText = s1;
-        document.getElementById('slot2').innerText = s2;
-        document.getElementById('slot3').innerText = s3;
+        // Добавляем классы анимации
+        reel1.classList.add('spinning', 'spinning-glow');
+        reel2.classList.add('spinning', 'spinning-glow');
+        reel3.classList.add('spinning', 'spinning-glow');
         
-        if (s1 === s2 && s2 === s3) {
-          balance += bet * 10;
-          createConfetti();
-          showToast('🎰 ДЖЕКПОТ x10');
-        } else if (s1 === s2 || s2 === s3 || s1 === s3) {
-          balance += bet * 2;
-          showToast('🎰 ПАРА x2');
-        } else {
-          balance -= bet;
-        }
-        updateBalance();
+        // Эффект вибрации для контейнера
+        document.querySelector('.slot-machine').style.animation = 'shake 0.2s infinite';
+        
+        // Меняем символы во время анимации (эффект прокрутки)
+        let spinInterval = setInterval(() => {
+          reel1.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+          reel2.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+          reel3.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+        }, 50);
+        
+        setTimeout(() => {
+          // Останавливаем анимацию
+          clearInterval(spinInterval);
+          reel1.classList.remove('spinning', 'spinning-glow');
+          reel2.classList.remove('spinning', 'spinning-glow');
+          reel3.classList.remove('spinning', 'spinning-glow');
+          document.querySelector('.slot-machine').style.animation = '';
+          
+          // Генерируем результат
+          let s1 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+          let s2 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+          let s3 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+          
+          reel1.innerText = s1;
+          reel2.innerText = s2;
+          reel3.innerText = s3;
+          
+          // Добавляем эффект остановки
+          reel1.classList.add('stop-animation');
+          reel2.classList.add('stop-animation');
+          reel3.classList.add('stop-animation');
+          
+          setTimeout(() => {
+            reel1.classList.remove('stop-animation');
+            reel2.classList.remove('stop-animation');
+            reel3.classList.remove('stop-animation');
+          }, 500);
+          
+          let result = '';
+          let win = false;
+          
+          if (s1 === s2 && s2 === s3) {
+            balance += bet * 10;
+            createConfetti();
+            result = '🎰 ДЖЕКПОТ x10';
+            win = true;
+            winBadge.style.display = 'block';
+            winBadge.innerText = 'JACKPOT!';
+          } else if (s1 === s2 || s2 === s3 || s1 === s3) {
+            balance += bet * 2;
+            result = '🎰 ПАРА x2';
+            win = true;
+            winBadge.style.display = 'block';
+            winBadge.innerText = 'WIN x2';
+          } else {
+            balance -= bet;
+            result = '😢 ПРОИГРЫШ';
+            win = false;
+          }
+          
+          document.getElementById('slotResult').innerHTML = win ? `🎉 ${result}` : result;
+          if (win) {
+            document.getElementById('slotResult').style.animation = 'resultGlow 0.5s infinite';
+          } else {
+            document.getElementById('slotResult').style.animation = 'none';
+          }
+          
+          updateBalance();
+        }, 1500);
       };
 
       // ========== SUPER ROULETTE ==========
