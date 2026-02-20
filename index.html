@@ -1,1351 +1,754 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>SMEET ✦ MEGA CASINO</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: #03050a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 8px;
-    }
-
-    /* ✦✦✦ МЕГА-ПРИВЕТСТВИЕ ✦✦✦ */
-    .welcome-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 20% 30%, #2a1f4a, #020514, #1a0f2a);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      transition: opacity 0.8s ease;
-    }
-
-    .particle-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    .welcome-content {
-      text-align: center;
-      filter: drop-shadow(0 0 100px #ff44aa);
-      z-index: 2;
-    }
-
-    .welcome-title {
-      font-size: clamp(80px, 20vw, 180px);
-      font-weight: 900;
-      background: linear-gradient(145deg, #fff5cf, #ffaa44, #ff44aa, #aa44ff, #44aaff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 80px #ff44aa, 0 0 160px #aa44ff;
-      letter-spacing: 15px;
-      animation: megaGlitch 2s;
-    }
-
-    .welcome-subtitle {
-      font-size: clamp(28px, 6vw, 48px);
-      color: #fff;
-      text-shadow: 0 0 40px #aa44ff, 0 0 80px #ff44aa;
-      animation: floatText 2s infinite;
-    }
-
-    @keyframes floatText {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
-
-    @keyframes megaGlitch {
-      0% { transform: scale(1.5) skewX(30deg); opacity: 0; filter: blur(50px); }
-      20% { transform: scale(0.8) skewX(-20deg); opacity: 0.8; }
-      40% { transform: scale(1.2) skewX(10deg); }
-      60% { transform: scale(0.95) skewX(-5deg); }
-      80% { transform: scale(1.02) skewX(2deg); }
-      100% { transform: scale(1) skewX(0); opacity: 1; filter: blur(0); }
-    }
-
-    /* ✦✦✦ ОСНОВНОЙ КОНТЕЙНЕР ✦✦✦ */
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      background: rgba(8, 12, 22, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 60px;
-      padding: 24px;
-      box-shadow: 0 40px 70px #000000ee, 0 0 0 4px #ffd96699 inset, 0 0 80px #ff44aa99;
-      border: 1px solid #ffd966;
-      opacity: 0;
-      transform: scale(0.95);
-      transition: opacity 0.8s, transform 0.8s;
-    }
-
-    .app.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    /* Шапка */
-    .header {
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 100px;
-      padding: 14px 24px;
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 2px solid #ffd966;
-      box-shadow: 0 10px 20px #000000cc, 0 0 40px #ff44aa66;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .balance-block {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      background: #0e1630;
-      padding: 8px 28px 8px 20px;
-      border-radius: 70px;
-      border: 2px solid #ffd966;
-      box-shadow: 0 0 30px #ffd96699;
-    }
-
-    .stars-icon {
-      font-size: 40px;
-      filter: drop-shadow(0 0 15px gold) drop-shadow(0 0 30px magenta);
-      animation: starMega 2s infinite;
-    }
-
-    @keyframes starMega {
-      0% { transform: scale(1) rotate(0deg); }
-      33% { transform: scale(1.15) rotate(5deg); }
-      66% { transform: scale(1.05) rotate(-5deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-
-    .balance-value {
-      font-size: 42px;
-      font-weight: 800;
-      background: linear-gradient(145deg, #ffd966, #ffaa44, #ff44aa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .add-stars-btn {
-      background: #1f2b44;
-      border: 3px solid #ffd966;
-      color: #ffd966;
-      font-size: 22px;
-      font-weight: 700;
-      padding: 12px 35px;
-      border-radius: 70px;
-      cursor: pointer;
-      box-shadow: 0 6px 0 #0a1220, 0 0 40px #ff44aa99;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: 0.1s;
-    }
-
-    .add-stars-btn:active {
-      transform: translateY(5px);
-      box-shadow: 0 1px 0 #0a1220, 0 0 50px #ff44aa;
-    }
-
-    /* Меню игр */
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      padding: 10px 0;
-    }
-
-    .game-card {
-      background: rgba(20, 30, 50, 0.7);
-      backdrop-filter: blur(10px);
-      border: 3px solid #ffd966;
-      border-radius: 45px;
-      padding: 30px 15px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s;
-      box-shadow: 0 12px 0 #0f1a2a, 0 0 50px #ff44aa99;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .game-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 0 #0f1a2a, 0 0 70px #ffaa44;
-    }
-
-    .game-card:active {
-      transform: translateY(5px);
-      box-shadow: 0 7px 0 #0f1a2a, 0 0 80px #ff44aa;
-    }
-
-    .game-emoji {
-      font-size: 80px;
-      margin-bottom: 15px;
-      filter: drop-shadow(0 0 20px gold);
-    }
-
-    .game-name {
-      font-size: 36px;
-      font-weight: 800;
-      background: linear-gradient(145deg, #ffd966, #ffaa44, #ff44aa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Контейнеры игр */
-    .game-container {
-      display: none;
-    }
-
-    .game-container.active {
-      display: block;
-      animation: megaAppear 0.4s;
-    }
-
-    @keyframes megaAppear {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .back-to-menu {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: #1a2640;
-      border: 3px solid #ffd966;
-      color: #ffd966;
-      font-size: 22px;
-      font-weight: 600;
-      padding: 12px 30px;
-      border-radius: 60px;
-      cursor: pointer;
-      margin-bottom: 24px;
-      box-shadow: 0 6px 0 #0f1a2a, 0 0 30px #ff44aa66;
-    }
-
-    .back-to-menu:active {
-      transform: translateY(5px);
-      box-shadow: 0 1px 0 #0f1a2a, 0 0 40px #ff44aa;
-    }
-
-    /* PLINKO */
-    .canvas-wrapper {
-      width: 100%;
-      aspect-ratio: 860/600;
-      border-radius: 45px;
-      overflow: hidden;
-      background: #020812;
-      box-shadow: 0 20px 40px #000, 0 0 0 3px #ffd966cc inset, 0 0 60px #ff44aa99;
-      margin-bottom: 20px;
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .plinko-controls {
-      background: #101a30ee;
-      backdrop-filter: blur(10px);
-      padding: 18px 24px;
-      border-radius: 80px;
-      border: 2px solid #ffd966;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 15px;
-      box-shadow: 0 10px 20px #000000cc;
-    }
-
-    .bet-section {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      background: #0b1230;
-      padding: 8px 24px;
-      border-radius: 60px;
-      border: 2px solid #ffd966aa;
-    }
-
-    .bet-label {
-      color: #ffd966;
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .bet-input {
-      background: #1a2a50;
-      border: 2px solid #ffd966;
-      color: #ffd966;
-      font-size: 28px;
-      font-weight: 700;
-      width: 120px;
-      padding: 10px 15px;
-      border-radius: 60px;
-      text-align: center;
-    }
-
-    .action-btn {
-      background: linear-gradient(145deg, #ffcc00, #ff9900, #ff44aa);
-      border: none;
-      font-size: 32px;
-      font-weight: 800;
-      padding: 14px 60px;
-      border-radius: 80px;
-      color: #121212;
-      box-shadow: 0 8px 0 #aa4400, 0 0 50px #ffaa44;
-      cursor: pointer;
-      transition: 0.08s;
-    }
-
-    .action-btn:active {
-      transform: translateY(7px);
-      box-shadow: 0 1px 0 #aa4400, 0 0 60px #ff44aa;
-    }
-
-    .level-panel {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      flex-wrap: wrap;
-    }
-
-    .level-btn {
-      background: #1b2740;
-      border: 2px solid #ffd966aa;
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
-      padding: 12px 20px;
-      border-radius: 50px;
-      cursor: pointer;
-      flex: 1;
-      min-width: 100px;
-      text-align: center;
-      box-shadow: 0 5px 0 #0f1a2a;
-    }
-
-    .level-btn.active {
-      background: linear-gradient(145deg, #ffd966, #ffaa44);
-      color: #121212;
-      border-color: #fff0b0;
-      box-shadow: 0 5px 0 #b15d00, 0 0 30px #ffd966;
-    }
-
-    .level-btn.disabled {
-      opacity: 0.4;
-      pointer-events: none;
-    }
-
-    /* DICE С ДИЛЛЕРОМ */
-    .dice-container {
-      background: #0f1830ee;
-      backdrop-filter: blur(10px);
-      border-radius: 60px;
-      padding: 40px;
-      border: 3px solid #ffd966;
-      box-shadow: 0 0 70px #ff44aa99;
-    }
-
-    .dealer-area {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 30px;
-      margin: 40px 0;
-    }
-
-    .dealer-avatar {
-      font-size: 100px;
-      filter: drop-shadow(0 0 30px #ff44aa);
-      animation: dealerFloat 3s infinite;
-    }
-
-    @keyframes dealerFloat {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
-
-    .dealer-name {
-      color: #ffd966;
-      font-size: 28px;
-      font-weight: 700;
-      margin: 15px 0;
-      text-shadow: 0 0 15px #ff44aa;
-    }
-
-    .dice-3d {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 1s;
-    }
-
-    .dice-face {
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      background: linear-gradient(145deg, #fff5d0, #ffd966);
-      border: 4px solid #aa5500;
-      border-radius: 25px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 50px;
-      font-weight: 800;
-      color: #1a1a2a;
-      box-shadow: 0 0 30px #ffaa44;
-      backface-visibility: hidden;
-    }
-
-    .dice-face.front { transform: translateZ(60px); }
-    .dice-face.back { transform: rotateY(180deg) translateZ(60px); }
-    .dice-face.right { transform: rotateY(90deg) translateZ(60px); }
-    .dice-face.left { transform: rotateY(-90deg) translateZ(60px); }
-    .dice-face.top { transform: rotateX(90deg) translateZ(60px); }
-    .dice-face.bottom { transform: rotateX(-90deg) translateZ(60px); }
-
-    .dice-value {
-      font-size: 40px;
-      font-weight: 800;
-      color: #ffd966;
-      text-shadow: 0 0 20px #ff44aa;
-      margin-top: 20px;
-    }
-
-    /* СУПЕР-СЛОТЫ С МЕГА-ЭФФЕКТАМИ */
-    .slots-container {
-      background: #0f1830ee;
-      backdrop-filter: blur(10px);
-      border-radius: 60px;
-      padding: 40px;
-      border: 3px solid #ffd966;
-      box-shadow: 0 0 70px #ff44aa99;
-    }
-
-    .slot-machine {
-      background: #1a1f2a;
-      border-radius: 50px;
-      padding: 40px;
-      margin: 30px 0;
-      box-shadow: 0 20px 30px #000000cc, 0 0 0 3px #ffd966 inset;
-    }
-
-    .reels-container {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      perspective: 1000px;
-    }
-
-    .reel-wrapper {
-      width: 140px;
-      height: 200px;
-      position: relative;
-      transform-style: preserve-3d;
-    }
-
-    .reel {
-      width: 140px;
-      height: 200px;
-      background: linear-gradient(145deg, #2a2f3a, #1a1f2a);
-      border: 4px solid #ffd966;
-      border-radius: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 90px;
-      box-shadow: 0 0 40px #ff44aa, inset 0 0 30px #000;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .reel::before {
-      content: '';
-      position: absolute;
-      top: -100%;
-      left: -100%;
-      width: 300%;
-      height: 300%;
-      background: linear-gradient(145deg, transparent, rgba(255,255,255,0.1), transparent);
-      animation: reelShine 3s infinite;
-    }
-
-    @keyframes reelShine {
-      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-    }
-
-    .reel.spinning {
-      animation: spinReelVertical 0.2s infinite linear;
-    }
-
-    @keyframes spinReelVertical {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(200px); }
-    }
-
-    .reel.spinning-glow {
-      animation: spinGlow 0.2s infinite;
-    }
-
-    @keyframes spinGlow {
-      0% { box-shadow: 0 0 40px #ff44aa; }
-      50% { box-shadow: 0 0 80px #ffaa44, 0 0 120px #ff44aa; }
-      100% { box-shadow: 0 0 40px #ff44aa; }
-    }
-
-    .reel.stop-animation {
-      animation: winPop 0.5s;
-    }
-
-    @keyframes winPop {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); filter: brightness(1.5); }
-      100% { transform: scale(1); }
-    }
-
-    .slot-win-line {
-      height: 4px;
-      background: linear-gradient(90deg, transparent, #ffd966, #ff44aa, #ffd966, transparent);
-      margin: 20px 0;
-      box-shadow: 0 0 30px #ff44aa;
-      animation: linePulse 1s infinite;
-    }
-
-    @keyframes linePulse {
-      0% { opacity: 0.5; }
-      50% { opacity: 1; }
-      100% { opacity: 0.5; }
-    }
-
-    .slot-result {
-      font-size: 48px;
-      font-weight: 800;
-      text-align: center;
-      margin: 30px 0;
-      animation: resultGlow 1s infinite;
-    }
-
-    @keyframes resultGlow {
-      0% { text-shadow: 0 0 20px #ffd966; }
-      50% { text-shadow: 0 0 40px #ff44aa, 0 0 60px #aa44ff; }
-      100% { text-shadow: 0 0 20px #ffd966; }
-    }
-
-    .win-badge {
-      position: absolute;
-      top: -20px;
-      right: -20px;
-      background: linear-gradient(145deg, #ff44aa, #aa44ff);
-      color: white;
-      padding: 15px 30px;
-      border-radius: 60px;
-      font-size: 28px;
-      font-weight: 800;
-      box-shadow: 0 0 40px #ff44aa;
-      animation: badgePulse 1s infinite;
-    }
-
-    @keyframes badgePulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-
-    /* ROULETTE СУПЕР */
-    .roulette-container {
-      background: #0f1830ee;
-      backdrop-filter: blur(10px);
-      border-radius: 60px;
-      padding: 40px;
-      border: 3px solid #ffd966;
-      box-shadow: 0 0 70px #ff44aa99;
-    }
-
-    .wheel-wrapper {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      margin: 0 auto 40px;
-    }
-
-    .wheel-super {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(
-        #ff4444 0deg 45deg,
-        #222 45deg 90deg,
-        #44ff44 90deg 135deg,
-        #222 135deg 180deg,
-        #4444ff 180deg 225deg,
-        #222 225deg 270deg,
-        #ffff44 270deg 315deg,
-        #222 315deg 360deg
-      );
-      border: 8px solid #ffd966;
-      box-shadow: 0 0 60px #ff44aa, 0 0 120px #aa44ff;
-      transition: transform 3s cubic-bezier(0.1, 0.9, 0.2, 1);
-      position: relative;
-    }
-
-    .wheel-pointer {
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 30px solid transparent;
-      border-right: 30px solid transparent;
-      border-top: 60px solid #ffd966;
-      filter: drop-shadow(0 0 20px #ff44aa);
-      z-index: 10;
-    }
-
-    .roulette-number-mega {
-      font-size: 70px;
-      font-weight: 800;
-      color: #ffd966;
-      text-shadow: 0 0 40px #ff44aa, 0 0 80px #aa44ff;
-      text-align: center;
-    }
-
-    .bet-options {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: 30px 0;
-    }
-
-    .bet-option {
-      background: #1a2a44;
-      border: 3px solid #ffd966;
-      color: #ffd966;
-      font-size: 24px;
-      font-weight: 700;
-      padding: 15px 30px;
-      border-radius: 60px;
-      cursor: pointer;
-      box-shadow: 0 5px 0 #0f1a2a, 0 0 30px #ff44aa66;
-      transition: 0.1s;
-    }
-
-    .bet-option:active {
-      transform: translateY(4px);
-      box-shadow: 0 1px 0 #0f1a2a, 0 0 50px #ff44aa;
-    }
-
-    /* Общие элементы */
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 20px;
-      background: #ff44aa;
-      animation: confettiFall 3s linear forwards;
-      z-index: 9999;
-    }
-
-    @keyframes confettiFall {
-      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-    }
-
-    .star {
-      position: fixed;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 0 30px gold, 0 0 60px magenta;
-      pointer-events: none;
-      z-index: 9999;
-      animation: starFall 3s linear forwards;
-    }
-
-    @keyframes starFall {
-      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(145deg, #ff44aa, #aa44ff);
-      color: white;
-      padding: 18px 45px;
-      border-radius: 80px;
-      font-size: 26px;
-      font-weight: 700;
-      box-shadow: 0 0 50px #ff44aa;
-      z-index: 10000;
-      animation: toastPop 0.3s;
-    }
-
-    @keyframes toastPop {
-      from { transform: translateX(-50%) scale(0); }
-      to { transform: translateX(-50%) scale(1); }
-    }
-
-    @media (max-width: 600px) {
-      .games-grid { grid-template-columns: 1fr; }
-      .dealer-area { flex-direction: column; }
-      .wheel-wrapper { width: 280px; height: 280px; }
-      .action-btn { padding: 12px 30px; font-size: 26px; }
-      .bet-option { padding: 12px 20px; font-size: 20px; }
-      .reels-container { flex-wrap: wrap; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMEET Detailing</title>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            padding: 20px 16px;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Минималистичный дизайн */
+        .header {
+            margin-bottom: 32px;
+            text-align: left;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .logo span {
+            color: #86868b;
+            font-weight: 400;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #86868b;
+            line-height: 1.4;
+        }
+
+        /* Категории услуг */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 28px 0 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .service-card.selected {
+            border: 2px solid #000;
+            background: #fff;
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+
+        .service-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .service-description {
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            padding-right: 20px;
+        }
+
+        .service-details {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #6e6e73;
+        }
+
+        .service-details span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Бейджи */
+        .badge {
+            background: #000;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .badge.premium {
+            background: #c4a962;
+        }
+
+        /* Дополнительные опции */
+        .options-section {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .option-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .option-item:last-child {
+            border-bottom: none;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 13px;
+            color: #86868b;
+        }
+
+        .option-price {
+            font-size: 16px;
+            font-weight: 600;
+            margin-left: 16px;
+        }
+
+        /* Переключатель */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            margin-left: 12px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e0e0e0;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #000;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Корзина/итого */
+        .cart-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 16px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            transition: transform 0.3s ease;
+            z-index: 100;
+        }
+
+        .cart-bar.visible {
+            transform: translateY(0);
+        }
+
+        .cart-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-label {
+            font-size: 12px;
+            opacity: 0.7;
+            letter-spacing: 0.5px;
+        }
+
+        .cart-total {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .cart-button {
+            background: white;
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cart-button:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 200;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Детали автомобиля */
+        .car-details {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .car-details-title {
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .car-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            margin-bottom: 12px;
+            background: #f8f8f8;
+        }
+
+        .car-input:focus {
+            outline: none;
+            border-color: #000;
+            background: #fff;
+        }
+
+        /* Адаптация под Telegram тему */
+        body[data-theme="dark"] {
+            background-color: #1c1c1e;
+            color: #ffffff;
+        }
+
+        body[data-theme="dark"] .service-card {
+            background: rgba(44, 44, 46, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body[data-theme="dark"] .service-name {
+            color: #fff;
+        }
+
+        body[data-theme="dark"] .badge {
+            background: #3a3a3c;
+        }
+    </style>
 </head>
 <body>
-  <canvas class="particle-canvas" id="particleCanvas"></canvas>
+    <!-- Уведомление -->
+    <div class="notification" id="notification">Услуга добавлена</div>
 
-  <div class="welcome-screen" id="welcomeScreen">
-    <div class="welcome-content">
-      <div class="welcome-title">SMEET</div>
-      <div class="welcome-subtitle">MEGA CASINO</div>
-    </div>
-  </div>
-
-  <div class="app" id="app">
+    <!-- Шапка -->
     <div class="header">
-      <div class="balance-block">
-        <span class="stars-icon">✦</span>
-        <span class="balance-value" id="balanceDisplay">10000</span>
-      </div>
-      <button class="add-stars-btn" id="addStarsBtn">✨ +1000</button>
+        <div class="logo">SMEET<span>.</span></div>
+        <div class="subtitle">Премиальный детейлинг<br>для ценителей совершенства</div>
     </div>
 
-    <!-- МЕНЮ -->
-    <div id="gamesMenu" class="games-grid">
-      <div class="game-card" data-game="plinko">
-        <div class="game-emoji">🎲</div>
-        <div class="game-name">PLINKO</div>
-      </div>
-      <div class="game-card" data-game="dice">
-        <div class="game-emoji">🎲</div>
-        <div class="game-name">DICE</div>
-      </div>
-      <div class="game-card" data-game="slots">
-        <div class="game-emoji">🎰</div>
-        <div class="game-name">SLOTS</div>
-      </div>
-      <div class="game-card" data-game="roulette">
-        <div class="game-emoji">🎡</div>
-        <div class="game-name">ROULETTE</div>
-      </div>
+    <!-- Детали автомобиля (минималистичная форма) -->
+    <div class="car-details">
+        <div class="car-details-title">📋 Информация об автомобиле</div>
+        <input type="text" class="car-input" id="carBrand" placeholder="Марка и модель">
+        <input type="text" class="car-input" id="carYear" placeholder="Год выпуска">
     </div>
 
-    <!-- PLINKO -->
-    <div id="plinkoContainer" class="game-container">
-      <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
-      <div class="canvas-wrapper">
-        <canvas id="plinkoCanvas" width="860" height="600"></canvas>
-      </div>
-      <div class="plinko-controls">
-        <div class="bet-section">
-          <span class="bet-label">✦</span>
-          <input type="number" id="betInput" class="bet-input" value="50" min="10" step="10">
-        </div>
-        <button class="action-btn" id="dropBallBtn">🎲</button>
-      </div>
-      <div class="level-panel">
-        <button class="level-btn" data-level="easy">🌱 ЛЁГКИЙ</button>
-        <button class="level-btn" data-level="medium">⚡ СРЕДНИЙ</button>
-        <button class="level-btn active" data-level="hard">🔥 ХАРД</button>
-      </div>
+    <!-- Экстерьер -->
+    <div class="section-title">✨ Экстерьер</div>
+    <div class="services-grid" id="exteriorServices">
+        <!-- Услуги будут добавлены через JS -->
     </div>
 
-    <!-- DICE -->
-    <div id="diceContainer" class="game-container">
-      <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
-      <div class="dice-container">
-        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎲 DICE VS DEALER</h2>
-        <div class="dealer-area">
-          <div class="player-area">
-            <div class="dealer-avatar">👤</div>
-            <div class="dealer-name">ИГРОК</div>
-            <div class="dice-3d" id="playerDice">
-              <div class="dice-face front">1</div>
-              <div class="dice-face back">6</div>
-              <div class="dice-face right">4</div>
-              <div class="dice-face left">3</div>
-              <div class="dice-face top">2</div>
-              <div class="dice-face bottom">5</div>
+    <!-- Интерьер -->
+    <div class="section-title">🛋️ Интерьер</div>
+    <div class="services-grid" id="interiorServices"></div>
+
+    <!-- Защитные покрытия -->
+    <div class="section-title">🛡️ Защитные покрытия</div>
+    <div class="services-grid" id="protectionServices"></div>
+
+    <!-- Дополнительные опции -->
+    <div class="options-section">
+        <div class="section-title">➕ Дополнительно</div>
+        
+        <div class="option-item">
+            <div class="option-info">
+                <div class="option-title">Нано-защита стекол</div>
+                <div class="option-desc">Гидрофобное покрытие на 12 месяцев</div>
             </div>
-            <div class="dice-value" id="playerDiceValue">?</div>
-          </div>
-          <div class="dealer-area-side">
-            <div class="dealer-avatar">🕴️</div>
-            <div class="dealer-name">ДИЛЛЕР</div>
-            <div class="dice-3d" id="dealerDice">
-              <div class="dice-face front">1</div>
-              <div class="dice-face back">6</div>
-              <div class="dice-face right">4</div>
-              <div class="dice-face left">3</div>
-              <div class="dice-face top">2</div>
-              <div class="dice-face bottom">5</div>
+            <div class="option-price">3 900 ₽</div>
+            <label class="switch">
+                <input type="checkbox" id="glassProtection" onchange="updateTotal()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="option-item">
+            <div class="option-info">
+                <div class="option-title">Ароматизация салона</div>
+                <div class="option-desc">Премиальный аромат на выбор</div>
             </div>
-            <div class="dice-value" id="dealerDiceValue">?</div>
-          </div>
+            <div class="option-price">1 900 ₽</div>
+            <label class="switch">
+                <input type="checkbox" id="fragrance" onchange="updateTotal()">
+                <span class="slider"></span>
+            </label>
         </div>
-        <div class="bet-section" style="justify-content:center; margin:30px 0;">
-          <span class="bet-label">СТАВКА ✦</span>
-          <input type="number" id="diceBet" class="bet-input" value="50" min="10">
+
+        <div class="option-item">
+            <div class="option-info">
+                <div class="option-title">Чернение резины</div>
+                <div class="option-desc">Матовый или глянцевый финиш</div>
+            </div>
+            <div class="option-price">1 500 ₽</div>
+            <label class="switch">
+                <input type="checkbox" id="tireShine" onchange="updateTotal()">
+                <span class="slider"></span>
+            </label>
         </div>
-        <button class="action-btn" id="rollDiceBtn">🎲 БРОСИТЬ</button>
-      </div>
     </div>
 
-    <!-- SLOTS С СУПЕР-ЭФФЕКТАМИ -->
-    <div id="slotsContainer" class="game-container">
-      <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
-      <div class="slots-container">
-        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎰 MEGA SLOTS</h2>
-        <div class="slot-machine">
-          <div class="reels-container" id="reelsContainer">
-            <div class="reel-wrapper">
-              <div class="reel" id="slotReel1">🍒</div>
-            </div>
-            <div class="reel-wrapper">
-              <div class="reel" id="slotReel2">🍒</div>
-            </div>
-            <div class="reel-wrapper">
-              <div class="reel" id="slotReel3">🍒</div>
-            </div>
-          </div>
-          <div class="slot-win-line"></div>
-          <div class="slot-result" id="slotResult">⚡ READY ⚡</div>
-          <div id="winBadge" class="win-badge" style="display: none;">WIN!</div>
+    <!-- Нижняя панель с итогом -->
+    <div class="cart-bar" id="cartBar">
+        <div class="cart-info">
+            <span class="cart-label">Итого</span>
+            <span class="cart-total" id="totalAmount">0 ₽</span>
         </div>
-        <div class="bet-section" style="justify-content:center; margin:30px 0;">
-          <span class="bet-label">СТАВКА ✦</span>
-          <input type="number" id="slotsBet" class="bet-input" value="50" min="10">
-        </div>
-        <button class="action-btn" id="spinSlotsBtn">🎰 SPIN</button>
-      </div>
+        <button class="cart-button" id="orderButton">Отправить заявку</button>
     </div>
 
-    <!-- ROULETTE -->
-    <div id="rouletteContainer" class="game-container">
-      <div class="back-to-menu" onclick="window.showMenu()">← В МЕНЮ</div>
-      <div class="roulette-container">
-        <h2 style="color:#ffd966; font-size:42px; text-align:center;">🎡 SUPER ROULETTE</h2>
-        <div class="wheel-wrapper">
-          <div class="wheel-super" id="superWheel"></div>
-          <div class="wheel-pointer"></div>
-        </div>
-        <div class="roulette-number-mega" id="rouletteSuperNumber">0</div>
-        <div class="bet-section" style="justify-content:center; margin:30px 0;">
-          <span class="bet-label">СТАВКА ✦</span>
-          <input type="number" id="rouletteBet" class="bet-input" value="50" min="10">
-        </div>
-        <div class="bet-options">
-          <button class="bet-option" onclick="betSuperRoulette('red')">🔴 x2</button>
-          <button class="bet-option" onclick="betSuperRoulette('black')">⚫ x2</button>
-          <button class="bet-option" onclick="betSuperRoulette('number')">🎯 x36</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Разворачиваем на весь экран
+        tg.ready();
 
-  <script>
-    (function() {
-      // ========== ЧАСТИЦЫ ==========
-      const particleCanvas = document.getElementById('particleCanvas');
-      const pCtx = particleCanvas.getContext('2d');
-      let particles = [];
-
-      function resizeParticles() {
-        particleCanvas.width = window.innerWidth;
-        particleCanvas.height = window.innerHeight;
-      }
-      resizeParticles();
-      window.addEventListener('resize', resizeParticles);
-
-      for (let i = 0; i < 60; i++) {
-        particles.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: (Math.random() - 0.5) * 0.6,
-          size: Math.random() * 4 + 1,
-          color: `hsl(${Math.random() * 360}, 100%, 70%)`
-        });
-      }
-
-      function drawParticles() {
-        pCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.x < 0) p.x = window.innerWidth;
-          if (p.x > window.innerWidth) p.x = 0;
-          if (p.y < 0) p.y = window.innerHeight;
-          if (p.y > window.innerHeight) p.y = 0;
-          
-          pCtx.beginPath();
-          pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          pCtx.fillStyle = p.color;
-          pCtx.shadowColor = p.color;
-          pCtx.shadowBlur = 15;
-          pCtx.fill();
-        });
-        requestAnimationFrame(drawParticles);
-      }
-      drawParticles();
-
-      // ========== ЭФФЕКТЫ ==========
-      function createConfetti() {
-        for (let i = 0; i < 50; i++) {
-          const c = document.createElement('div');
-          c.className = 'confetti';
-          c.style.left = Math.random() * 100 + '%';
-          c.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
-          c.style.width = (Math.random() * 15 + 5) + 'px';
-          c.style.height = (Math.random() * 25 + 10) + 'px';
-          c.style.animationDuration = (Math.random() * 3 + 2) + 's';
-          document.body.appendChild(c);
-          setTimeout(() => c.remove(), 5000);
-        }
-      }
-
-      function showToast(text) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerText = text;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2000);
-      }
-
-      function createStar() {
-        const s = document.createElement('div');
-        s.className = 'star';
-        s.style.left = Math.random() * 100 + '%';
-        s.style.top = '-10px';
-        s.style.width = s.style.height = (Math.random() * 10 + 3) + 'px';
-        s.style.animationDuration = (Math.random() * 5 + 2) + 's';
-        s.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        document.body.appendChild(s);
-        setTimeout(() => s.remove(), 7000);
-      }
-      for (let i = 0; i < 150; i++) setTimeout(createStar, i * 10);
-      setInterval(createStar, 100);
-
-      // ========== ПРИВЕТСТВИЕ ==========
-      const welcome = document.getElementById('welcomeScreen');
-      const app = document.getElementById('app');
-      
-      setTimeout(() => {
-        welcome.style.opacity = '0';
-        setTimeout(() => {
-          welcome.style.display = 'none';
-          app.classList.add('visible');
-        }, 1000);
-      }, 3000);
-
-      // ========== БАЛАНС ==========
-      let balance = 10000;
-      const balanceDisplay = document.getElementById('balanceDisplay');
-      function updateBalance() { 
-        balanceDisplay.innerText = balance;
-        if (balance > 50000) showToast('💰 БОГАЧ!');
-        if (balance < 1000) showToast('⚠️ МАЛО ДЕНЕГ');
-      }
-      document.getElementById('addStarsBtn').onclick = () => { 
-        balance += 1000; 
-        updateBalance();
-        showToast('✨ +1000 ЗВЁЗД');
-      };
-
-      // ========== НАВИГАЦИЯ ==========
-      window.showMenu = function() {
-        document.querySelectorAll('.game-container').forEach(c => c.classList.remove('active'));
-        document.getElementById('gamesMenu').style.display = 'grid';
-      };
-
-      document.querySelectorAll('.game-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const game = card.dataset.game;
-          document.getElementById('gamesMenu').style.display = 'none';
-          document.querySelectorAll('.game-container').forEach(c => c.classList.remove('active'));
-          document.getElementById(game + 'Container').classList.add('active');
-        });
-      });
-
-      // ========== PLINKO ==========
-      const canvas = document.getElementById('plinkoCanvas');
-      const ctx = canvas.getContext('2d');
-      const width = 860, height = 600;
-
-      let currentLevel = 'hard';
-      let balls = [], pins = [], multipliers = [], ballsInPlay = 0, topPins = [];
-
-      const levelMultipliers = {
-        easy: [5.0, 3.0, 1.8, 1.2, 0.7, 0.3, 0.7, 1.2, 1.8, 3.0, 5.0],
-        medium: [10.0, 5.0, 2.5, 1.5, 1.0, 0.5, 0.2, 0.5, 1.0, 1.5, 2.5, 5.0, 10.0],
-        hard: [50.0, 20.0, 10.0, 5.0, 2.5, 1.2, 0.5, 0.1, 0.5, 1.2, 2.5, 5.0, 10.0, 20.0, 50.0]
-      };
-
-      function setLevelButtons(disabled) {
-        document.querySelectorAll('.level-btn').forEach(b => {
-          disabled ? b.classList.add('disabled') : b.classList.remove('disabled');
-        });
-      }
-
-      function generateField(level) {
-        pins = []; topPins = [];
-        const mults = levelMultipliers[level];
-        const rows = 13, startY = 70, pinR = 5.5, spX = 44, spY = 32;
-        const maxCols = mults.length + 4;
-        const totalW = (maxCols - 1) * spX;
-        const offX = (width - totalW) / 2;
-
-        for (let r = 0; r < rows; r++) {
-          let cols = r < 5 ? 6 + r : r < 8 ? 11 : 19 - r;
-          cols = Math.min(cols, mults.length + 5);
-          const rowOff = (maxCols - cols) * spX / 2;
-          for (let c = 0; c < cols; c++) {
-            let x = offX + rowOff + c * spX + (r % 2 ? spX/2 : 0);
-            let y = startY + r * spY;
-            pins.push({ x, y, r: pinR });
-            if (r === 0) topPins.push(x);
-          }
+        // Адаптация под тему Telegram
+        document.body.classList.add('loaded');
+        if (tg.colorScheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
         }
 
-        multipliers = [];
-        const cellW = width / mults.length;
-        for (let i = 0; i < mults.length; i++) {
-          let col = mults[i] <= 0.5 ? '#6c7a96' : mults[i] <= 1.0 ? '#4f9fff' : mults[i] <= 2.0 ? '#42d692' : mults[i] <= 5.0 ? '#ffb347' : '#ff6b6b';
-          multipliers.push({ x: i * cellW, w: cellW, val: mults[i], col });
-        }
-      }
-      generateField('hard');
-
-      class Ball {
-        constructor(x, y, bet) {
-          this.x = x; this.y = y; this.vx = (Math.random() - 0.5) * 1.7; this.vy = 0.5; this.r = 8; this.bet = bet; this.trail = []; this.hue = Math.random() * 360;
-        }
-        update() {
-          this.hue = (this.hue + 2) % 360;
-          this.vy += 0.19; this.vx *= 0.99;
-          this.x += this.vx; this.y += this.vy;
-          this.trail.push({ x: this.x, y: this.y, hue: this.hue });
-          if (this.trail.length > 8) this.trail.shift();
-
-          for (let p of pins) {
-            let dx = this.x - p.x, dy = this.y - p.y, dist = Math.hypot(dx, dy), min = this.r + p.r;
-            if (dist < min) {
-              let a = Math.atan2(dy, dx), over = min - dist;
-              this.x += Math.cos(a) * over * 0.7; this.y += Math.sin(a) * over * 0.7;
-              let sp = Math.hypot(this.vx, this.vy);
-              if (sp > 0.1) {
-                let nx = dx / dist, ny = dy / dist, dot = this.vx * nx + this.vy * ny;
-                this.vx = (this.vx - 1.4 * dot * nx) * 0.7;
-                this.vy = (this.vy - 1.4 * dot * ny) * 0.7;
-                this.vx += (Math.random() - 0.5) * 0.4;
-                this.vy += (Math.random() - 0.5) * 0.2;
-              }
-            }
-          }
-          if (this.x - this.r < 8) { this.x = 8 + this.r; this.vx *= -0.6; }
-          if (this.x + this.r > width - 8) { this.x = width - 8 - this.r; this.vx *= -0.6; }
-
-          if (this.y + this.r > height - 50) {
-            let idx = Math.floor(this.x / (width / multipliers.length));
-            if (idx >= 0 && idx < multipliers.length) {
-              let win = Math.floor(this.bet * multipliers[idx].val);
-              balance += win;
-              updateBalance();
-              if (win > this.bet * 10) {
-                createConfetti();
-                showToast(`🎉 ДЖЕКПОТ x${multipliers[idx].val}`);
-              }
-            }
-            ballsInPlay--;
-            if (ballsInPlay === 0) setLevelButtons(false);
-            return false;
-          }
-          return true;
-        }
-      }
-
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-        let grad = ctx.createLinearGradient(0, 0, 0, height);
-        grad.addColorStop(0, '#020514'); grad.addColorStop(0.5, '#1a2a5a'); grad.addColorStop(1, '#020514');
-        ctx.fillStyle = grad; ctx.fillRect(0, 0, width, height);
-
-        pins.forEach(p => {
-          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-          let g = ctx.createRadialGradient(p.x-2, p.y-2, 2, p.x, p.y, p.r+3);
-          g.addColorStop(0, '#fffacd'); g.addColorStop(0.5, '#ffd966'); g.addColorStop(1, '#b8860b');
-          ctx.fillStyle = g; ctx.shadowColor = '#ffd966'; ctx.shadowBlur = 15; ctx.fill();
-          ctx.shadowBlur = 0;
-          ctx.beginPath(); ctx.arc(p.x-1.5, p.y-1.5, 1.8, 0, Math.PI*2);
-          ctx.fillStyle = '#fff9e6'; ctx.fill();
-        });
-
-        multipliers.forEach((m, i) => {
-          let gr = ctx.createLinearGradient(m.x, height-50, m.x + m.w, height-10);
-          gr.addColorStop(0, m.col + 'aa'); gr.addColorStop(1, m.col + 'ff');
-          ctx.fillStyle = gr; ctx.fillRect(m.x, height-50, m.w-1, 40);
-          ctx.strokeStyle = '#fff9e6'; ctx.lineWidth = 1.5; ctx.strokeRect(m.x, height-50, m.w-1, 40);
-          ctx.font = 'bold 20px Inter'; ctx.fillStyle = '#fff'; ctx.shadowColor = '#000'; ctx.shadowBlur = 8;
-          ctx.fillText('x' + (m.val < 10 ? m.val.toFixed(1) : Math.round(m.val)), m.x + m.w/2, height-27);
-        });
-        ctx.shadowBlur = 0;
-
-        balls.forEach(b => {
-          b.trail.forEach((t, j) => {
-            let a = (j / b.trail.length) * 0.5;
-            ctx.beginPath(); ctx.arc(t.x, t.y, b.r*0.6, 0, Math.PI*2);
-            ctx.fillStyle = `hsla(${t.hue}, 90%, 70%, ${a})`; ctx.fill();
-          });
-          ctx.shadowColor = `hsl(${b.hue}, 100%, 70%)`; ctx.shadowBlur = 25;
-          ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
-          let gr = ctx.createRadialGradient(b.x-3, b.y-3, 2, b.x, b.y, b.r+2);
-          gr.addColorStop(0, `hsl(${b.hue}, 100%, 85%)`); gr.addColorStop(1, `hsl(${b.hue}, 100%, 35%)`);
-          ctx.fillStyle = gr; ctx.fill();
-          ctx.shadowBlur = 0;
-          ctx.beginPath(); ctx.arc(b.x-2, b.y-2, 2, 0, Math.PI*2);
-          ctx.fillStyle = '#ffffffaa'; ctx.fill();
-        });
-      }
-
-      function loop() {
-        for (let i = balls.length-1; i>=0; i--) if (!balls[i].update()) balls.splice(i,1);
-        draw();
-        requestAnimationFrame(loop);
-      }
-      loop();
-
-      document.getElementById('dropBallBtn').onclick = () => {
-        let bet = parseInt(document.getElementById('betInput').value) || 50;
-        if (bet < 10) bet = 10;
-        if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
-        balance -= bet; updateBalance();
-        if (topPins.length) {
-          let x = topPins[Math.floor(Math.random() * topPins.length)] + (Math.random()*8-4);
-          balls.push(new Ball(x, 40, bet));
-          ballsInPlay++; setLevelButtons(true);
-        }
-      };
-
-      document.querySelectorAll('.level-btn').forEach(b => {
-        b.onclick = () => {
-          if (b.classList.contains('disabled')) return;
-          document.querySelectorAll('.level-btn').forEach(bb => bb.classList.remove('active'));
-          b.classList.add('active');
-          currentLevel = b.dataset.level;
-          generateField(currentLevel);
+        // База данных услуг
+        const services = {
+            exterior: [
+                {
+                    id: 'ext1',
+                    name: 'Мойка премиум',
+                    price: 3500,
+                    description: 'Бесконтактная мойка, ручная сушка, очистка дисков и арок',
+                    time: '60 мин',
+                    badge: 'ХИТ'
+                },
+                {
+                    id: 'ext2',
+                    name: 'Защитная полировка',
+                    price: 8500,
+                    description: 'Удаление голограмм, восстановление ЛКП, нанесение защиты',
+                    time: '4 часа',
+                    badge: 'PREMIUM'
+                },
+                {
+                    id: 'ext3',
+                    name: 'Антиголограммная полировка',
+                    price: 12500,
+                    description: 'Многоступенчатая коррекция, финишная полировка, керамика',
+                    time: '8 часов',
+                    badge: 'VIP'
+                },
+                {
+                    id: 'ext4',
+                    name: 'Очистка дисков и арок',
+                    price: 2500,
+                    description: 'Демонтаж колес, очистка от тормозной пыли, защита составом',
+                    time: '90 мин'
+                }
+            ],
+            interior: [
+                {
+                    id: 'int1',
+                    name: 'Химчистка салона (легкая)',
+                    price: 4500,
+                    description: 'Пылесос, очистка пластика, стекол, ковров',
+                    time: '2 часа'
+                },
+                {
+                    id: 'int2',
+                    name: 'Химчистка салона (полная)',
+                    price: 9500,
+                    description: 'Глубокая чистка всех поверхностей, кондиционирование кожи',
+                    time: '5 часов',
+                    badge: 'PREMIUM'
+                },
+                {
+                    id: 'int3',
+                    name: 'Чистка и пропитка кожи',
+                    price: 5500,
+                    description: 'Деликатная очистка, питание, защита от износа',
+                    time: '3 часа'
+                },
+                {
+                    id: 'int4',
+                    name: 'Озонирование и дезинфекция',
+                    price: 2900,
+                    description: 'Удаление запахов, уничтожение бактерий',
+                    time: '1 час'
+                }
+            ],
+            protection: [
+                {
+                    id: 'prot1',
+                    name: 'Жидкое стекло',
+                    price: 7900,
+                    description: 'Защита на 6 месяцев, гидрофобный эффект',
+                    time: '3 часа',
+                    badge: 'ПОПУЛЯРНОЕ'
+                },
+                {
+                    id: 'prot2',
+                    name: 'Керамическое покрытие 9H',
+                    price: 18900,
+                    description: 'Защита на 2 года, невероятный блеск и твердость',
+                    time: '12 часов',
+                    badge: 'PREMIUM'
+                },
+                {
+                    id: 'prot3',
+                    name: 'Защитная пленка (бампер)',
+                    price: 12900,
+                    description: 'Прозрачная защита от сколов и царапин',
+                    time: '5 часов'
+                },
+                {
+                    id: 'prot4',
+                    name: 'Полная оклейка пленкой',
+                    price: 245000,
+                    description: 'Индивидуальный расчет, премиальная защита',
+                    time: '3 дня',
+                    badge: 'VIP'
+                }
+            ]
         };
-      });
 
-      // ========== DICE ==========
-      const playerDice = document.getElementById('playerDice');
-      const dealerDice = document.getElementById('dealerDice');
-      
-      document.getElementById('rollDiceBtn').onclick = () => {
-        let bet = parseInt(document.getElementById('diceBet').value) || 50;
-        if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
-        
-        let playerVal = Math.floor(Math.random() * 6) + 1;
-        let dealerVal = Math.floor(Math.random() * 6) + 1;
-        
-        playerDice.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
-        dealerDice.style.transform = `rotateX(${Math.random()*720}deg) rotateY(${Math.random()*720}deg)`;
-        
-        setTimeout(() => {
-          playerDice.style.transform = '';
-          dealerDice.style.transform = '';
-          
-          document.getElementById('playerDiceValue').innerText = playerVal;
-          document.getElementById('dealerDiceValue').innerText = dealerVal;
-          
-          if (playerVal > dealerVal) {
-            balance += bet * 2;
-            createConfetti();
-            showToast('🎉 ПОБЕДА!');
-          } else if (playerVal < dealerVal) {
-            balance -= bet;
-            showToast('😢 ДИЛЛЕР ВЫИГРАЛ');
-          } else {
-            balance += bet;
-            showToast('🤝 НИЧЬЯ');
-          }
-          updateBalance();
-        }, 1000);
-      };
+        // Состояние выбранных услуг
+        let selectedServices = new Set();
+        let total = 0;
 
-      // ========== СУПЕР-СЛОТЫ ==========
-      const slotSymbols = ['🍒', '🍋', '🍊', '🍇', '💎', '7️⃣', '⭐', '🔔'];
-      const reel1 = document.getElementById('slotReel1');
-      const reel2 = document.getElementById('slotReel2');
-      const reel3 = document.getElementById('slotReel3');
-      const winBadge = document.getElementById('winBadge');
-      
-      document.getElementById('spinSlotsBtn').onclick = () => {
-        let bet = parseInt(document.getElementById('slotsBet').value) || 50;
-        if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
-        
-        // Скрываем бейдж
-        winBadge.style.display = 'none';
-        
-        // Добавляем классы анимации
-        reel1.classList.add('spinning', 'spinning-glow');
-        reel2.classList.add('spinning', 'spinning-glow');
-        reel3.classList.add('spinning', 'spinning-glow');
-        
-        // Эффект вибрации для контейнера
-        document.querySelector('.slot-machine').style.animation = 'shake 0.2s infinite';
-        
-        // Меняем символы во время анимации (эффект прокрутки)
-        let spinInterval = setInterval(() => {
-          reel1.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-          reel2.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-          reel3.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-        }, 50);
-        
-        setTimeout(() => {
-          // Останавливаем анимацию
-          clearInterval(spinInterval);
-          reel1.classList.remove('spinning', 'spinning-glow');
-          reel2.classList.remove('spinning', 'spinning-glow');
-          reel3.classList.remove('spinning', 'spinning-glow');
-          document.querySelector('.slot-machine').style.animation = '';
-          
-          // Генерируем результат
-          let s1 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-          let s2 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-          let s3 = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
-          
-          reel1.innerText = s1;
-          reel2.innerText = s2;
-          reel3.innerText = s3;
-          
-          // Добавляем эффект остановки
-          reel1.classList.add('stop-animation');
-          reel2.classList.add('stop-animation');
-          reel3.classList.add('stop-animation');
-          
-          setTimeout(() => {
-            reel1.classList.remove('stop-animation');
-            reel2.classList.remove('stop-animation');
-            reel3.classList.remove('stop-animation');
-          }, 500);
-          
-          let result = '';
-          let win = false;
-          
-          if (s1 === s2 && s2 === s3) {
-            balance += bet * 10;
-            createConfetti();
-            result = '🎰 ДЖЕКПОТ x10';
-            win = true;
-            winBadge.style.display = 'block';
-            winBadge.innerText = 'JACKPOT!';
-          } else if (s1 === s2 || s2 === s3 || s1 === s3) {
-            balance += bet * 2;
-            result = '🎰 ПАРА x2';
-            win = true;
-            winBadge.style.display = 'block';
-            winBadge.innerText = 'WIN x2';
-          } else {
-            balance -= bet;
-            result = '😢 ПРОИГРЫШ';
-            win = false;
-          }
-          
-          document.getElementById('slotResult').innerHTML = win ? `🎉 ${result}` : result;
-          if (win) {
-            document.getElementById('slotResult').style.animation = 'resultGlow 0.5s infinite';
-          } else {
-            document.getElementById('slotResult').style.animation = 'none';
-          }
-          
-          updateBalance();
-        }, 1500);
-      };
+        // Рендерим услуги
+        function renderServices() {
+            // Экстерьер
+            const exteriorContainer = document.getElementById('exteriorServices');
+            services.exterior.forEach(service => {
+                exteriorContainer.appendChild(createServiceCard(service));
+            });
 
-      // ========== SUPER ROULETTE ==========
-      const superWheel = document.getElementById('superWheel');
-      
-      window.betSuperRoulette = (type) => {
-        let bet = parseInt(document.getElementById('rouletteBet').value) || 50;
-        if (bet > balance) { showToast('❌ НЕ ХВАТАЕТ'); return; }
-        
-        let spins = Math.floor(Math.random() * 8) + 5;
-        let degrees = spins * 360 + Math.random() * 360;
-        superWheel.style.transform = `rotate(${degrees}deg)`;
-        
-        setTimeout(() => {
-          let number = Math.floor(Math.random() * 37);
-          let color = number === 0 ? 'green' : (number % 2 === 0 ? 'black' : 'red');
-          
-          document.getElementById('rouletteSuperNumber').innerText = number;
-          
-          if (type === 'number') {
-            let guess = prompt('ЧИСЛО (0-36):');
-            if (parseInt(guess) === number) {
-              balance += bet * 36;
-              createConfetti();
-              showToast('🎯 MEGA WIN x36');
-            } else {
-              balance -= bet;
+            // Интерьер
+            const interiorContainer = document.getElementById('interiorServices');
+            services.interior.forEach(service => {
+                interiorContainer.appendChild(createServiceCard(service));
+            });
+
+            // Защита
+            const protectionContainer = document.getElementById('protectionServices');
+            services.protection.forEach(service => {
+                protectionContainer.appendChild(createServiceCard(service));
+            });
+        }
+
+        // Создание карточки услуги
+        function createServiceCard(service) {
+            const card = document.createElement('div');
+            card.className = 'service-card';
+            card.dataset.id = service.id;
+            card.dataset.price = service.price;
+            card.dataset.name = service.name;
+
+            let badgeHtml = '';
+            if (service.badge) {
+                const badgeClass = service.badge === 'PREMIUM' || service.badge === 'VIP' ? 'badge premium' : 'badge';
+                badgeHtml = `<span class="${badgeClass}">${service.badge}</span>`;
             }
-          } else if (type === 'red' && color === 'red') {
-            balance += bet * 2;
-            showToast('🔴 КРАСНОЕ +');
-          } else if (type === 'black' && color === 'black') {
-            balance += bet * 2;
-            showToast('⚫ ЧЁРНОЕ +');
-          } else {
-            balance -= bet;
-          }
-          updateBalance();
-        }, 3000);
-      };
 
-      updateBalance();
-    })();
-  </script>
+            card.innerHTML = `
+                <div class="service-header">
+                    <span class="service-name">${badgeHtml} ${service.name}</span>
+                    <span class="service-price">${service.price.toLocaleString()} ₽</span>
+                </div>
+                <div class="service-description">${service.description}</div>
+                <div class="service-details">
+                    <span>⏱️ ${service.time}</span>
+                </div>
+            `;
+
+            card.addEventListener('click', () => toggleService(service.id, service.price, service.name, card));
+            return card;
+        }
+
+        // Переключение выбора услуги
+        function toggleService(id, price, name, card) {
+            if (selectedServices.has(id)) {
+                selectedServices.delete(id);
+                card.classList.remove('selected');
+                showNotification(`❌ ${name} удалена`);
+            } else {
+                selectedServices.add(id);
+                card.classList.add('selected');
+                showNotification(`✅ ${name} добавлена`);
+            }
+            updateTotal();
+        }
+
+        // Обновление итоговой суммы
+        function updateTotal() {
+            total = 0;
+            
+            // Считаем основные услуги
+            selectedServices.forEach(id => {
+                // Ищем услугу во всех категориях
+                const allServices = [...services.exterior, ...services.interior, ...services.protection];
+                const service = allServices.find(s => s.id === id);
+                if (service) {
+                    total += service.price;
+                }
+            });
+
+            // Добавляем доп. опции
+            if (document.getElementById('glassProtection').checked) total += 3900;
+            if (document.getElementById('fragrance').checked) total += 1900;
+            if (document.getElementById('tireShine').checked) total += 1500;
+
+            // Обновляем отображение
+            document.getElementById('totalAmount').textContent = total.toLocaleString() + ' ₽';
+            
+            // Показываем/скрываем корзину
+            const cartBar = document.getElementById('cartBar');
+            if (total > 0) {
+                cartBar.classList.add('visible');
+            } else {
+                cartBar.classList.remove('visible');
+            }
+        }
+
+        // Показ уведомлений
+        function showNotification(text) {
+            const notification = document.getElementById('notification');
+            notification.textContent = text;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 1500);
+        }
+
+        // Отправка заявки в Telegram
+        function sendOrder() {
+            if (total === 0) {
+                showNotification('❌ Выберите хотя бы одну услугу');
+                return;
+            }
+
+            // Собираем данные
+            const carBrand = document.getElementById('carBrand').value || 'Не указано';
+            const carYear = document.getElementById('carYear').value || 'Не указан';
+            
+            // Получаем названия выбранных услуг
+            const selectedServicesList = [];
+            selectedServices.forEach(id => {
+                const allServices = [...services.exterior, ...services.interior, ...services.protection];
+                const service = allServices.find(s => s.id === id);
+                if (service) selectedServicesList.push(service.name);
+            });
+
+            // Доп. опции
+            const extras = [];
+            if (document.getElementById('glassProtection').checked) extras.push('Нано-защита стекол');
+            if (document.getElementById('fragrance').checked) extras.push('Ароматизация');
+            if (document.getElementById('tireShine').checked) extras.push('Чернение резины');
+
+            // Формируем сообщение
+            const message = `
+🚗 НОВАЯ ЗАЯВКА SMEET
+
+📋 Автомобиль: ${carBrand} (${carYear})
+
+🛠️ Услуги:
+${selectedServicesList.map(s => '• ' + s).join('\n')}
+
+${extras.length ? '✨ Дополнительно:\n' + extras.map(e => '• ' + e).join('\n') : ''}
+
+💰 Итого: ${total.toLocaleString()} ₽
+
+⏰ Ожидайте звонка для подтверждения записи
+            `;
+
+            // Отправляем данные в бот
+            tg.sendData(JSON.stringify({
+                car: carBrand,
+                year: carYear,
+                services: selectedServicesList,
+                extras: extras,
+                total: total,
+                message: message
+            }));
+
+            showNotification('✅ Заявка отправлена!');
+            
+            // Закрываем WebApp через 1.5 секунды
+            setTimeout(() => {
+                tg.close();
+            }, 1500);
+        }
+
+        // Инициализация
+        renderServices();
+        
+        // Обработчик кнопки заказа
+        document.getElementById('orderButton').addEventListener('click', sendOrder);
+
+        // Главная кнопка Telegram (на случай, если пользователь захочет использовать её)
+        tg.MainButton.setText('Отправить заявку');
+        tg.MainButton.onClick(sendOrder);
+
+        // Показываем MainButton когда есть сумма > 0
+        let lastTotal = 0;
+        setInterval(() => {
+            if (total > 0 && total !== lastTotal) {
+                tg.MainButton.show();
+                lastTotal = total;
+            } else if (total === 0 && lastTotal !== 0) {
+                tg.MainButton.hide();
+                lastTotal = 0;
+            }
+        }, 100);
+    </script>
 </body>
 </html>
