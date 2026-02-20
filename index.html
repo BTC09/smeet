@@ -1,10 +1,31 @@
-<!DOCTYPE html>
+import asyncio
+import logging
+import json
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import Command
+from aiogram.types import Message, WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import FSInputFile
+import os
+from datetime import datetime
+
+# Настройки
+BOT_TOKEN = "7083456789:AAHxyz..."  # <--- ЗАМЕНИ НА СВОЙ ТОКЕН
+WEBAPP_URL = "https://твой-сайт.com"  # <--- ЗАМЕНИ НА URL ГДЕ БУДЕТ ХОСТИТЬСЯ APP
+
+logging.basicConfig(level=logging.INFO)
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+
+# ============================================
+# HTML КОД MINI APP (встроенный)
+# ============================================
+HTML_CODE = """<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMEET | ELITE DETAILING</title>
-    <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -27,7 +48,6 @@
             overflow-x: hidden;
         }
 
-        /* Элитный градиентный фон */
         body::before {
             content: '';
             position: fixed;
@@ -45,7 +65,6 @@
             opacity: 1;
         }
 
-        /* Анимированные частицы */
         .particle {
             position: fixed;
             width: 2px;
@@ -56,7 +75,6 @@
             z-index: -1;
         }
 
-        /* Хедер с золотом */
         .header {
             margin-bottom: 40px;
             position: relative;
@@ -110,7 +128,6 @@
             font-weight: 600;
         }
 
-        /* Карточка автомобиля с 3D эффектом */
         .car-details {
             background: rgba(20, 20, 20, 0.7);
             backdrop-filter: blur(20px);
@@ -173,7 +190,6 @@
             font-weight: 300;
         }
 
-        /* Секции */
         .section-header {
             display: flex;
             align-items: center;
@@ -199,14 +215,12 @@
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        /* Сетка услуг */
         .services-grid {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        /* Элитная карточка услуги */
         .service-card {
             background: linear-gradient(145deg, rgba(30, 30, 30, 0.8) 0%, rgba(20, 20, 20, 0.95) 100%);
             backdrop-filter: blur(10px);
@@ -219,7 +233,6 @@
             overflow: hidden;
         }
 
-        /* Золотой акцент при наведении */
         .service-card::before {
             content: '';
             position: absolute;
@@ -267,7 +280,6 @@
             flex-wrap: wrap;
         }
 
-        /* Бейджи */
         .badge {
             padding: 6px 14px;
             border-radius: 40px;
@@ -334,7 +346,6 @@
             font-size: 16px;
         }
 
-        /* Дополнительные опции */
         .options-section {
             margin-top: 40px;
             background: rgba(20, 20, 20, 0.5);
@@ -382,7 +393,6 @@
             margin: 0 20px;
         }
 
-        /* Элитный переключатель */
         .switch {
             position: relative;
             display: inline-block;
@@ -430,7 +440,6 @@
             background-color: #000;
         }
 
-        /* Премиум корзина */
         .cart-bar {
             position: fixed;
             bottom: 24px;
@@ -496,7 +505,6 @@
             box-shadow: 0 15px 30px rgba(212, 175, 55, 0.5);
         }
 
-        /* Уведомления с золотом */
         .notification {
             position: fixed;
             top: 24px;
@@ -520,7 +528,6 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* Анимация загрузки */
         .loader {
             position: fixed;
             top: 50%;
@@ -547,7 +554,6 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* Стеклянный эффект для скролла */
         .glass-effect {
             position: fixed;
             top: 0;
@@ -559,7 +565,6 @@
             z-index: 90;
         }
 
-        /* Подпись */
         .signature {
             text-align: center;
             margin: 60px 0 120px;
@@ -575,16 +580,10 @@
     </style>
 </head>
 <body>
-    <!-- Прелоадер -->
     <div class="loader" id="loader"></div>
-
-    <!-- Стеклянный эффект вверху -->
     <div class="glass-effect"></div>
-
-    <!-- Уведомление -->
     <div class="notification" id="notification">✨ Услуга добавлена</div>
 
-    <!-- Хедер -->
     <div class="header">
         <div class="logo-container">
             <div class="logo">SMEET<span class="logo-gold">.</span></div>
@@ -595,7 +594,6 @@
         </div>
     </div>
 
-    <!-- Информация об авто -->
     <div class="car-details">
         <div class="car-details-title">ИНФОРМАЦИЯ ОБ АВТОМОБИЛЕ</div>
         <input type="text" class="car-input" id="carBrand" placeholder="Марка и модель">
@@ -603,28 +601,24 @@
         <input type="text" class="car-input" id="carVin" placeholder="VIN (опционально)">
     </div>
 
-    <!-- Экстерьер -->
     <div class="section-header">
         <div class="section-title">EXTERIOR</div>
         <div class="section-count">4 услуги</div>
     </div>
     <div class="services-grid" id="exteriorServices"></div>
 
-    <!-- Интерьер -->
     <div class="section-header">
         <div class="section-title">INTERIOR</div>
         <div class="section-count">4 услуги</div>
     </div>
     <div class="services-grid" id="interiorServices"></div>
 
-    <!-- Защита -->
     <div class="section-header">
         <div class="section-title">PROTECTION</div>
         <div class="section-count">4 услуги</div>
     </div>
     <div class="services-grid" id="protectionServices"></div>
 
-    <!-- Дополнительные опции -->
     <div class="options-section">
         <div class="section-header" style="margin-top: 0;">
             <div class="section-title">ADD-ONS</div>
@@ -680,12 +674,10 @@
         </div>
     </div>
 
-    <!-- Подпись -->
     <div class="signature">
         <span>SMEET</span> • GOLD STANDARD • SINCE 2024
     </div>
 
-    <!-- Корзина -->
     <div class="cart-bar" id="cartBar">
         <div class="cart-info">
             <span class="cart-label">TOTAL</span>
@@ -695,16 +687,13 @@
     </div>
 
     <script>
-        // Инициализация Telegram
         let tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
         
-        // Убираем прелоадер
         document.body.classList.add('loaded');
         document.getElementById('loader').classList.remove('show');
 
-        // Создаем партиклы
         for (let i = 0; i < 20; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -714,7 +703,6 @@
             document.body.appendChild(particle);
         }
 
-        // Анимация для карточек (подсветка за курсором)
         document.querySelectorAll('.service-card').forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
@@ -725,7 +713,6 @@
             });
         });
 
-        // База данных услуг (премиум названия)
         const services = {
             exterior: [
                 {
@@ -830,11 +817,9 @@
             ]
         };
 
-        // Состояние
         let selectedServices = new Set();
         let total = 0;
 
-        // Рендер услуг
         function renderServices() {
             const containers = {
                 exterior: document.getElementById('exteriorServices'),
@@ -849,7 +834,6 @@
             });
         }
 
-        // Создание карточки
         function createServiceCard(service) {
             const card = document.createElement('div');
             card.className = 'service-card';
@@ -880,13 +864,11 @@
 
             card.addEventListener('click', () => toggleService(service.id, service.price, service.name, card));
             
-            // Добавляем анимацию появления
             card.style.animation = 'fadeInUp 0.5s ease forwards';
             
             return card;
         }
 
-        // Переключение услуги
         function toggleService(id, price, name, card) {
             if (selectedServices.has(id)) {
                 selectedServices.delete(id);
@@ -897,7 +879,6 @@
                 card.classList.add('selected');
                 showNotification('✓', name, 'added');
                 
-                // Эффект вспышки
                 card.style.transform = 'scale(1.05)';
                 setTimeout(() => {
                     card.style.transform = '';
@@ -906,24 +887,20 @@
             updateTotal();
         }
 
-        // Обновление суммы
         function updateTotal() {
             total = 0;
             
-            // Основные услуги
             const allServices = [...services.exterior, ...services.interior, ...services.protection];
             selectedServices.forEach(id => {
                 const service = allServices.find(s => s.id === id);
                 if (service) total += service.price;
             });
 
-            // Доп. опции
             if (document.getElementById('glassProtection')?.checked) total += 4900;
             if (document.getElementById('fragrance')?.checked) total += 2900;
             if (document.getElementById('tireShine')?.checked) total += 2500;
             if (document.getElementById('goldDetails')?.checked) total += 12900;
 
-            // Обновляем отображение
             document.getElementById('totalAmount').textContent = total.toLocaleString() + ' ₽';
             
             const cartBar = document.getElementById('cartBar');
@@ -934,7 +911,6 @@
             }
         }
 
-        // Уведомления
         function showNotification(icon, name, action) {
             const notification = document.getElementById('notification');
             notification.textContent = `${icon} ${name} ${action === 'added' ? 'добавлена' : 'удалена'}`;
@@ -945,14 +921,12 @@
             }, 1500);
         }
 
-        // Отправка заказа
         function sendOrder() {
             if (total === 0) {
                 showNotification('⚠', 'ОШИБКА', 'Выберите услуги');
                 return;
             }
 
-            // Собираем данные
             const carBrand = document.getElementById('carBrand').value || 'Not specified';
             const carYear = document.getElementById('carYear').value || 'Not specified';
             const carVin = document.getElementById('carVin').value || 'Not specified';
@@ -970,7 +944,6 @@
             if (document.getElementById('tireShine')?.checked) extras.push('Tire Gold Package');
             if (document.getElementById('goldDetails')?.checked) extras.push('Interior Gold Detailing');
 
-            // Формируем сообщение
             const message = `
 ╔══════════════════════════╗
      SMEET GOLD ORDER
@@ -995,10 +968,8 @@ Thank you for choosing
 SMEET Gold Standard ✦
             `;
 
-            // Показываем лоадер
             document.getElementById('loader').classList.add('show');
             
-            // Отправляем
             tg.sendData(JSON.stringify({
                 car: carBrand,
                 year: carYear,
@@ -1019,7 +990,6 @@ SMEET Gold Standard ✦
             }, 1000);
         }
 
-        // Добавляем CSS анимации
         const style = document.createElement('style');
         style.textContent = `
             @keyframes fadeInUp {
@@ -1041,11 +1011,9 @@ SMEET Gold Standard ✦
         `;
         document.head.appendChild(style);
 
-        // Инициализация
         renderServices();
         document.getElementById('orderButton').addEventListener('click', sendOrder);
 
-        // Обновляем MainButton Telegram
         let lastTotal = 0;
         setInterval(() => {
             if (total > 0 && total !== lastTotal) {
@@ -1060,3 +1028,131 @@ SMEET Gold Standard ✦
     </script>
 </body>
 </html>
+"""
+
+# ============================================
+# ОБРАБОТЧИКИ БОТА
+# ============================================
+
+# Команда /start
+@dp.message(Command("start"))
+async def cmd_start(message: Message):
+    text = (
+        "✨ <b>SMEET Detailing — Gold Standard</b> ✨\n\n"
+        "Добро пожаловать в премиальный детейлинг центр.\n"
+        "Нажми кнопку ниже, чтобы открыть приложение и выбрать услуги."
+    )
+    
+    builder = InlineKeyboardBuilder()
+    builder.add(InlineKeyboardButton(
+        text="🚗 ОТКРЫТЬ SMEET APP",
+        web_app=WebAppInfo(url=WEBAPP_URL)
+    ))
+    
+    await message.answer(text, reply_markup=builder.as_markdown(), parse_mode="HTML")
+
+# Обработка данных из Mini App
+@dp.message(F.web_app_data)
+async def handle_web_app_data(message: Message):
+    """Получение заказов из Mini App"""
+    try:
+        # Получаем данные от пользователя
+        data = json.loads(message.web_app_data.data)
+        
+        # Формируем красивое сообщение о заказе
+        order_time = datetime.now().strftime("%d.%m.%Y %H:%M")
+        
+        order_text = (
+            f"<b>🔔 НОВЫЙ ЗАКАЗ SMEET GOLD</b>\n\n"
+            f"<b>📅 Время:</b> {order_time}\n"
+            f"<b>👤 Клиент:</b> {message.from_user.full_name}\n"
+            f"<b>🆔 ID:</b> <code>{message.from_user.id}</code>\n"
+            f"<b>📱 Username:</b> @{message.from_user.username or 'нет'}\n\n"
+            
+            f"<b>🚗 АВТОМОБИЛЬ:</b>\n"
+            f"• Модель: {data.get('car', 'Не указано')}\n"
+            f"• Год: {data.get('year', 'Не указан')}\n"
+            f"• VIN: <code>{data.get('vin', 'Не указан')}</code>\n\n"
+            
+            f"<b>✨ ВЫБРАННЫЕ УСЛУГИ:</b>\n"
+        )
+        
+        # Добавляем услуги
+        for service in data.get('services', []):
+            order_text += f"  • {service}\n"
+        
+        # Добавляем доп. опции
+        extras = data.get('extras', [])
+        if extras:
+            order_text += f"\n<b>➕ ДОПОЛНИТЕЛЬНО:</b>\n"
+            for extra in extras:
+                order_text += f"  • {extra}\n"
+        
+        # Итог
+        order_text += (
+            f"\n<b>💰 ИТОГО К ОПЛАТЕ:</b>\n"
+            f"  • {data.get('total', 0):,} ₽\n\n"
+            f"━━━━━━━━━━━━━━━━━━━━━\n"
+            f"<i>Ожидайте звонка для подтверждения записи</i>"
+        )
+        
+        # Отправляем себе (администратору)
+        await message.answer(order_text, parse_mode="HTML")
+        
+        # Отправляем подтверждение пользователю
+        await message.answer(
+            "✅ <b>Заявка успешно отправлена!</b>\n\n"
+            "Наш менеджер свяжется с вами в ближайшее время для подтверждения записи.\n"
+            "Спасибо, что выбираете SMEET!",
+            parse_mode="HTML"
+        )
+        
+        # Можно также отправить уведомление в отдельный чат администраторов
+        # await bot.send_message(ADMIN_CHAT_ID, order_text, parse_mode="HTML")
+        
+    except Exception as e:
+        logging.error(f"Ошибка при обработке заказа: {e}")
+        await message.answer("❌ Произошла ошибка при обработке заказа. Пожалуйста, попробуйте еще раз.")
+
+# Команда для просмотра статистики (только для админа)
+@dp.message(Command("stats"))
+async def cmd_stats(message: Message):
+    # Проверяем, что это админ (замени на свой ID)
+    if message.from_user.id == 123456789:  # <--- ЗАМЕНИ НА СВОЙ ID
+        await message.answer(
+            "📊 <b>Статистика SMEET</b>\n\n"
+            "• Бот активен\n"
+            "• Mini App загружено\n"
+            "• Все системы работают",
+            parse_mode="HTML"
+        )
+    else:
+        await message.answer("⛔ Доступ запрещен")
+
+# Команда для получения HTML кода (на случай если нужно сохранить)
+@dp.message(Command("html"))
+async def cmd_html(message: Message):
+    if message.from_user.id == 123456789:  # <--- ЗАМЕНИ НА СВОЙ ID
+        # Создаем временный файл с HTML
+        with open("smeet_app.html", "w", encoding="utf-8") as f:
+            f.write(HTML_CODE)
+        
+        # Отправляем файл
+        await message.answer_document(
+            FSInputFile("smeet_app.html"),
+            caption="🎨 HTML код Mini App SMEET"
+        )
+        
+        # Удаляем файл
+        os.remove("smeet_app.html")
+    else:
+        await message.answer("⛔ Доступ запрещен")
+
+# Запуск бота
+async def main():
+    print("🚀 Бот SMEET запущен!")
+    print("📱 Ожидаем заказы...")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
