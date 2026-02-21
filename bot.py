@@ -4,112 +4,83 @@ import json
 from datetime import datetime
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
-from aiogram.types import Message, WebAppInfo, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, WebAppInfo, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.types import FSInputFile
-import os
 
 # ============================================
-# НАСТРОЙКИ - СЮДА ВСТАВИТЬ СВОИ ДАННЫЕ
+# 🔥 ВСТАВЬ СВОИ ДАННЫЕ 🔥
 # ============================================
-BOT_TOKEN = "8212007178:AAEEp5zfPfsdvysOqdoczkZioKds2f_sWfs"  # ПОЛУЧИТЬ У @BotFather
-WEBAPP_URL = "https://btc09.github.io/smeet/"    # СЮДА ЗАГРУЗИШЬ HTML
-ADMIN_IDS = [8591334505]  # ТВОЙ TELEGRAM ID (получить у @userinfobot)
+BOT_TOKEN = "8212007178:AAEEp5zfPfsdvysOqdoczkZioKds2f_sWfs"  # Твой токен от @BotFather
+ADMIN_IDS = [8591334505]              # Твой ID от @userinfobot
+WEBAPP_URL = "https://btc09.github.io/smeet/"  # Ссылка на GitHub Pages
 
+# ============================================
+# 🚀 ЗАПУСК БОТА
+# ============================================
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-# ============================================
-# КОМАНДА /start
-# ============================================
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
-    text = (
-        "✨ <b>SMEET Detailing — Gold Standard</b> ✨\n\n"
-        "Добро пожаловать в премиальный детейлинг центр.\n"
-        "Нажми кнопку ниже, чтобы открыть приложение и забронировать время."
-    )
-    
+    """Отправляет кнопку с Mini App"""
     builder = InlineKeyboardBuilder()
     builder.add(InlineKeyboardButton(
-        text="📱 ОТКРЫТЬ SMEET APP",
+        text="📱 ОТКРЫТЬ SMEET",
         web_app=WebAppInfo(url=WEBAPP_URL)
     ))
     
     await message.answer(
-        text, 
-        reply_markup=builder.as_markup(), 
+        "✨ <b>SMEET Detailing</b> — премиальный детейлинг\n\n"
+        "Нажми кнопку ниже, чтобы выбрать услуги и забронировать время.",
+        reply_markup=builder.as_markup(),
         parse_mode="HTML"
     )
 
-# ============================================
-# ПОЛУЧЕНИЕ ЗАКАЗОВ ИЗ MINI APP
-# ============================================
 @dp.message(F.web_app_data)
-async def handle_web_app_data(message: Message):
-    """Сюда приходят все заказы из Mini App"""
+async def handle_booking(message: Message):
+    """Сюда приходят заказы из Mini App"""
     try:
-        # Получаем данные
         data = json.loads(message.web_app_data.data)
-        order_time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+        order_time = datetime.now().strftime("%d.%m.%Y %H:%M")
         
-        # Формируем КРАСИВОЕ сообщение для админа
-        admin_text = (
-            f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"🔔 <b>НОВАЯ ЗАПИСЬ SMEET</b>\n"
-            f"━━━━━━━━━━━━━━━━━━━━━━\n\n"
-            
-            f"📅 <b>ДАТА И ВРЕМЯ:</b>\n"
-            f"• Запись: {data.get('date', 'Не выбрано')} в {data.get('time', 'Не выбрано')}\n"
-            f"• Заявка создана: {order_time}\n\n"
-            
-            f"👤 <b>КЛИЕНТ:</b>\n"
-            f"• ID: <code>{message.from_user.id}</code>\n"
-            f"• Имя: {message.from_user.full_name}\n"
-            f"• Username: @{message.from_user.username or 'нет'}\n"
-            f"• Телефон: {data.get('phone', 'Не указан')}\n\n"
-            
-            f"🚗 <b>АВТОМОБИЛЬ:</b>\n"
-            f"• Марка/модель: {data.get('brand', 'Не указано')}\n"
-            f"• Год: {data.get('year', 'Не указан')}\n"
-            f"• VIN: <code>{data.get('vin', 'Не указан')}</code>\n\n"
-        )
-        
-        # Добавляем услуги
-        services = data.get('services', [])
-        if services:
-            admin_text += f"✨ <b>ВЫБРАННЫЕ УСЛУГИ:</b>\n"
-            for s in services:
-                admin_text += f"  • {s}\n"
-            admin_text += "\n"
-        
-        # Добавляем дополнительные опции
-        extras = data.get('extras', [])
-        if extras:
-            admin_text += f"➕ <b>ДОПОЛНИТЕЛЬНО:</b>\n"
-            for e in extras:
-                admin_text += f"  • {e}\n"
-            admin_text += "\n"
-        else:
-            admin_text += f"➕ <b>ДОПОЛНИТЕЛЬНО:</b> нет\n\n"
-        
-        # Напоминание
-        reminder_map = {
+        # Расшифровка напоминания
+        reminder_text = {
             '1h': 'За 1 час',
             '3h': 'За 3 часа',
             '12h': 'За 12 часов',
             '24h': 'За 24 часа'
-        }
-        reminder_text = reminder_map.get(data.get('reminder', '1h'), 'За 1 час')
-        admin_text += f"⏰ <b>НАПОМИНАНИЕ:</b> {reminder_text}\n\n"
+        }.get(data.get('reminder'), 'За 1 час')
         
-        # ИТОГО
-        admin_text += (
+        # Формируем красивое сообщение
+        admin_text = (
             f"━━━━━━━━━━━━━━━━━━━━━━\n"
-            f"💰 <b>ИТОГО К ОПЛАТЕ:</b> {data.get('total', 0):,} ₽\n"
+            f"🔔 <b>НОВАЯ ЗАПИСЬ SMEET</b>\n"
             f"━━━━━━━━━━━━━━━━━━━━━━\n\n"
-            f"<i>📌 Статус: ожидает подтверждения</i>"
+            f"📅 <b>Дата:</b> {data.get('date', 'Не выбрана')}\n"
+            f"⏰ <b>Время:</b> {data.get('time', 'Не выбрано')}\n"
+            f"👤 <b>Клиент:</b> {message.from_user.full_name}\n"
+            f"📞 <b>Телефон:</b> {data.get('phone', 'Не указан')}\n\n"
+            f"🚗 <b>Автомобиль:</b>\n"
+            f"• Марка: {data.get('brand', 'Не указано')}\n"
+            f"• Год: {data.get('year', 'Не указан')}\n"
+            f"• VIN: {data.get('vin', 'Не указан')}\n\n"
+            f"⏱️ <b>Напоминание:</b> {reminder_text}\n\n"
+            f"✨ <b>Выбранные услуги:</b>\n"
+        )
+        
+        for s in data.get('services', []):
+            admin_text += f"  • {s}\n"
+        
+        if data.get('extras'):
+            admin_text += f"\n➕ <b>Дополнительно:</b>\n"
+            for e in data.get('extras'):
+                admin_text += f"  • {e}\n"
+        
+        admin_text += (
+            f"\n━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"💰 <b>ИТОГО:</b> {data.get('total', 0):,} ₽\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━"
         )
         
         # Отправляем админу
@@ -119,48 +90,19 @@ async def handle_web_app_data(message: Message):
             except:
                 pass
         
-        # Отправляем подтверждение клиенту
-        client_text = (
-            f"✅ <b>Заявка успешно отправлена!</b>\n\n"
-            f"📅 Вы записаны на: <b>{data.get('date')} в {data.get('time')}</b>\n\n"
-            f"🔔 Напоминание: {reminder_text}\n"
-            f"📞 Телефон для связи: {data.get('phone', 'не указан')}\n\n"
-            f"Наш менеджер свяжется с вами для подтверждения записи.\n"
-            f"Спасибо, что выбираете SMEET!"
+        # Подтверждение клиенту
+        await message.answer(
+            f"✅ <b>Заявка принята!</b>\n\n"
+            f"Вы записаны на {data.get('date')} в {data.get('time')}\n\n"
+            f"Мы напомним вам {reminder_text.lower()}.\n"
+            f"Спасибо за выбор SMEET!",
+            parse_mode="HTML"
         )
         
-        await message.answer(client_text, parse_mode="HTML")
-        
-        # Логируем в консоль
-        logging.info(f"Новый заказ от {message.from_user.full_name}: {data.get('total')}₽")
-        
     except Exception as e:
-        logging.error(f"Ошибка при обработке заказа: {e}")
-        await message.answer("❌ Произошла ошибка при отправке заявки. Попробуйте еще раз.")
+        logging.error(f"Ошибка: {e}")
+        await message.answer("❌ Произошла ошибка. Попробуйте еще раз.")
 
-# ============================================
-# КОМАНДА ДЛЯ ПРОСМОТРА СТАТИСТИКИ
-# ============================================
-@dp.message(Command("stats"))
-async def cmd_stats(message: Message):
-    if message.from_user.id not in ADMIN_IDS:
-        await message.answer("⛔ Доступ запрещен")
-        return
-    
-    # Здесь можно добавить статистику из БД
-    stats_text = (
-        "📊 <b>Статистика SMEET</b>\n\n"
-        "✅ Бот активен\n"
-        "✅ Mini App загружен\n"
-        f"👤 Ваш ID: {message.from_user.id}\n\n"
-        f"📅 Сегодня: {datetime.now().strftime('%d.%m.%Y')}"
-    )
-    
-    await message.answer(stats_text, parse_mode="HTML")
-
-# ============================================
-# ЗАПУСК БОТА
-# ============================================
 async def main():
     print("="*50)
     print("🚀 SMEET БОТ ЗАПУЩЕН!")
