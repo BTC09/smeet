@@ -12,7 +12,7 @@ import os
 # ============================================
 # НАСТРОЙКИ - СЮДА ВСТАВИТЬ СВОИ ДАННЫЕ
 # ============================================
-BOT_TOKEN = "8180801729:AAFzbZJqXv3Sjt1gF_XHJCfY2SQjQCBSRjo"  # ПОЛУЧИТЬ У @BotFather
+BOT_TOKEN = "8212007178:AAEEp5zfPfsdvysOqdoczkZioKds2f_sWfs"  # ПОЛУЧИТЬ У @BotFather
 WEBAPP_URL = "https://btc09.github.io/smeet/"    # СЮДА ЗАГРУЗИШЬ HTML
 ADMIN_IDS = [8591334505]  # ТВОЙ TELEGRAM ID (получить у @userinfobot)
 
